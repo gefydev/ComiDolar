@@ -12,32 +12,32 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "@astrojs/react": "6.0.0",
-    "@astrojs/rss": "4.0.18",
+    "@astrojs/react": "6.0.1",
+    "@astrojs/rss": "4.0.19",
     "@astrojs/sitemap": "3.7.3",
-    "@supabase/supabase-js": "^2.98.0",
-    "@tailwindcss/vite": "^4.2.1",
-    "@types/react": "^19.2.14",
+    "@supabase/supabase-js": "^2.110.0",
+    "@tailwindcss/vite": "^4.3.2",
+    "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "astro": "7.0.2",
-    "astro-loading-indicator": "^0.7.1",
+    "astro": "7.0.6",
+    "astro-loading-indicator": "^0.8.0",
     "embla-carousel": "^8.6.0",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
-    "eslint": "^9.21.0",
-    "markdown-it": "^14.1.1",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "sanitize-html": "^2.17.1",
-    "supabase": "^2.76.15",
-    "tailwindcss": "^4.2.1"
+    "eslint": "^10.6.0",
+    "markdown-it": "^14.3.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "sanitize-html": "^2.17.5",
+    "supabase": "^2.109.0",
+    "tailwindcss": "^4.3.2"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "eslint-plugin-astro": "^1.7.0",
+    "eslint-plugin-astro": "^2.1.1",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "prettier-plugin-astro": "^0.14.1",
-    "typescript-eslint": "^8.61.0"
+    "typescript-eslint": "^8.62.1"
   }
 }

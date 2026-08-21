@@ -4,7 +4,7 @@ description: El impuesto pais fue eliminado, conoce todos los cambios que están
 date: 2024-12-24T17:20:00.000-0300
 draft: false
 author: Gena
-rssauthor: gena@comidolar.com.ar (Genaro Febbo Yapur)
+rssauthor: hi@gefy.dev (Genaro Febbo Yapur)
 copyright: 2024 ©️ComiDolar
 theme: Finanzas
 tags: [Impuestos, Dolar, Argentina, Compras, Impuesto]

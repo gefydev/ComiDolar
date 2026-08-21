@@ -4,7 +4,7 @@ description: Una serie de consejos para aprovechar la tarifa plana de envíos de
 date: 2024-09-25T18:00:00.000-0300
 draft: false
 author: Gena
-rssauthor: gena@comidolar.com.ar (Genaro Febbo Yapur)
+rssauthor: hi@gefy.dev (Genaro Febbo Yapur)
 copyright: 2024 ©️ComiDolar
 theme: Finanzas
 tags: [Dolar, Amazon, Argentina, Envio, Tecnologia, Ahorro]

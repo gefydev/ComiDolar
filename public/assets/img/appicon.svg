@@ -28,7 +28,7 @@
              xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
       <cc:work rdf:about="">
         <cc:license>
-           <cc:prohibits rdf:resource="https://github.com/GenaDeev/ComiDolar/blob/main/LICENSE.md#usage-restrictions"/>
+           <cc:prohibits rdf:resource="https://github.com/gefydev/ComiDolar/blob/main/LICENSE.md#usage-restrictions"/>
         </cc:license>
       </cc:work>
     </rdf:RDF>

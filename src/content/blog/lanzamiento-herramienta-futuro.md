@@ -4,7 +4,7 @@ description: Conocé la nueva herramienta interactiva para calcular qué materia
 date: 2026-06-12T18:35:00.000-0300
 draft: false
 author: Gena
-rssauthor: hi@gefy.dev (Genaro Febbo Yapur)
+rssauthor: gena@comidolar.com.ar (Genaro Febbo Yapur)
 copyright: 2026 ©️ComiDolar
 theme: Grupo
 tags: [CBC, CNBA, Pelle, Equivalencias, UBA, Herramienta, Futuro]

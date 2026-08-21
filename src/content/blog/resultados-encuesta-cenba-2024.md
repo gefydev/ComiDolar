@@ -4,7 +4,7 @@ description: La intención de voto en todas las áreas de los integrantes de Com
 date: 2024-10-30T22:10:00.000-0300
 draft: false
 author: Gena
-rssauthor: hi@gefy.dev (Genaro Febbo Yapur)
+rssauthor: gena@comidolar.com.ar (Genaro Febbo Yapur)
 copyright: 2024 ©️ComiDolar
 theme: Política
 tags: [Elecciones, Voto, Argentina, Censo, Resultados, CENBA]

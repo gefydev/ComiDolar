@@ -1,0 +1,98 @@
+---
+import { loadDeck } from "@/lib/decks";
+import deckCss from "@/components/slide-deck/deck.css?raw";
+
+interface Props {
+  deck: string;
+  title?: string;
+}
+
+const { deck, title } = Astro.props;
+const { slides, fonts, title: deckTitle } = loadDeck(deck);
+const label = title ?? deckTitle;
+const total = slides.length;
+const stageHtml = slides.map((slide) => slide.html).join("");
+---
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+{fonts.map((href) => <link rel="stylesheet" href={href} />)}
+
+<cd-slide-deck
+  data-deck={deck}
+  role="region"
+  aria-roledescription="presentación"
+  aria-label={label}
+  tabindex="0"
+>
+  <template shadowrootmode="open">
+    <Fragment set:html={`<style>${deckCss}</style>`} />
+    <div class="frame">
+      <div class="viewport" part="viewport">
+        <div class="stage" set:html={stageHtml} />
+      </div>
+      <nav class="controls" aria-label="Controles de la presentación">
+        <button class="prev" type="button" aria-label="Diapositiva anterior">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg
+          >
+        </button>
+        <div class="progress">
+          {
+            slides.map((slide, index) => (
+              <button
+                type="button"
+                aria-label={`Ir a la diapositiva ${index + 1}: ${slide.title}`}
+                title={slide.title}
+                aria-current={index === 0 ? "true" : "false"}
+              />
+            ))
+          }
+        </div>
+        <span class="counter"><b>1</b> / {total}</span>
+        <button class="next" type="button" aria-label="Diapositiva siguiente">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg
+          >
+        </button>
+        <button
+          class="fullscreen"
+          type="button"
+          aria-label="Pantalla completa"
+          aria-pressed="false"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            ><path d="M8 3H5a2 2 0 0 0-2 2v3"></path><path
+              d="M21 8V5a2 2 0 0 0-2-2h-3"></path><path
+              d="M3 16v3a2 2 0 0 0 2 2h3"></path><path
+              d="M16 21h3a2 2 0 0 0 2-2v-3"></path></svg
+          >
+        </button>
+      </nav>
+      <p class="sr-only" aria-live="polite"></p>
+    </div>
+  </template>
+</cd-slide-deck>
+
+<script>
+  import "@/components/slide-deck/deck-element";
+</script>

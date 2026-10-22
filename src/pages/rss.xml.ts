@@ -41,7 +41,9 @@ export async function GET(context) {
     items: blog.map((post) => {
       const imageUrl = `/assets/img/opengraph/blog/${post.id}.webp`;
       const imageHtml = `<img src="${imageUrl}" alt="${post.data.title}" class="opengraph-image" />`;
-      let contentHtml = parser.render(post.body);
+      let contentHtml = parser.render(
+        (post.body ?? "").replace(/^(import|export)\s.*$/gm, ""),
+      );
       const containsProhibitedTags = prohibitedTags.some((tag) =>
         new RegExp(`<${tag}\\b[^>]*>`, "i").test(contentHtml),
       );

@@ -1,0 +1,28 @@
+{
+  "title": "Encuesta Elecciones CENBA 2026",
+  "order": [
+    "cover",
+    "intro",
+    "candidatos",
+    "mesa-resultados",
+    "mesa-electos",
+    "mesa-reparto",
+    "mesa-comparativa",
+    "cer-resultados",
+    "cer-electos",
+    "cc-resultados",
+    "cc-integracion",
+    "secretarias-mapa",
+    "sec-tm",
+    "sec-tt",
+    "sec-tv",
+    "participacion",
+    "foto-finish",
+    "resumen",
+    "cierre"
+  ],
+  "fonts": [
+    "https://fonts.googleapis.com/css2?family=Anton&display=swap",
+    "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400..700&display=swap"
+  ]
+}

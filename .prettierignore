@@ -7,6 +7,9 @@ dist/
 node_modules/
 .astro/
 
+# Ignore exported slide decks (keep them identical to the source deck)
+src/decks/
+
 # Ignore assets, media and documents
 public/assets/
 public/docs/

@@ -27,6 +27,7 @@ El proyecto está construido sobre una arquitectura moderna orientada a la perfo
   - `embla-carousel-react` (v8.6.0) para sliders adaptables y touch-friendly.
   - `astro-loading-indicator` (v0.7.1) para feedback visual en transiciones de página.
   - `markdown-it` y `sanitize-html` para el procesamiento seguro de posts del blog.
+  - `@astrojs/mdx` (v7.0.8, compatible con Astro 7.0.x) para poder usar componentes Astro dentro de los posts `.mdx`.
 
 ---
 
@@ -46,6 +47,7 @@ La estructura de directorios sigue los estándares de Astro con aliases definido
 │   ├── content/                # Colecciones de contenido Markdown (Blog)
 │   │   └── blog/               # Entradas del blog del sitio
 │   ├── content.config.ts       # Esquema y definición de tipos para colecciones
+│   ├── decks/                  # Presentaciones nativas (deck.json + slides/*.html) que renderiza SlideDeck.astro
 │   ├── db/                     # Archivos de datos estáticos y lógica de mockeo/pagos
 │   │   └── carrerasUba.ts      # Base de datos de materias del CBC y equivalencias de carreras
 │   ├── layouts/                # Plantillas HTML base para las páginas
@@ -105,7 +107,9 @@ El enrutamiento es estático y dinámico, estructurado de la siguiente forma:
    - Los posts actuales son:
      - `comprar-exterior-barato.md`: Guía de compras en Amazon usando la tarifa plana de $5 e importando con dólar MEP (opción recomendada por ser más económica que el dólar tarjeta).
      - `eliminacion-impuesto-pais.md`: Detalle del impacto de la eliminación del Impuesto PAIS a fines de 2024.
-     - `resultados-encuesta-cenba-2024.md` / `resultados-encuesta-cenba-2025.md`: Resultados de las encuestas electorales del Centro de Estudiantes del CNBA.
+     - `resultados-encuesta-cenba-2024.md` / `resultados-encuesta-cenba-2025.md`: Resultados de las encuestas electorales del Centro de Estudiantes del CNBA (embed de Canva).
+     - `resultados-encuesta-cenba-2026.mdx`: Resultados de la encuesta 2026, con la presentación embebida de forma nativa mediante `<SlideDeck deck="cenba-2026" />`.
+   - Los posts pueden ser `.md` o `.mdx`. En `.mdx` se importan componentes con el alias `@/`. El feed `rss.xml.ts` descarta las líneas `import`/`export` de MDX antes de renderizar el cuerpo.
      - `sugerencias-comidolar-2026.md`: Formulario interactivo para sugerencias e ideas de cara al 2026.
      - `lanzamiento-herramienta-futuro.md`: Anuncio y guía interactiva sobre la nueva herramienta de equivalencias del CBC y comparación con 6to año.
 
@@ -146,6 +150,12 @@ El enrutamiento es estático y dinámico, estructurado de la siguiente forma:
 - **`FutureCalculator.tsx` (React):**
   - Componente interactivo que permite seleccionar el colegio de egreso (CNBA o Pelle), la facultad y la carrera deseada.
   - Calcula automáticamente porcentajes de avance del CBC, materias restantes, estimación del tiempo de egreso y compara de forma pedagógica el camino de egresar en 5to vs hacer 6to año.
+- **`SlideDeck.astro` (presentaciones nativas, sin Canva):**
+  - Uso en un post `.mdx`: `import SlideDeck from "@/components/SlideDeck.astro";` y luego `<SlideDeck deck="cenba-2026" />` (prop opcional `title` para la etiqueta accesible).
+  - Lee `src/decks/<deck>/deck.json` (`title`, `order` con los ids de las diapositivas y `fonts` con links de Google Fonts) y cada `src/decks/<deck>/slides/<id>.html` (una `<section>` de 1920×1080 con estilos inline). Las imágenes viven en `public/assets/decks/<deck>/`.
+  - `src/lib/decks.ts` prepara el HTML en build: quita las notas del orador (`<aside>`), convierte `<x-icon>` en SVG inline, agrega `loading="lazy"` desde la segunda diapositiva y extrae el título de cada una para la barra de progreso.
+  - Renderiza dentro de un Shadow DOM declarativo para que los estilos `.markdown` del blog no rompan las diapositivas (`src/components/slide-deck/deck.css`), escalando el lienzo con `ResizeObserver`.
+  - `src/components/slide-deck/deck-element.ts` define el custom element `<cd-slide-deck>`: flechas, Inicio/Fin, barra espaciadora, swipe en celulares, clic en la diapositiva (izquierda vuelve, derecha avanza), barra de progreso clickeable, pantalla completa con la tecla F (con rotación automática a horizontal en celulares en vertical) y enlace directo a cada diapositiva con `#<deck>-<número>`. Funciona también tras la navegación del `ClientRouter`.
 - **`Release.astro`:**
   - Componente minimalista que almacena únicamente el número de versión actual de ComiDólar en texto plano. Funciona como la fuente única de verdad para el control de versiones y es consumido por otros componentes como el pie de página para renderizar la versión.
 

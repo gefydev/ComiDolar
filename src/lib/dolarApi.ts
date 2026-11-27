@@ -1,8 +1,17 @@
-let cachedDolaresPromise: Promise<any[]> | null = null;
+export interface Dolar {
+  moneda: string;
+  casa: string;
+  nombre: string;
+  compra: number;
+  venta: number;
+  fechaActualizacion: string;
+}
+
+let cachedDolaresPromise: Promise<Dolar[]> | null = null;
 let lastFetchedDolares = 0;
 const CACHE_TTL_MS = 60000; // 1 minute cache TTL
 
-export async function fetchDolares(): Promise<any[]> {
+export async function fetchDolares(): Promise<Dolar[]> {
   const now = Date.now();
   if (cachedDolaresPromise && now - lastFetchedDolares < CACHE_TTL_MS) {
     return cachedDolaresPromise;

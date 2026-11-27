@@ -289,7 +289,8 @@ const isEverythingDown = final === "down";
   };
 
   const toggleSidebar = () => {
-    isAsideVisible ? hideSidebar() : showSidebar();
+    if (isAsideVisible) hideSidebar();
+    else showSidebar();
   };
 
   const handleOutsideClick = (event) => {

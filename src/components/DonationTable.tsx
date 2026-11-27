@@ -56,6 +56,8 @@ export default function DonationGrid() {
     };
 
     fetchYears();
+    // Solo al montar: los años disponibles no dependen del año elegido
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSort = (key) => {

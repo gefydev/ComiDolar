@@ -13,6 +13,8 @@ export default tseslint.config(
       ".astro/",
       ".github/",
       "public/",
+      // Snippet oficial de PostHog, minificado: no se edita a mano
+      "src/components/posthog.astro",
       "skills-lock.json",
     ],
   },

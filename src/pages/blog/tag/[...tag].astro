@@ -1,10 +1,10 @@
 ---
-import { getCollection } from "astro:content";
+import { getPosts } from "@/lib/blog";
 import Layout from "@/layouts/layout.astro";
 import BlogPostCard from "@/components/BlogPostCard.astro";
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog");
+  const posts = await getPosts();
 
   const uniqueTags = [
     ...new Set(
@@ -17,7 +17,7 @@ export async function getStaticPaths() {
   }));
 }
 
-const posts = await getCollection("blog");
+const posts = await getPosts();
 
 const { tag } = Astro.params;
 const normalizedTag = tag.toLowerCase();

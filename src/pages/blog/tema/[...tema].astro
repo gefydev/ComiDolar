@@ -1,9 +1,9 @@
 ---
-import { getCollection } from "astro:content";
+import { getPosts } from "@/lib/blog";
 import Layout from "@/layouts/layout.astro";
 import BlogPostCard from "@/components/BlogPostCard.astro";
 export async function getStaticPaths() {
-  const posts = await getCollection("blog");
+  const posts = await getPosts();
 
   const uniqueThemes = [
     ...new Set(posts.map((post) => post.data.theme.toLowerCase())),
@@ -14,7 +14,7 @@ export async function getStaticPaths() {
   }));
 }
 
-const posts = await getCollection("blog");
+const posts = await getPosts();
 
 const { tema } = Astro.params;
 const normalizedTheme = tema.toLowerCase();

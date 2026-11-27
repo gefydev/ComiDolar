@@ -1,6 +1,6 @@
 ---
-import { getCollection } from "astro:content";
-const posts = await getCollection("blog");
+import { getPosts } from "@/lib/blog";
+const posts = await getPosts();
 
 const newestPost = posts.sort((a, b) => {
   const dateA = new Date(a.data.date).getTime();

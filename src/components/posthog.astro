@@ -1,6 +1,6 @@
 ---
 // PostHog: solo visitas y eventos. Sin grabaciones ni encuestas, y la librería
-// se pide recién cuando la persona usa la página (o pasado un rato).
+// se pide cuando la página terminó de cargar y está libre.
 ---
 
 <script is:inline>
@@ -17,6 +17,15 @@
         cola.push([metodo].concat(Array.prototype.slice.call(arguments)));
       };
     });
+    // en la cola, cada evento guarda su hora y no la de la librería
+    cola.capture = function (evento, propiedades, opciones) {
+      cola.push([
+        "capture",
+        evento,
+        propiedades,
+        Object.assign({ timestamp: new Date() }, opciones),
+      ]);
+    };
     cola.init = function (token, config, nombre) {
       cola._i.push([token, config, nombre]);
     };
@@ -52,26 +61,12 @@
       s.src = "https://hog.comidolar.com.ar/static/array.js";
       d.head.appendChild(s);
     };
-    // con la primera interacción, o a los 10 s de cargada: mientras tanto los
-    // eventos quedan en la cola
-    var eventos = ["pointerdown", "keydown", "scroll", "touchstart", "wheel"];
-    var pedido = false;
-    var pedir = function (ev) {
-      // el menú y el carrusel se desplazan solos: cuenta el scroll de la página
-      if (pedido || (ev && ev.type === "scroll" && ev.target !== d)) return;
-      pedido = true;
-      eventos.forEach(function (e) {
-        w.removeEventListener(e, pedir, true);
-      });
-      cargar();
-    };
-    eventos.forEach(function (e) {
-      w.addEventListener(e, pedir, { capture: true, passive: true });
-    });
+    // apenas la página queda libre (tope 5 s): esperar más dejaba sin contar
+    // a quien se va rápido
     var despues = function () {
-      setTimeout(function () {
-        pedir();
-      }, 10000);
+      if (w.requestIdleCallback)
+        w.requestIdleCallback(cargar, { timeout: 5000 });
+      else setTimeout(cargar, 2000);
     };
     if (d.readyState === "complete") despues();
     else w.addEventListener("load", despues, { once: true });

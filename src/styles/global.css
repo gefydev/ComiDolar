@@ -554,6 +554,18 @@
 
 /* Paso de página: el encabezado queda quieto y el contenido sale y entra corto
    (240 ms). Primero se va lo viejo y después aparece lo nuevo, sin mezclarse. */
+/* el encabezado no participa: se muestra directo el de la página nueva */
+.top {
+  view-transition-name: cabecera;
+}
+::view-transition-group(cabecera),
+::view-transition-new(cabecera) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(cabecera) {
+  display: none;
+}
 #contenido {
   view-transition-name: contenido;
 }

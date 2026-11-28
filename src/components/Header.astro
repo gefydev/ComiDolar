@@ -13,7 +13,7 @@ const actual = (href: string) =>
 
 <header class="top">
   <a class="brand" href="/">
-    <img src="/assets/img/appicon_192.png" alt="" width="44" height="44" />
+    <img src="/assets/img/appicon_192.png" alt="" width="40" height="40" />
     comi.dolar
   </a>
   <nav class="pills" aria-label="Principal">
@@ -30,6 +30,17 @@ const actual = (href: string) =>
 
 <script>
   import "@/lib/instalar";
+
+  // La sección actual tiene que quedar a la vista, sin mover la página
+  document.addEventListener("astro:page-load", () => {
+    const barra = document.querySelector(".pills");
+    const actual = barra?.querySelector("[aria-current]");
+    if (barra && actual)
+      barra.scrollLeft +=
+        actual.getBoundingClientRect().left -
+        barra.getBoundingClientRect().left -
+        (barra.clientWidth - actual.clientWidth) / 2;
+  });
 
   // Con teclado, el navegador no desplaza un link que ya se ve a medias
   document.addEventListener("focusin", (e) => {

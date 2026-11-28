@@ -140,15 +140,15 @@
     font-size: 21px;
     letter-spacing: -0.02em;
   }
-  /* el logo entero, sobre un cuadrado blanco (también en modo oscuro) */
+  /* el logo entero, sobre un cuadrado blanco (también en modo oscuro);
+     el PNG ya trae su propio aire */
   .brand img {
-    width: 44px;
-    height: 44px;
-    padding: 3px;
+    width: 40px;
+    height: 40px;
     object-fit: contain;
     background: #fff;
-    border: 1px solid var(--hair);
     border-radius: 10px;
+    box-shadow: 0 0 0 1px var(--hair);
   }
   .btn {
     display: inline-flex;
@@ -174,18 +174,15 @@
     gap: 8px;
     overflow-x: auto;
     order: 3;
-    width: 100%;
+    width: calc(100% + 32px);
     /* lugar para el contorno de foco, que el scroll recortaría */
-    padding: 6px;
-    margin-block: -3px;
-    scroll-padding-inline: 6px;
+    padding: 6px 16px;
+    margin: -3px -16px;
+    scroll-padding-inline: 16px;
     scrollbar-width: none;
   }
   .pills::-webkit-scrollbar {
     display: none;
-  }
-  .pills a:focus-visible {
-    outline-offset: 2px;
   }
   .pills a {
     display: flex;
@@ -238,6 +235,23 @@
     border-radius: 8px;
     padding: 8px 12px;
     font-size: 13px;
+  }
+
+  /* dato viejo o sin dato: aviso con ícono */
+  [data-estado-cotizaciones].warn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  [data-estado-cotizaciones].warn::before {
+    content: "";
+    flex: none;
+    width: 18px;
+    height: 18px;
+    background: currentColor;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3 2 21h20zM12 10v5M12 18h.01'/%3E%3C/svg%3E")
+      center / contain no-repeat;
   }
 
   /* CTA de la calculadora en la home */
@@ -456,6 +470,9 @@
     font-weight: 800;
     line-height: 1.2;
   }
+  .texto > h1.h1 {
+    margin-top: 0;
+  }
   .texto > h2:first-child {
     margin-top: 0;
   }
@@ -489,6 +506,8 @@
     .pills {
       order: 0;
       width: auto;
+      margin: -3px -6px;
+      padding: 6px;
     }
     .h1 {
       font-size: 44px;
@@ -505,6 +524,9 @@
     .promo .go {
       padding: 0 24px;
     }
+    .promo:has(.stubs[hidden]) {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
     .quotes {
       grid-template-columns: repeat(4, 1fr);
       gap: 12px;
@@ -515,5 +537,13 @@
     .ad {
       --ad-h: 90px;
     }
+  }
+}
+
+/* en oscuro, el botón casi negro se pierde sobre el fondo de la página */
+@media (prefers-color-scheme: dark) {
+  .pagina .go {
+    background: var(--brand);
+    color: var(--on-brand);
   }
 }

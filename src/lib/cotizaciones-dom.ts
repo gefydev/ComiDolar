@@ -29,8 +29,8 @@ export function enPagina(
       JSON.parse(datos.textContent || "null"),
       (c, fallo) => {
         estado.textContent = textoEstado(c, fallo);
-        // dato viejo: mismo texto, con estilo de aviso
-        estado.classList.toggle("warn", fallo && c !== null);
+        // dato viejo o sin dato: con estilo de aviso
+        estado.classList.toggle("warn", fallo);
         if (c) pintar(c);
       },
     );

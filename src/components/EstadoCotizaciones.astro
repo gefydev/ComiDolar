@@ -1,18 +1,18 @@
 ---
 import type { Cotizaciones } from "@/lib/cotizaciones";
-import { formatearFecha } from "@/lib/formato";
+import { textoEstado } from "@/lib/estado";
 
-const { cotizaciones }: { cotizaciones: Cotizaciones | null } = Astro.props;
+const {
+  cotizaciones,
+  clase = "note",
+}: { cotizaciones: Cotizaciones | null; clase?: string } = Astro.props;
 ---
 
-<p
-  data-estado-cotizaciones
-  role="status"
-  class="text-sm text-center text-zinc-700 dark:text-zinc-300">
-  {
-    cotizaciones
-      ? `Consultado: ${formatearFecha(cotizaciones.consultado)} (${cotizaciones.fuente})`
-      : "No pudimos obtener la cotización. Reintentando…"
-  }
+<p data-estado-cotizaciones role="status" class={clase}>
+  {textoEstado(cotizaciones, false)}
 </p>
-<script type="application/json" data-cotizaciones set:html={JSON.stringify(cotizaciones)}></script>
+<script
+  type="application/json"
+  data-cotizaciones
+  set:html={JSON.stringify(cotizaciones)}
+/>

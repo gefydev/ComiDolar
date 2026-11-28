@@ -1,35 +1,24 @@
 ---
-import { homeLore, calcuLore, wspLore } from "@/db/lores";
-const {
-  page,
-}: {
-  page?: "calculadora" | "blog" | "whatsapp" | "donaciones";
-} = Astro.props;
-let lore =
-  page === "calculadora"
-    ? calcuLore
-      : page === "whatsapp"
-        ? wspLore
-        : homeLore;
+import { calcuLore, wspLore } from "@/db/lores";
+const { page }: { page: "calculadora" | "whatsapp" } = Astro.props;
+const lore = page === "calculadora" ? calcuLore : wspLore;
 ---
 
 <div class="space-y-10">
-  {
-    lore.map((section, index) => (
-      <section class={(index === 0 && "mt-24") + ' space-y-2'}>
-        {section.h3 && <h3 class="text-3xl font-bold">{section.h3}</h3>}
-        {section.p && section.p.map((p) => <p>{p}</p>)}
-        {section.ul && section.ul.length > 0 && (
-          <ul>
-            {section.ul.map((li) => (
-              <li>
-                {li.bold && <strong>{li.bold}</strong>}
-                {li.text && <span>{li.text}</span>}
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-    ))
-  }
+  {lore.map((section, index) => (
+    <section class={(index === 0 && "mt-24") + " space-y-2"}>
+      {section.h3 && <h3 class="text-3xl font-bold">{section.h3}</h3>}
+      {section.p && section.p.map((p) => <p>{p}</p>)}
+      {section.ul && section.ul.length > 0 && (
+        <ul>
+          {section.ul.map((li) => (
+            <li>
+              {li.bold && <strong>{li.bold}</strong>}
+              {li.text && <span>{li.text}</span>}
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  ))}
 </div>

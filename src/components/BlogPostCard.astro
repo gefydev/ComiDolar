@@ -1,59 +1,44 @@
 ---
+import { tituloCorto } from "@/lib/blog";
+
 const { title, description, date, author, theme, tags, slug } = Astro.props;
 
-const formattedDate = new Date(date).toLocaleDateString("es-AR", {
+const fecha = new Date(date).toLocaleDateString("es-AR", {
+  timeZone: "America/Argentina/Buenos_Aires",
   year: "numeric",
   month: "long",
   day: "numeric",
 });
+const enlace = "link min-w-11 justify-center";
 ---
 
-<article
-  class="border border-divider rounded-lg p-4 mb-4 shadow-md w-full sm:w-[400px] h-[500px] bg-white/50 backdrop-blur-2xl dark:bg-darkless/50"
->
-  <div class="rounded-lg aspect-og relative bg-background dark:bg-backgroundDark z-0">
-    <img
-      class="rounded-lg w-full h-full object-cover"
-      src={`https://comidolar.com.ar/assets/img/opengraph/blog/${slug}.webp`}
-      alt={title}
-    />
-    <div class="absolute inset-0 flex items-center justify-center bg-transparent -z-10">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-	      <path fill="currentColor" d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity="0.25" />
-	      <path fill="currentColor" d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z">
-		      <animateTransform attributeName="transform" dur="0.75s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12" />
-	      </path>
-      </svg>
-    </div>
-  </div>
-  <h2 class="text-xl font-semibold">
-    <a href={`/blog/${slug}`} class="text-green-500 hover:underline">{title}</a>
+<article class="caja flex flex-col gap-2 w-full">
+  <img
+    class="w-full aspect-og object-cover rounded-lg bg-[var(--soft)]"
+    src={`/assets/img/opengraph/blog/${slug}.webp`}
+    alt=""
+    width="1200"
+    height="630"
+    loading="lazy"
+  />
+  <h2 class="h2">
+    <a class="inline-block py-2" href={`/blog/${slug}`}>
+      {tituloCorto(title)}
+    </a>
   </h2>
-  <p class="text-gray-600 dark:text-gray-400 mb-2">
-    {formattedDate} - Por <a
-      href={"/blog/autor/" + author.toLowerCase()}
-      class="text-green-500 hover:underline font-semibold">{author}</a
-    >
+  <p>{description}</p>
+  <p class="note">{fecha}</p>
+  <p class="flex flex-wrap gap-x-4 text-sm">
+    <a class={enlace} href={"/blog/autor/" + author.toLowerCase()}>
+      {author}
+    </a>
+    <a class={enlace} href={"/blog/tema/" + theme.toLowerCase()}>
+      {theme}
+    </a>
+    {tags?.map((tag) => (
+      <a class={enlace} href={"/blog/tag/" + tag.toLowerCase()}>
+        #{tag}
+      </a>
+    ))}
   </p>
-  <p class="text-gray-800 dark:text-gray-300 mb-2">{description}</p>
-  <p class="text-sm text-gray-500 dark:text-gray-400">
-    Tema: <a
-      href={"/blog/tema/" + theme.toLowerCase()}
-      class="text-green-500 hover:underline font-semibold">{theme}</a
-    >
-  </p>
-
-  <div class="mt-2">
-    {
-      tags &&
-        tags.map((tag) => (
-          <a
-            href={"/blog/tag/" + tag.toLowerCase()}
-            class="inline-block bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-100 text-xs font-medium mr-2 px-2.5 py-0.5 rounded"
-          >
-            {tag}
-          </a>
-        ))
-    }
-  </div>
 </article>

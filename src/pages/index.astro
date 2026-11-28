@@ -1,22 +1,18 @@
 ---
 import Layout from "@/layouts/layout.astro";
-import DolarCard from "@/components/DolarCard.astro";
-import Lore from "@/components/Lore.astro";
-import CarouselElement from "@/components/CarouselElement";
-import ArticlePromote from "@/components/ArticlePromote.astro";
-
+import Anuncio from "@/components/Anuncio.astro";
 import EstadoCotizaciones from "@/components/EstadoCotizaciones.astro";
-import { brecha, CASAS, NOMBRES } from "@/lib/cotizaciones";
+import FichaCotizacion from "@/components/FichaCotizacion.astro";
 import { cotizacionesParaRender } from "@/lib/cotizaciones-servidor";
+import { ejemploExterior, FICHAS } from "@/lib/fichas";
 
 export const prerender = false;
 
+const descripcion =
+  "Cotizaciones del dólar en Argentina (oficial, blue, MEP, cripto) y una calculadora para saber cuánto te sale una compra con tarjeta en el exterior.";
 const metadata = {
-  title: "Comi Dólar | Comisión de Dólar del CNBA",
-  description: {
-    meta: "Dólar Blue Hoy. Bienvenidos al sitio oficial de la Comisión de Dólar del Colegio Nacional de Buenos Aires (Comi Dólar). Cotización diaria Dólar Blue y Dólar Oficial.",
-    og: "Bienvenidos al sitio oficial de la Comisión de Dólar del Colegio Nacional de Buenos Aires (Comi Dólar). Acá vas a encontrar diariamente la cotización tanto del Dólar Blue como del Dólar Oficial.",
-  },
+  title: "comi.dolar: dólar hoy, dólar tarjeta y calculadora",
+  description: { meta: descripcion, og: descripcion },
   canonical: "https://comidolar.com.ar",
   og: {
     image: "https://comidolar.com.ar/assets/img/opengraph/home.webp",
@@ -31,66 +27,103 @@ const casas = cotizaciones?.casas ?? {};
 ---
 
 <Layout metadata={metadata}>
-  <CarouselElement client:load />
-  <main class="space-y-12 mt-12">
-    <h1 class="text-zinc-600 dark:text-zinc-300">
-      Comi Dólar | Comisión de Dólar del CNBA
-    </h1>
-    <ArticlePromote />
-    <EstadoCotizaciones cotizaciones={cotizaciones} />
-    <div
-      data-pagina-cotizaciones="home"
-      class="flex items-center w-full sm:w-auto flex-wrap gap-6 justify-center"
-    >
-      {
-        CASAS.map((casa) => (
-          <DolarCard
-            type={casa}
-            sell={casas[casa]?.venta ?? null}
-            buy={casas[casa]?.compra ?? null}
-            date={casas[casa]?.fecha ?? null}
-            name={NOMBRES[casa]}
-          />
-        ))
-      }
-      <DolarCard
-        type="brecha"
-        sell={brecha(casas)}
-        buy={null}
-        date={casas.oficial?.fecha ?? null}
-        name="Brecha"
-      />
+  <main data-pagina-cotizaciones="home">
+    <div class="promo">
+      <h1>¿Cuánto te va a salir con la tarjeta?</h1>
+      <ul
+        class="stubs"
+        aria-label="Ejemplos"
+        data-ejemplos
+        hidden={!casas.oficial}
+      >
+        <li>
+          <span>
+            Compra en el exterior<small>US$100</small>
+          </span>
+          <b data-ejemplo>{ejemploExterior(casas)}</b>
+        </li>
+        <li>
+          <span>
+            Viaje en pesos<small>$1.000.000</small>
+          </span>
+          <b>$1.300.000</b>
+        </li>
+      </ul>
+      <a class="go" href="/calculadora">
+        Abrir la calculadora
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M5 12h14M13 6l6 6-6 6"></path>
+        </svg>
+      </a>
     </div>
-    <Lore />
+
+    <section class="seccion" aria-labelledby="hoy">
+      <h2 class="h2" id="hoy">
+        Dólar hoy
+      </h2>
+      <EstadoCotizaciones cotizaciones={cotizaciones} />
+      <ul class="quotes">
+        {FICHAS.map((ficha) => (
+          <FichaCotizacion ficha={ficha} casas={casas} />
+        ))}
+      </ul>
+    </section>
+
+    <Anuncio slot="home" />
+
+    <section class="seccion texto">
+      <h2>Qué es comi.dolar</h2>
+      <p>
+        comi.dolar muestra las cotizaciones del dólar en Argentina: oficial,
+        blue, MEP, contado con liquidación, cripto, mayorista y la brecha entre
+        el blue y el oficial. Los datos se actualizan durante el día desde
+        fuentes públicas.
+      </p>
+      <p>
+        El sitio nació en la Comisión de Dólar del Colegio Nacional de Buenos
+        Aires. De ahí sale el "comi" del nombre. Lo armamos para que cualquiera
+        pueda seguir el dólar sin tener que buscar en cinco lugares.
+      </p>
+      <p>
+        Además de las cotizaciones, tenemos una calculadora del dólar tarjeta.
+        Te muestra cuánto te puede salir una compra en el exterior con tarjeta,
+        con la percepción del 30&nbsp;%, y cuánto suma un servicio del exterior
+        según cómo se cobre. Cada caso está explicado en la página de la
+        calculadora.
+      </p>
+      <a class="link" href="/whatsapp">
+        Sumate al grupo de WhatsApp
+      </a>
+    </section>
   </main>
 </Layout>
 
 <script>
-  import { brecha, CASAS } from "@/lib/cotizaciones";
   import { enPagina } from "@/lib/cotizaciones-dom";
-  import { formatearFecha } from "@/lib/formato";
+  import { ejemploExterior, FICHAS, textosFicha } from "@/lib/fichas";
 
   enPagina("home", ({ casas }) => {
-    const escribir = (casa: string, campo: string, texto: string) => {
-      const el = document.querySelector(
-        `[data-casa="${casa}"] [data-campo="${campo}"]`,
-      );
-      if (el) el.textContent = texto;
-    };
-    for (const casa of CASAS) {
-      const c = casas[casa];
-      if (!c) continue;
-      escribir(casa, "venta", c.venta.toFixed(2));
-      escribir(casa, "compra", c.compra?.toFixed(2) ?? "—");
-      escribir(casa, "fecha", `Actualizado: ${formatearFecha(c.fecha)}`);
+    for (const { id } of FICHAS) {
+      const ficha = document.querySelector(`[data-ficha="${id}"]`);
+      if (!ficha) continue;
+      const { valor, sub } = textosFicha(id, casas);
+      ficha.querySelector('[data-campo="valor"]')!.textContent = valor;
+      ficha.querySelector('[data-campo="sub"]')!.textContent = sub;
     }
-    const b = brecha(casas);
-    if (b === null || !casas.oficial) return;
-    escribir("brecha", "venta", `${b.toFixed(2)} %`);
-    escribir(
-      "brecha",
-      "fecha",
-      `Actualizado: ${formatearFecha(casas.oficial.fecha)}`,
-    );
+    const ejemplos = document.querySelector<HTMLElement>("[data-ejemplos]");
+    const ejemplo = document.querySelector("[data-ejemplo]");
+    if (!ejemplos || !ejemplo || !casas.oficial) return;
+    ejemplo.textContent = ejemploExterior(casas);
+    ejemplos.hidden = false;
   });
 </script>

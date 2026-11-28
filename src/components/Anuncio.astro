@@ -1,0 +1,9 @@
+---
+// Espacio de publicidad de alto fijo (diseno-spec.md §4). Con o sin anuncio ocupa lo mismo.
+const { slot }: { slot: "home" | "detalle" } = Astro.props;
+---
+
+<aside class="ad" aria-label="Publicidad" data-slot={slot}>
+  <span>Publicidad</span>
+  <div class="ad-slot"></div>
+</aside>

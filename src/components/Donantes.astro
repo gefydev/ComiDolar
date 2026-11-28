@@ -1,0 +1,130 @@
+---
+// Lista de donantes. HTML fijo y un script chico: no necesita React.
+---
+
+<section class="caja w-full" data-donantes aria-labelledby="donantes">
+  <h2 class="h2" id="donantes">
+    Donantes
+  </h2>
+  <p class="note" data-estado role="status">
+    Cargando…
+  </p>
+  <button class="btn mt-2" type="button" data-reintentar hidden>
+    Reintentar
+  </button>
+  <div data-contenido hidden>
+    <div class="grid grid-cols-2 gap-2 mt-3">
+      <select class="campo" aria-label="Año" data-year></select>
+      <select class="campo" aria-label="Ordenar" data-orden>
+        <option value="total">Por monto</option>
+        <option value="name">Por nombre</option>
+      </select>
+    </div>
+    <input
+      class="campo mt-2"
+      type="search"
+      placeholder="Buscar donante…"
+      aria-label="Buscar donante"
+      data-buscar
+    />
+    <p class="mt-3 font-bold">
+      Total: <span data-total></span>
+    </p>
+    <ul class="mt-2" data-lista></ul>
+    <button class="btn mt-3" type="button" data-todos>
+      Ver todos
+    </button>
+  </div>
+</section>
+
+<script>
+  import { listaGuardada, pedirDonantes, type Lista } from "@/lib/donantes";
+  import { formatearCorta, pesos } from "@/lib/formato";
+
+  document.addEventListener("astro:page-load", () => {
+    const raiz = document.querySelector<HTMLElement>("[data-donantes]");
+    if (!raiz) return;
+    const $ = <T extends HTMLElement>(s: string) => raiz.querySelector<T>(s)!;
+    const estado = $("[data-estado]");
+    const reintentar = $<HTMLButtonElement>("[data-reintentar]");
+    const contenido = $("[data-contenido]");
+    const year = $<HTMLSelectElement>("[data-year]");
+    const orden = $<HTMLSelectElement>("[data-orden]");
+    const buscar = $<HTMLInputElement>("[data-buscar]");
+    const todos = $<HTMLButtonElement>("[data-todos]");
+    let lista: Lista | null = null;
+    let completo = false;
+
+    const pintar = () => {
+      if (!lista) return;
+      const delYear = lista.donantes.filter((d) => d.year === year.value);
+      $("[data-total]").textContent = pesos(
+        delYear.reduce((suma, d) => suma + d.total, 0),
+      );
+      const texto = buscar.value.trim().toLowerCase();
+      const filas = delYear
+        .filter((d) => d.name.toLowerCase().includes(texto))
+        .sort((a, b) =>
+          orden.value === "name"
+            ? a.name.localeCompare(b.name, "es")
+            : b.total - a.total,
+        );
+      $("[data-lista]").replaceChildren(
+        ...filas.slice(0, completo ? filas.length : 10).map((d) => {
+          const li = document.createElement("li");
+          li.className =
+            "flex justify-between gap-3 py-2 border-b border-[var(--hair)]";
+          const nombre = document.createElement("span");
+          nombre.textContent = d.name;
+          const total = document.createElement("b");
+          total.className = "whitespace-nowrap";
+          total.textContent = pesos(d.total);
+          li.append(nombre, total);
+          return li;
+        }),
+      );
+      todos.hidden = filas.length <= 10;
+      todos.textContent = completo ? "Ver menos" : "Ver todos";
+    };
+
+    const mostrar = (nueva: Lista) => {
+      lista = nueva;
+      const years = [...new Set(nueva.donantes.map((d) => d.year))]
+        .sort()
+        .reverse();
+      year.replaceChildren(...years.map((y) => new Option(y, y)));
+      const actual = String(new Date().getFullYear());
+      if (years.includes(actual)) year.value = actual;
+      contenido.hidden = false;
+      pintar();
+    };
+
+    const cargar = async () => {
+      reintentar.hidden = true;
+      estado.textContent = "Cargando…";
+      try {
+        mostrar(await pedirDonantes());
+        estado.textContent = "";
+      } catch (error) {
+        console.error("Error al pedir los donantes:", error);
+        reintentar.hidden = false;
+        // Último valor conocido, con su fecha
+        const copia = listaGuardada();
+        if (copia) mostrar(copia);
+        estado.textContent = copia
+          ? `Sin conexión con la lista. Datos del ${formatearCorta(copia.consultado)}.`
+          : "No pudimos cargar los donantes.";
+      }
+    };
+
+    year.addEventListener("change", pintar);
+    orden.addEventListener("change", pintar);
+    buscar.addEventListener("input", pintar);
+    todos.addEventListener("click", () => {
+      completo = !completo;
+      pintar();
+    });
+    reintentar.addEventListener("click", cargar);
+    cargar();
+  });
+</script>

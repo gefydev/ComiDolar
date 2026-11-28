@@ -15,28 +15,16 @@ const metadata = {
 ---
 
 <Layout metadata={metadata}>
-  <main class="flex flex-col items-center justify-center text-center">
-    <svg
-      class="w-32 h-32 text-red-500"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-    >
-      <path
-        fill="none"
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        d="m13 19l-4-2l-6 3V7l6-3l6 3l6-3v6.5M9 4v13m6-10v5m6 3h-2.5a1.5 1.5 0 0 0 0 3h1a1.5 1.5 0 0 1 0 3H17m2 0v1m0-8v1"
-      ></path>
-    </svg>
-    <h1 class="text-4xl font-bold mt-8 mb-4 text-center">
-      La página que estás buscando no existe
-    </h1>
-    <p class="text-lg">
-      La página que estás buscando no existe en el sitio web de Comi Dólar, la
-      comisión de dólar del Colegio Nacional de Buenos Aires.
+  <main class="pagina angosta texto">
+    <h1 class="h1">La página que estás buscando no existe</h1>
+    <p>Puede que la hayamos movido o que el link esté mal escrito.</p>
+    <p class="flex flex-wrap gap-3 mt-4">
+      <a class="btn" href="/">
+        Ver cotizaciones
+      </a>
+      <a class="btn" href="/calculadora">
+        Abrir la calculadora
+      </a>
     </p>
-    <a href="/" class="bg-red-500 p-3 rounded-lg hover:scale-110 transition-transform duration-300 ease-in-out">Volver al inicio</a>
   </main>
 </Layout>

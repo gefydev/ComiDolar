@@ -1,35 +1,36 @@
 ---
 import Layout from "@/layouts/layout.astro";
 import { PAYMENT_METHODS } from "@/db/payment.ts";
-import DonationTable from "@/components/DonationTable.tsx";
+import Donantes from "@/components/Donantes.astro";
 import PaymentMethod from "@/components/PaymentMethod.astro";
 
+const descripcion =
+  "Mostra tu apoyo a la Comisión de Dólar del Colegio Nacional de Buenos Aires (ComiDolar) dejando tu donación a voluntad. Sin obligación de compra. Proyecto sin fines de lucro.";
 const metadata = {
-    title: "Comi Dólar | Donaciones",
-    description: {
-        meta: "Mostra tu apoyo a la Comisión de Dólar del Colegio Nacional de Buenos Aires (ComiDolar) dejando tu donación a voluntad. Sin obligación de compra. Proyecto sin fines de lucro.",
-        og: "Mostra tu apoyo a la Comisión de Dólar del Colegio Nacional de Buenos Aires (ComiDolar) dejando tu donación a voluntad. Sin obligación de compra. Proyecto sin fines de lucro.",
-    },
-    canonical: "https://comidolar.com.ar/donaciones",
-    og: {
-        image: "https://comidolar.com.ar/assets/img/opengraph/donaciones.png",
-        video: "https://comidolar.com.ar/assets/img/opengraph/video.webm",
-    },
+  title: "Comi Dólar | Donaciones",
+  description: { meta: descripcion, og: descripcion },
+  canonical: "https://comidolar.com.ar/donaciones",
+  og: {
+    image: "https://comidolar.com.ar/assets/img/opengraph/donaciones.png",
+    video: "https://comidolar.com.ar/assets/img/opengraph/video.webm",
+  },
 };
 ---
 
-<Layout bodyclass="pt-12" metadata={metadata}>
-    <main class="flex flex-col xl:flex-row xl:items-start xl:justify-center items-center justify-start gap-3">
-        <section class="payment-methods grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {PAYMENT_METHODS.map((method) => (
-                <div>
-                    <PaymentMethod {...method} />
-                </div>
-            ))}
-        </section>        
-    
-        <aside class="donation-table w-full xl:min-w-[280px] xl:max-w-[280px] mt-5 xl:mt-0 p-4 bg-neutral-200 dark:bg-neutral-900 text-neutral-800 dark:text-white rounded-lg shadow">
-            <DonationTable client:load/>
-        </aside>
-    </main>    
+<Layout metadata={metadata}>
+  <main class="pagina">
+    <h1 class="h1">Donaciones</h1>
+    <p class="mt-2 max-w-[68ch]">
+      comi.dolar es un proyecto sin fines de lucro. Si te sirve, podés colaborar
+      con lo que quieras.
+    </p>
+    <div class="grid gap-4 mt-4 lg:grid-cols-[1fr_320px] lg:items-start">
+      <div class="grid gap-3 sm:grid-cols-2">
+        {PAYMENT_METHODS.map((method) => (
+          <PaymentMethod {...method} />
+        ))}
+      </div>
+      <Donantes />
+    </div>
+  </main>
 </Layout>

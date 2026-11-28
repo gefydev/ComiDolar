@@ -1,9 +1,8 @@
 ---
-const { metadata, bodyclass } = Astro.props;
+const { metadata } = Astro.props;
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import { ClientRouter } from "astro:transitions";
-import LoadingIndicator from "astro-loading-indicator/component";
 import PostHog from "@/components/posthog.astro";
 import "@/styles/global.css";
 ---
@@ -20,19 +19,22 @@ import "@/styles/global.css";
     <link
       rel="apple-touch-icon"
       sizes="180x180"
-      href="assets/img/atouch/180.png"
+      href="/assets/img/atouch/180.png"
     />
     <link
       rel="apple-touch-icon"
       sizes="152x152"
-      href="assets/img/atouch/152.png"
+      href="/assets/img/atouch/152.png"
     />
     <link
       rel="apple-touch-icon"
       sizes="120x120"
-      href="assets/img/atouch/120.png"
+      href="/assets/img/atouch/120.png"
     />
-    <link rel="apple-touch-startup-image" href="assets/img/atouch/atouch.png" />
+    <link
+      rel="apple-touch-startup-image"
+      href="/assets/img/atouch/atouch.png"
+    />
     <link
       rel="alternate"
       type="application/rss+xml"
@@ -42,123 +44,105 @@ import "@/styles/global.css";
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="apple-mobile-web-app-title" content="Comi Dólar" />
-    <meta name="theme-color" content="#14b54f" />
+    <meta
+      name="theme-color"
+      content="#ffffff"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#151515"
+      media="(prefers-color-scheme: dark)"
+    />
+    <link
+      rel="preload"
+      href="/fonts/archivo-var.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <script is:inline>
+      // El aviso de instalación puede llegar antes que el resto del código
+      window.addEventListener("beforeinstallprompt", function (e) {
+        e.preventDefault();
+        window.__instalar = e;
+        document.dispatchEvent(new Event("instalar:disponible"));
+      });
+    </script>
     <meta property="og:type" content={metadata.blog ? "article" : "website"} />
-    {
-      metadata.canonical && (
-        <meta property="og:url" content={metadata.canonical} />
-      )
-    }
+    {metadata.canonical && (
+      <meta property="og:url" content={metadata.canonical} />
+    )}
     {metadata.title && <meta property="og:title" content={metadata.title} />}
-    {
-      metadata.description.og && (
-        <meta property="og:description" content={metadata.description.og} />
-      )
-    }
+    {metadata.description.og && (
+      <meta property="og:description" content={metadata.description.og} />
+    )}
     {metadata.og && <meta property="og:image" content={metadata.og.image} />}
     {metadata.og && <meta property="og:video" content={metadata.og.video} />}
     <meta property="fb:app_id" content="3122887071196448" />
     <meta property="twitter:card" content="summary_large_image" />
-    {
-      metadata.cannonical && (
-        <meta property="twitter:url" content={metadata.cannonical} />
-      )
-    }
-    {
-      metadata.title && (
-        <meta property="twitter:title" content={metadata.title} />
-      )
-    }
-    {
-      metadata.description.og && (
-        <meta
-          property="twitter:description"
-          content={metadata.description.og}
-        />
-      )
-    }
-    {
-      metadata.og && (
-        <meta property="twitter:image" content={metadata.og.image} />
-      )
-    }
+    {metadata.cannonical && (
+      <meta property="twitter:url" content={metadata.cannonical} />
+    )}
+    {metadata.title && (
+      <meta property="twitter:title" content={metadata.title} />
+    )}
+    {metadata.description.og && (
+      <meta property="twitter:description" content={metadata.description.og} />
+    )}
+    {metadata.og && (
+      <meta property="twitter:image" content={metadata.og.image} />
+    )}
     <meta property="twitter:site" content="@comidolar" />
     <meta property="twitter:creator" content="@comidolar" />
-    {
-      metadata.blog && (
-        <>
-          <meta name="author" content={metadata.blog.author} />
-          <meta name="copyright" content={metadata.blog.copyright} />
-          <meta name="date" content={metadata.blog.date} />
-          <meta property="article:author" content={metadata.blog.author} />
-          {metadata.og.date && (
-            <meta
-              property="article:published_time"
-              content={metadata.og.date}
-            />
-          )}
-          {metadata.og.theme && (
-            <meta property="article:section" content={metadata.og.theme} />
-          )}
-          {metadata.og &&
-            metadata.og.tags.map((tag) => (
-              <meta property="article:tag" content={tag} />
-            ))}
-        </>
-      )
-    }
+    {metadata.blog && (
+      <>
+        <meta name="author" content={metadata.blog.author} />
+        <meta name="copyright" content={metadata.blog.copyright} />
+        <meta name="date" content={metadata.blog.date} />
+        <meta property="article:author" content={metadata.blog.author} />
+        {metadata.og.date && (
+          <meta property="article:published_time" content={metadata.og.date} />
+        )}
+        {metadata.og.theme && (
+          <meta property="article:section" content={metadata.og.theme} />
+        )}
+        {metadata.og &&
+          metadata.og.tags.map((tag) => (
+            <meta property="article:tag" content={tag} />
+          ))}
+      </>
+    )}
 
     {metadata.noindex && <meta name="robots" content="noindex" />}
 
     <ClientRouter />
-    <LoadingIndicator color="#0e9f6e" height="4px" threshold={10} />
     <PostHog />
-    {
-      metadata.canonical === "https://comidolar.com.ar/calculadora" && (
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8853864974633365"
-          crossorigin="anonymous"
-        />
-      )
-    }
+    {metadata.canonical === "https://comidolar.com.ar/calculadora" && (
+      <script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8853864974633365"
+        crossorigin="anonymous"
+      />
+    )}
   </head>
-  <body
-    transition:animate="fade"
-    class={`${bodyclass ? bodyclass : ""} bg-light-mesh dark:bg-dark-mesh`}>
-    <Header>
-      <slot />
+  <body transition:animate="none">
+    <a class="saltar" href="#contenido">
+      Saltar al contenido
+    </a>
+    <div class="wrap">
+      <Header />
+      <div id="contenido" tabindex="-1">
+        <slot />
+      </div>
       <Footer />
-    </Header>
+    </div>
     <script
+      is:inline
       src="/analytics/beacon.min.js"
       data-astro-rerun
       data-cf-beacon='{"token": "4536a67fe2714c37845c5aaadcd0f4d2"}'
-      defer></script>
-    <style is:global>
-      * {
-        -webkit-tap-highlight-color: transparent;
-      }
-      :root .astro-loading-indicator {
-        background: linear-gradient(
-          to right,
-          #12f6aa,
-          #0e9f6e,
-          #0e9f6e,
-          #12f6aa
-        );
-        background-size: 300% 300%;
-        animation: loadingBar 1s linear infinite;
-      }
-
-      @keyframes loadingBar {
-        from {
-          background-position: 0%;
-        }
-        to {
-          background-position: 100%;
-        }
-      }
-    </style>
+      defer
+    ></script>
   </body>
 </html>

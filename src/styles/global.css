@@ -434,15 +434,14 @@
     text-align: center;
   }
   .ad-slot {
-    height: var(--ad-h);
-    overflow: hidden;
+    min-height: var(--ad-h);
     border-radius: 8px;
     background: var(--soft);
   }
   .ad-slot ins {
     display: block;
     width: 100%;
-    height: var(--ad-h) !important;
+    min-height: var(--ad-h);
   }
 
   /* pie */

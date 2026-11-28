@@ -1,8 +1,8 @@
 ---
-// Espacio de publicidad de alto fijo (diseno-spec.md §4): 250 px, 90 px desde
-// 900 px. Con anuncio, sin anuncio o sin script ocupa lo mismo.
-// La unidad se pide con ese alto exacto: sin data-ad-format ni ancho completo
-// automático, para que no se agrande.
+// Espacio de publicidad con alto reservado (diseno-spec.md §4): 250 px, 90 px
+// desde 900 px, para que sin anuncio o sin script no se mueva nada.
+// La unidad es responsive: si AdSense sirve algo más alto, el espacio crece
+// (recortar un anuncio va contra sus políticas).
 import { EDITOR, UBICACIONES, type Ubicacion } from "@/config/anuncios";
 
 const { ubicacion }: { ubicacion: Ubicacion } = Astro.props;
@@ -14,6 +14,8 @@ const { ubicacion }: { ubicacion: Ubicacion } = Astro.props;
     <ins
       class="adsbygoogle"
       data-ad-client={EDITOR}
-      data-ad-slot={UBICACIONES[ubicacion]}></ins>
+      data-ad-slot={UBICACIONES[ubicacion]}
+      data-ad-format="auto"
+      data-full-width-responsive="true"></ins>
   </div>
 </aside>

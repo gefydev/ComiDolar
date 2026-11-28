@@ -11,6 +11,7 @@ export default tseslint.config(
       "dist/",
       "node_modules/",
       ".astro/",
+      ".vercel/",
       ".github/",
       "public/",
       // Snippet oficial de PostHog, minificado: no se edita a mano

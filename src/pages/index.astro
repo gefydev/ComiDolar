@@ -5,7 +5,11 @@ import Lore from "@/components/Lore.astro";
 import CarouselElement from "@/components/CarouselElement";
 import ArticlePromote from "@/components/ArticlePromote.astro";
 
-import { fetchDolares } from "@/lib/dolarApi";
+import EstadoCotizaciones from "@/components/EstadoCotizaciones.astro";
+import { brecha, CASAS, NOMBRES } from "@/lib/cotizaciones";
+import { cotizacionesParaRender } from "@/lib/cotizaciones-servidor";
+
+export const prerender = false;
 
 const metadata = {
   title: "Comi Dólar | Comisión de Dólar del CNBA",
@@ -20,9 +24,10 @@ const metadata = {
   },
 };
 
-const dolares = await fetchDolares();
-
-const brecha = ((dolares[1].venta - dolares[0].venta) / dolares[0].venta) * 100;
+const { cotizaciones, fresco } = await cotizacionesParaRender();
+// Con un 5xx, ISR conserva la última versión buena en vez de cachear esta
+if (!fresco) Astro.response.status = 503;
+const casas = cotizaciones?.casas ?? {};
 ---
 
 <Layout metadata={metadata}>
@@ -32,35 +37,60 @@ const brecha = ((dolares[1].venta - dolares[0].venta) / dolares[0].venta) * 100;
       Comi Dólar | Comisión de Dólar del CNBA
     </h1>
     <ArticlePromote />
+    <EstadoCotizaciones cotizaciones={cotizaciones} />
     <div
+      data-pagina-cotizaciones="home"
       class="flex items-center w-full sm:w-auto flex-wrap gap-6 justify-center"
     >
       {
-        dolares.length > 0 ? (
-          dolares.map((dolar) => (
-            <DolarCard
-              type={dolar.casa}
-              sell={dolar.venta}
-              buy={dolar.compra}
-              date={dolar.fechaActualizacion}
-              name={dolar.nombre}
-            />
-          ))
-        ) : (
-          <p>
-            No se pudieron obtener los datos del dólar. Intente de nuevo más
-            tarde.
-          </p>
-        )
+        CASAS.map((casa) => (
+          <DolarCard
+            type={casa}
+            sell={casas[casa]?.venta ?? null}
+            buy={casas[casa]?.compra ?? null}
+            date={casas[casa]?.fecha ?? null}
+            name={NOMBRES[casa]}
+          />
+        ))
       }
       <DolarCard
         type="brecha"
-        sell={brecha}
-        buy={1}
-        date={dolares[0].fechaActualizacion}
+        sell={brecha(casas)}
+        buy={null}
+        date={casas.oficial?.fecha ?? null}
         name="Brecha"
       />
     </div>
     <Lore />
   </main>
 </Layout>
+
+<script>
+  import { brecha, CASAS } from "@/lib/cotizaciones";
+  import { enPagina } from "@/lib/cotizaciones-dom";
+  import { formatearFecha } from "@/lib/formato";
+
+  enPagina("home", ({ casas }) => {
+    const escribir = (casa: string, campo: string, texto: string) => {
+      const el = document.querySelector(
+        `[data-casa="${casa}"] [data-campo="${campo}"]`,
+      );
+      if (el) el.textContent = texto;
+    };
+    for (const casa of CASAS) {
+      const c = casas[casa];
+      if (!c) continue;
+      escribir(casa, "venta", c.venta.toFixed(2));
+      escribir(casa, "compra", c.compra?.toFixed(2) ?? "—");
+      escribir(casa, "fecha", `Actualizado: ${formatearFecha(c.fecha)}`);
+    }
+    const b = brecha(casas);
+    if (b === null || !casas.oficial) return;
+    escribir("brecha", "venta", `${b.toFixed(2)} %`);
+    escribir(
+      "brecha",
+      "fecha",
+      `Actualizado: ${formatearFecha(casas.oficial.fecha)}`,
+    );
+  });
+</script>

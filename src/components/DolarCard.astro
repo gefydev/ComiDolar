@@ -1,7 +1,21 @@
 ---
 import AtroposComponent from "./AtroposComponent.astro";
+import { formatearFecha } from "@/lib/formato";
 import type AtroposSettings from "@/types/atropos";
-const { type, sell, buy, date, name } = Astro.props;
+const {
+  type,
+  sell,
+  buy,
+  date,
+  name,
+}: {
+  type: string;
+  sell: number | null;
+  buy: number | null;
+  date: string | null;
+  name: string;
+} = Astro.props;
+const venta = sell === null ? "—" : sell.toFixed(2);
 let color;
 let url;
 if (type === "oficial") {
@@ -51,6 +65,7 @@ const atroposSettings: AtroposSettings = {
   customClass=`dolar-card-${type}`
 >
   <article
+    data-casa={type}
     class="w-full sm:w-[300px] h-[250px] bg-white/50 dark:bg-darkless/50 backdrop-blur-2xl text-zinc-700 dark:text-white border rounded-lg shadow"
   >
     <div class="top-line"></div>
@@ -67,34 +82,28 @@ const atroposSettings: AtroposSettings = {
           {
             type !== "brecha" ? (
               <>
-                Venta&colon; <strong>{sell.toFixed(2)}</strong>
+                Venta&colon; <strong data-campo="venta">{venta}</strong>
               </>
             ) : (
-              <strong>{sell.toFixed(2) + " %"}</strong>
+              <strong data-campo="venta">
+                {sell === null ? "—" : `${venta} %`}
+              </strong>
             )
           }
         </p>
         {
           type !== "brecha" && (
             <p class="text-lg sm:text-md">
-              Compra: <strong>{buy.toFixed(2)}</strong>
+              Compra: <strong data-campo="compra">{buy?.toFixed(2) ?? "—"}</strong>
             </p>
           )
         }
       </section>
       <section class="flex flex-col gap-1">
         <span
-          class={`bg-green-500/25 px-3 py-1 text-[15px] rounded-full dolar-timestamp-${type}`}
-        >
-          Actualizado: {
-            new Date(date).toLocaleString("es-ES", {
-              day: "2-digit",
-              month: "2-digit",
-              year: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-            })
-          }
+          data-campo="fecha"
+          class="bg-green-500/25 px-3 py-1 text-[15px] rounded-full">
+          Actualizado: {date ? formatearFecha(date) : "—"}
         </span>
 
         {
@@ -113,19 +122,6 @@ const atroposSettings: AtroposSettings = {
     </div>
   </article>
 </AtroposComponent>
-
-<script is:inline define:vars={{ date, type }}>
-  const timestamp = document.querySelector(".dolar-timestamp-" + type);
-  const clientDate = new Date(date);
-
-  timestamp.textContent = `Actualizado: ${clientDate.toLocaleString("es-ES", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  })}`;
-</script>
 
 <style define:vars={{ color }}>
   article {

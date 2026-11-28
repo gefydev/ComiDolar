@@ -1,64 +1,49 @@
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { useCallback, useEffect, useState } from "react";
+import { listaGuardada, pedirDonantes, type Lista } from "@/lib/donantes";
+import { formatearFecha } from "@/lib/formato";
 export default function DonationGrid() {
-  const [donationTable, setDonationTable] = useState([]);
+  const [lista, setLista] = useState<Lista | null>(null);
+  const [fallo, setFallo] = useState(false);
   const [visibleCount, setVisibleCount] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedYear, setSelectedYear] = useState(
+  const [yearElegido, setSelectedYear] = useState(
     new Date().getFullYear().toString(),
   );
-  const [availableYears, setAvailableYears] = useState([]);
   const [sortConfig, setSortConfig] = useState({
     key: "total",
     direction: "descending",
   });
 
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchDonations = async () => {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from("donors")
-        .select("*")
-        .eq("year", selectedYear);
-
-      if (error) {
-        console.error("Error fetching data:", error);
-      } else {
-        const uniqueDonors = data.filter(
-          (donor, index, self) =>
-            index === self.findIndex((d) => d.name === donor.name),
-        );
-        setDonationTable(uniqueDonors);
-        setLoading(false);
-      }
-    };
-
-    fetchDonations();
-  }, [selectedYear]);
-
-  useEffect(() => {
-    const fetchYears = async () => {
-      const { data, error } = await supabase.from("donors").select("year");
-
-      if (error) {
-        console.error("Error fetching years:", error);
-      } else {
-        const years = [...new Set(data.map((item) => item.year))]
-          .sort()
-          .reverse();
-        setAvailableYears(years);
-        if (years.length > 0 && !years.includes(selectedYear)) {
-          setSelectedYear(years[0]);
-        }
-      }
-    };
-
-    fetchYears();
-    // Solo al montar: los años disponibles no dependen del año elegido
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  const cargar = useCallback(async () => {
+    try {
+      setLista(await pedirDonantes());
+      setFallo(false);
+    } catch (error) {
+      console.error("Error al pedir los donantes:", error);
+      // Último valor conocido, con su fecha
+      setLista(listaGuardada());
+      setFallo(true);
+    }
   }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- el estado cambia recién al responder la red
+    cargar();
+  }, [cargar]);
+
+  const availableYears = [...new Set(lista?.donantes.map((d) => d.year))]
+    .sort()
+    .reverse();
+  const selectedYear =
+    availableYears.length && !availableYears.includes(yearElegido)
+      ? availableYears[0]
+      : yearElegido;
+  const donationTable = (lista?.donantes ?? [])
+    .filter((donor) => donor.year === selectedYear)
+    .filter(
+      (donor, index, self) =>
+        index === self.findIndex((d) => d.name === donor.name),
+    );
 
   const handleSort = (key) => {
     let direction = "ascending";
@@ -100,7 +85,21 @@ export default function DonationGrid() {
     return segments;
   };
 
-  if (loading) {
+  if (!lista && fallo) {
+    return (
+      <div role="alert" className="py-8 text-center space-y-4">
+        <p>No pudimos cargar los donantes.</p>
+        <button
+          onClick={cargar}
+          className="bg-green-500 dark:bg-green-600 text-white py-2 px-4 rounded cursor-pointer"
+        >
+          Reintentar
+        </button>
+      </div>
+    );
+  }
+
+  if (!lista) {
     return (
       <div className="w-full h-[500px] flex items-center justify-center text-green-500">
         <svg
@@ -199,6 +198,12 @@ export default function DonationGrid() {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
+      {fallo && (
+        <p role="status" className="mb-2 text-sm">
+          Sin conexión con la lista. Datos del{" "}
+          {formatearFecha(lista.consultado)}.
+        </p>
+      )}
       <h3 className="text-lg font-semibold mb-4">
         Total:{" "}
         <span className="text-green-500">

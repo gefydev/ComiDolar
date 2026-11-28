@@ -71,7 +71,7 @@ Los alias y CBUs oficiales del fundador (Genaro Febbo Yapur) para recibir transf
 - **Banco Ciudad:** alias `el.gena.cdad` | CBU `0290020910000602047211`
 - **Banco Santander:** alias `el.gena.std` | CBU `0720032830000001024851`
 - **NaranjaX:** alias `el.gena.nja` | CBU `4530000800016413921560`
-  La página también muestra una tabla reactiva con el listado de donaciones anteriores obtenidas de Supabase.
+  La página también muestra una tabla reactiva con el listado de donaciones anteriores obtenidas de la API de donantes (`donantes.comidolar.com.ar`).
 
 #### 3. Redirección de WhatsApp (`/whatsapp`)
 

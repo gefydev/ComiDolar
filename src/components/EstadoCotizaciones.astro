@@ -1,0 +1,18 @@
+---
+import type { Cotizaciones } from "@/lib/cotizaciones";
+import { formatearFecha } from "@/lib/formato";
+
+const { cotizaciones }: { cotizaciones: Cotizaciones | null } = Astro.props;
+---
+
+<p
+  data-estado-cotizaciones
+  role="status"
+  class="text-sm text-center text-zinc-700 dark:text-zinc-300">
+  {
+    cotizaciones
+      ? `Consultado: ${formatearFecha(cotizaciones.consultado)} (${cotizaciones.fuente})`
+      : "No pudimos obtener la cotización. Reintentando…"
+  }
+</p>
+<script type="application/json" data-cotizaciones set:html={JSON.stringify(cotizaciones)}></script>

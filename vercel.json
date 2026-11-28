@@ -26,6 +26,15 @@
       ]
     },
     {
+      "source": "/((?!_astro/|assets/|fonts/|og/|analytics/|sw\\.js).*)",
+      "headers": [
+        {
+          "key": "Link",
+          "value": "</fonts/archivo-var.woff2>; rel=preload; as=font; type=\"font/woff2\"; crossorigin"
+        }
+      ]
+    },
+    {
       "source": "/assets/img/opengraph/blog/(.*).(jpg|jpeg|png|gif|webp)",
       "headers": [
         {

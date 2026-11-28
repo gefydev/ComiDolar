@@ -37,10 +37,6 @@ import "@/styles/global.css";
       href="/assets/img/atouch/120.png"
     />
     <link
-      rel="apple-touch-startup-image"
-      href="/assets/img/atouch/atouch.png"
-    />
-    <link
       rel="alternate"
       type="application/rss+xml"
       title="ComiDólar Blog"
@@ -48,7 +44,7 @@ import "@/styles/global.css";
     />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <meta name="apple-mobile-web-app-title" content="Comi Dólar" />
+    <meta name="apple-mobile-web-app-title" content="comi.dolar" />
     <meta
       name="theme-color"
       content="#ffffff"
@@ -141,6 +137,8 @@ import "@/styles/global.css";
     ></script>
     <script>
       import "@/lib/anuncios";
+      // primero: transiciones envuelve este mismo pedido
+      import "@/lib/espera-navegacion";
       import "@/lib/transiciones";
     </script>
   </body>

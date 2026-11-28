@@ -1,150 +1,137 @@
 {
-  "name": "ComiDólar",
-  "short_name": "ComiDólar",
-  "description": "Consulta el valor del dólar oficial y el dólar blue a diario mediante el sitio de la Comisión de Dólar del Colegio Nacional de Buenos Aires.",
+  "id": "cdwapp",
+  "name": "comi.dolar",
+  "short_name": "comi.dolar",
+  "description": "Cotizaciones del dólar en Argentina (oficial, blue, MEP, cripto) y una calculadora para saber cuánto te sale una compra con tarjeta en el exterior.",
+  "lang": "es-AR",
+  "dir": "ltr",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#dddddd",
-  "theme_color": "#22c55e",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "icons": [
     {
-      "src": "assets/img/appicon.png",
+      "src": "/assets/img/appicon.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "assets/img/appicon_256.png",
+      "src": "/assets/img/appicon_256.png",
       "sizes": "256x256",
       "type": "image/png"
     },
     {
-      "src": "assets/img/appicon_192.png",
+      "src": "/assets/img/appicon_192.png",
       "sizes": "192x192",
       "type": "image/png"
+    },
+    {
+      "src": "/assets/img/maskable_512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/assets/img/maskable_192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/assets/img/monocromo_512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "monochrome"
     }
   ],
-  "id": "cdwapp",
-  "dir": "ltr",
-  "lang": "es",
-  "orientation": "portrait",
-  "display_override": ["standalone", "window-controls-overlay"],
   "shortcuts": [
     {
-      "name": "Inicio ",
-      "url": "https://comidolar.com.ar",
-      "description": "Cotizaciones del Dólar Blue y Oficial",
+      "name": "Calculadora",
+      "url": "/calculadora",
+      "description": "Cuánto te sale una compra con dólar tarjeta",
       "icons": [
         {
-          "src": "/assets/img/appicon_192.png",
-          "sizes": "192x192"
+          "src": "/assets/img/tarjeta_192.png",
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     },
     {
-      "name": "Calculadora ",
-      "url": "https://comidolar.com.ar/calculadora",
-      "description": "Cotización del Dólar Tarjeta para compras en moneda extranjera.",
+      "name": "Cotizaciones",
+      "url": "/",
+      "description": "El dólar hoy",
       "icons": [
         {
-          "src": "/assets/img/tarjeta_192.png",
-          "sizes": "192x192"
+          "src": "/assets/img/appicon_192.png",
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     },
     {
       "name": "Donaciones",
-      "url": "https://comidolar.com.ar/donaciones",
-      "description": "Ayudanos a seguir creciendo.",
+      "url": "/donaciones",
+      "description": "Ayudanos a seguir",
       "icons": [
         {
           "src": "/assets/img/donar_192.png",
-          "sizes": "192x192"
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     },
     {
       "name": "Grupo de WhatsApp",
-      "url": "https://comidolar.com.ar/whatsapp",
-      "description": "Grupo de WhatsApp oficial de la Comisión para estar al tanto de todas las novedades.",
+      "url": "/whatsapp",
+      "description": "La comunidad de comi.dolar",
       "icons": [
         {
           "src": "/assets/img/wsp_192.png",
-          "sizes": "192x192"
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     }
   ],
   "categories": [
-    "business",
-    "education",
     "finance",
-    "government",
-    "navigation",
-    "politics",
-    "utilities"
+    "business",
+    "education"
   ],
-  "prefer_related_applications": false,
-  "edge_side_panel": {
-    "preferred_width": 200
-  },
   "launch_handler": {
-    "client_mode": "navigate-existing",
-    "default_protocol_handler": {
-      "protocol": "https",
-      "path": "/",
-      "web_fallback_url": "/",
-      "package_name": "",
-      "web_share_target": {
-        "action": "/",
-        "method": "GET",
-        "params": {
-          "url": "https://comidolar.com.ar"
-        }
-      }
-    }
+    "client_mode": "navigate-existing"
   },
+  "prefer_related_applications": false,
   "screenshots": [
     {
       "src": "/assets/img/screenshot1.webp",
-      "sizes": "444x896",
+      "sizes": "780x1688",
       "type": "image/webp",
       "form_factor": "narrow",
-      "label": "Captura de pantalla de la pagina de inicio de Comi Dólar"
-    },
-    {
-      "src": "/assets/img/screenshot2.webp",
-      "sizes": "444x896",
-      "type": "image/webp",
-      "form_factor": "narrow",
-      "label": "Captura de pantalla de la calculadora del dólar tarjeta"
-    },
-    {
-      "src": "/assets/img/screenshot3.webp",
-      "sizes": "444x896",
-      "type": "image/webp",
-      "form_factor": "narrow",
-      "label": "Captura de pantalla de la pagina de donaciones"
+      "label": "Cotizaciones del dólar"
     },
     {
       "src": "/assets/img/screenshot1-wide.webp",
-      "sizes": "1400x804",
+      "sizes": "1280x720",
       "type": "image/webp",
       "form_factor": "wide",
-      "label": "Captura de pantalla de la pagina de inicio de Comi Dólar"
+      "label": "Cotizaciones del dólar"
+    },
+    {
+      "src": "/assets/img/screenshot2.webp",
+      "sizes": "780x1688",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "Calculadora de dólar tarjeta"
     },
     {
       "src": "/assets/img/screenshot2-wide.webp",
-      "sizes": "1400x804",
+      "sizes": "1280x720",
       "type": "image/webp",
       "form_factor": "wide",
-      "label": "Captura de pantalla de la calculadora del dólar tarjeta"
-    },
-    {
-      "src": "/assets/img/screenshot3-wide.webp",
-      "sizes": "1400x804",
-      "type": "image/webp",
-      "form_factor": "wide",
-      "label": "Captura de pantalla de la pagina de donaciones"
+      "label": "Calculadora de dólar tarjeta"
     }
   ]
 }

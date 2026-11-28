@@ -36,6 +36,22 @@ const actual = (href: string) =>
   <button class="btn" type="button" data-instalar hidden>
     Instalar
   </button>
+  <dialog class="guia" data-guia aria-labelledby="guia-titulo" closedby="any">
+    <h2 id="guia-titulo">Instalá comi.dolar</h2>
+    <ol data-pasos="ios">
+      <li>Tocá Compartir (el cuadrado con la flecha hacia arriba).</li>
+      <li>Elegí “Agregar a inicio” o “Agregar a pantalla de inicio”.</li>
+      <li>Confirmá con “Agregar”.</li>
+    </ol>
+    <ol data-pasos="safari-mac">
+      <li>En la barra de menú, abrí “Archivo”.</li>
+      <li>Elegí “Agregar al Dock”.</li>
+      <li>Confirmá con “Agregar”.</li>
+    </ol>
+    <form method="dialog">
+      <button class="btn" autofocus>Cerrar</button>
+    </form>
+  </dialog>
 </header>
 
 <script>

@@ -8,7 +8,7 @@ const {
 }: { cotizaciones: Cotizaciones | null; clase?: string } = Astro.props;
 ---
 
-<p data-estado-cotizaciones role="status" class={clase}>
+<p data-estado-cotizaciones role="status" aria-live="off" class={clase}>
   {textoEstado(cotizaciones, false)}
 </p>
 <script

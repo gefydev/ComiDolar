@@ -10,6 +10,7 @@ const datos = [
 ---
 
 <article class="caja" style={`border-color:${pallete.border}`}>
+  <span class="sr-only" role="status" data-aviso></span>
   <h2 class="flex items-center gap-3 font-bold">
     <img
       class="w-10 h-10 rounded-full object-contain"
@@ -43,12 +44,15 @@ const datos = [
   document.addEventListener("click", async (e) => {
     const boton = (e.target as Element).closest<HTMLElement>("[data-copiar]");
     if (!boton) return;
+    const aviso = boton.closest("article")?.querySelector("[data-aviso]");
     try {
       await navigator.clipboard.writeText(boton.dataset.copiar ?? "");
       boton.textContent = "Copiado ✓";
     } catch {
       boton.textContent = "No se pudo";
     }
+    // el nombre del botón es fijo: el resultado se anuncia aparte
+    if (aviso) aviso.textContent = boton.textContent;
     setTimeout(() => (boton.textContent = "Copiar"), 2000);
   });
 </script>

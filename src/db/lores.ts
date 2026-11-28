@@ -13,25 +13,6 @@ interface ListElement {
   text?: string;
 }
 
-export const calcuLore: Lore = [
-  {
-    h3: "Calculadora Dólar Tarjeta",
-    p: [
-      "Introduce los valores en USD que desees convertir a pesos argentinos y la calculadora hará el resto!",
-      "Calcula las 24hs tus compras favoritas en USD y sabras exactamente cuanto valdra en ARS con impuestos.",
-    ],
-    ul: [
-      {
-        bold: "Precio en USD:",
-        text: "La cotización del dólar en el mercado paralelo, una referencia común en la economía informal.",
-      },
-      {
-        bold: "Precio FINAL en ARS con Impuestos:",
-        text: "La cotización del dólar en el mercado paralelo, una referencia común en la economía informal.",
-      },
-    ],
-  },
-];
 export const wspLore: Lore = [
   {
     h3: "Grupo de Whatsapp de Comi Dólar",

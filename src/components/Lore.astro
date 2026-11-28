@@ -1,13 +1,11 @@
 ---
-import { calcuLore, wspLore } from "@/db/lores";
-const { page }: { page: "calculadora" | "whatsapp" } = Astro.props;
-const lore = page === "calculadora" ? calcuLore : wspLore;
+import { wspLore as lore } from "@/db/lores";
 ---
 
 <div class="space-y-10">
   {lore.map((section, index) => (
     <section class={(index === 0 && "mt-24") + " space-y-2"}>
-      {section.h3 && <h3 class={page === "whatsapp" ? "h2" : "text-3xl font-bold"}>{section.h3}</h3>}
+      {section.h3 && <h2 class="h2">{section.h3}</h2>}
       {section.p && section.p.map((p) => <p>{p}</p>)}
       {section.ul && section.ul.length > 0 && (
         <ul>

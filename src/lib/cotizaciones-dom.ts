@@ -28,6 +28,8 @@ export function enPagina(
     detener = mantenerCotizaciones(
       JSON.parse(datos.textContent || "null"),
       (c, fallo) => {
+        // el lector de pantalla no repite la hora cada minuto: solo los fallos
+        estado.setAttribute("aria-live", fallo ? "polite" : "off");
         estado.textContent = textoEstado(c, fallo);
         // dato viejo o sin dato: con estilo de aviso
         estado.classList.toggle("warn", fallo);

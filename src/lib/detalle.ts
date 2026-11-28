@@ -9,11 +9,17 @@ const suma = (titulo: string, valor: string) =>
   `<div class="suma"><span>${titulo}</span><strong>${valor}</strong></div>`;
 
 /** Todo texto de acá es propio o un número formateado: no hay que escapar. */
-export function vistaDetalle(tipo: Tipo, casas: Cotizaciones["casas"]) {
+export function vistaDetalle(
+  tipo: Tipo,
+  casas: Cotizaciones["casas"],
+  fuente?: Cotizaciones["fuente"],
+) {
   const c = casas[tipo.casa];
   const oficial = casas.oficial;
   const venta = c ? pesos(c.venta) : "—";
-  const nota = c ? `Venta · actualizado ${formatearCorta(c.fecha)}` : "Sin dato";
+  const nota = c
+    ? `Venta · actualizado ${formatearCorta(c.fecha)}${fuente ? ` · ${fuente}` : ""}`
+    : "Sin dato";
 
   if (tipo.casa === "tarjeta") {
     const base = oficial?.venta;

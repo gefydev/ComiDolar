@@ -47,7 +47,8 @@ describe("historial", () => {
 
 describe("detalle", () => {
   test("tarjeta: oficial más 30 %", () => {
-    const v = vistaDetalle(tipoPorSlug("tarjeta"), casas);
+    const v = vistaDetalle(tipoPorSlug("tarjeta"), casas, "DolarApi");
+    expect(v.nota).toContain("· DolarApi");
     expect(v.venta).toBe("$2.112,50");
     expect(texto(v.html)).toContain("Percepción 30 % RG 5617 $487,50");
   });

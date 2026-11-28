@@ -19,7 +19,7 @@ interface Props {
 }
 const { tipo, cotizaciones, historial } = Astro.props;
 const casas = cotizaciones?.casas ?? {};
-const vista = vistaDetalle(tipo, casas);
+const vista = vistaDetalle(tipo, casas, cotizaciones?.fuente);
 const ficha = FICHAS.find((f) => f.clase === tipo.slug)!;
 const texto = TEXTOS_COTIZACION[tipo.slug];
 const ruta = rutaTipo(tipo.slug);
@@ -186,10 +186,14 @@ const faq = {
   import { FICHAS, textosFicha } from "@/lib/fichas";
   import { tipoPorSlug } from "@/lib/tipos";
 
-  enPagina("detalle", ({ casas }) => {
+  enPagina("detalle", ({ casas, fuente }) => {
     const pagina = document.querySelector<HTMLElement>("[data-tipo]");
     if (!pagina) return;
-    const vista = vistaDetalle(tipoPorSlug(pagina.dataset.tipo!), casas);
+    const vista = vistaDetalle(
+      tipoPorSlug(pagina.dataset.tipo!),
+      casas,
+      fuente,
+    );
     pagina.querySelector("[data-venta]")!.textContent = vista.venta;
     pagina.querySelector("[data-nota]")!.textContent = vista.nota;
     pagina.querySelector("[data-desglose]")!.innerHTML = vista.html;

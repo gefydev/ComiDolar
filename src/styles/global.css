@@ -772,40 +772,6 @@
   animation: entrar 180ms ease-out 60ms both;
   mix-blend-mode: normal;
 }
-/* La barra del total (calculadora, celular) va en su propia capa, siempre por
-   encima del contenido y sin fundido: nada se ve a través ni encima de ella.
-   Al salir se queda mientras se va lo viejo (80 ms); al entrar aparece, entera,
-   junto con lo nuevo (60 ms). Estas reglas van acá porque la hoja de la
-   calculadora ya no está cuando se anima la salida. */
-.barra-total {
-  view-transition-name: barra-total;
-}
-::view-transition-group(barra-total) {
-  z-index: 2;
-  animation: none;
-}
-::view-transition-old(barra-total),
-::view-transition-new(barra-total) {
-  mix-blend-mode: normal;
-}
-::view-transition-old(barra-total) {
-  display: none;
-}
-::view-transition-old(barra-total):only-child {
-  display: block;
-  animation: salir 1ms steps(1, end) 80ms both;
-}
-::view-transition-new(barra-total) {
-  animation: none;
-}
-::view-transition-new(barra-total):only-child {
-  animation: aparecer 1ms steps(1, end) 60ms both;
-}
-@keyframes aparecer {
-  from {
-    opacity: 0;
-  }
-}
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
@@ -830,8 +796,7 @@
   ::view-transition-new(*) {
     animation: none !important;
   }
-  ::view-transition-old(contenido),
-  ::view-transition-old(barra-total) {
-    display: none !important;
+  ::view-transition-old(contenido) {
+    display: none;
   }
 }

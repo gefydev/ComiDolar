@@ -69,7 +69,8 @@ const actual = (href: string) =>
         (barra.clientWidth - actual.clientWidth) / 2;
   };
   document.addEventListener("astro:after-swap", mostrarActual);
-  mostrarActual();
+  // en la carga, después del primer cuadro: medir antes fuerza un reflow
+  requestAnimationFrame(mostrarActual);
 
   // Con teclado, el navegador no desplaza un link que ya se ve a medias
   document.addEventListener("focusin", (e) => {

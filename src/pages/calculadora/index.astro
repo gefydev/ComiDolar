@@ -18,10 +18,8 @@ const metadata = {
   title: "Calculadora dólar tarjeta 2026: percepción 30 % e IVA",
   description: { meta: descripcion, og: descripcion },
   canonical: "https://comidolar.com.ar/calculadora",
-  og: {
-    image: "https://comidolar.com.ar/assets/img/opengraph/calculadora.webp",
-    video: "https://comidolar.com.ar/assets/img/opengraph/video.webm",
-  },
+  og: { nombre: "calculadora" },
+  migas: [["Calculadora dólar tarjeta", "/calculadora"]],
 };
 
 const { cotizaciones, fresco } = await cotizacionesParaRender();
@@ -104,7 +102,7 @@ const faq = {
         tu banco antes de pagar.
       </p>
       <p class="note mt-2">
-        Dólar oficial venta{" "}
+        <a class="enlace" href="/dolar-oficial">Dólar oficial</a> venta{" "}
         <b data-oficial>{casas.oficial ? pesos(casas.oficial.venta) : "—"}</b> ·
         Normas revisadas el 27/11/2026
       </p>
@@ -301,6 +299,11 @@ const faq = {
           }
         </tbody>
       </table>
+      <p class="note">
+        Ver el <a class="enlace" href="/dolar-tarjeta">dólar tarjeta</a>, el{" "}
+        <a class="enlace" href="/dolar-mep">dólar MEP</a> y el{" "}
+        <a class="enlace" href="/dolar-cripto">dólar cripto</a> de hoy.
+      </p>
       <p class="note">
         No incluye comisiones. Según Banco Provincia, si pagás el resumen en
         dólares no se aplica la percepción: confirmá con tu banco cómo hacerlo.

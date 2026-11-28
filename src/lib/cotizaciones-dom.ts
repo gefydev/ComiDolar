@@ -7,7 +7,7 @@ import { textoEstado } from "@/lib/estado";
  * `pintar` actualiza los números propios de esa página.
  */
 export function enPagina(
-  pagina: "home" | "calculadora",
+  pagina: "home" | "calculadora" | "detalle",
   pintar: (c: Cotizaciones) => void,
 ) {
   let detener: (() => void) | undefined;

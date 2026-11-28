@@ -3,6 +3,7 @@ import AdSlot from "@/components/AdSlot.astro";
 import ListaPosts from "@/components/ListaPosts.astro";
 import { getPosts } from "@/lib/blog";
 import Layout from "@/layouts/layout.astro";
+import { nombreOg } from "@/lib/og";
 export async function getStaticPaths() {
   const posts = await getPosts();
 
@@ -31,9 +32,8 @@ const metadata = {
     og: `Posts sobre ${tema} en el blog oficial de Comi Dólar.`,
   },
   canonical: `https://comidolar.com.ar/blog/tema/${tema}`,
-  og: {
-    image: "https://comidolar.com.ar/assets/img/opengraph/blog.webp",
-  },
+  og: { nombre: `tema-${nombreOg(normalizedTheme)}` },
+  migas: [["Blog", "/blog"], [`${tema}`, `/blog/tema/${tema}`]],
   noindex: true,
 };
 ---

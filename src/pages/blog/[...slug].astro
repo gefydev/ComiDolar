@@ -2,7 +2,7 @@
 import AdSlot from "@/components/AdSlot.astro";
 import type { CollectionEntry } from "astro:content";
 import { render } from "astro:content";
-import { getPosts } from "@/lib/blog";
+import { getPosts, tituloCorto } from "@/lib/blog";
 import Layout from "@/layouts/layout.astro";
 export async function getStaticPaths() {
   const posts = await getPosts();
@@ -27,17 +27,18 @@ const metadata = {
     og: description,
   },
   canonical: `https://comidolar.com.ar/blog/${slug}`,
-  og: {
-    image: `https://comidolar.com.ar/assets/img/opengraph/blog/${slug}.webp`,
-    video: `https://comidolar.com.ar/assets/img/opengraph/video.webm`,
-    date,
-    theme,
-    tags,
-  },
+  og: { nombre: `blog-${slug}` },
+  migas: [
+    ["Blog", "/blog"],
+    [tituloCorto(title), `/blog/${slug}`],
+  ],
   blog: {
     author,
     date: htmlDate,
     copyright,
+    iso: date,
+    theme,
+    tags,
   },
 };
 const formattedDate = jsDate.toLocaleString("es-AR", {

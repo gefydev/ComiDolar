@@ -106,11 +106,15 @@ El enrutamiento es estático y dinámico, estructurado de la siguiente forma:
      - `sugerencias-comidolar-2026.md`: Formulario interactivo para sugerencias e ideas de cara al 2026.
      - `lanzamiento-herramienta-futuro.md`: Anuncio y guía interactiva sobre la nueva herramienta de equivalencias del CBC y comparación con 6to año.
 
+- **Detalle de cada dólar (`/dolar-oficial`, `-tarjeta`, `-blue`, `-mep`, `-ccl`, `-cripto`, `-mayorista`):** valor en vivo (ISR 60 s y refresco en el navegador), gráfico SVG de los últimos 10 días (ArgentinaDatos, en el servidor, `src/lib/historial.ts`), textos y preguntas (`src/db/textosCotizacion.ts`) con `FAQPage`. Los tipos están en `src/lib/tipos.ts`; las fichas de la home enlazan a cada uno.
+
 6. **Páginas Institucionales y SEO:**
    - `privacidad.astro` (Políticas de privacidad y tratamiento de datos).
    - `terminos.astro` (Términos y condiciones de uso del portal).
    - `404.astro` (Página de error personalizada).
-   - Generación automática de feeds y mapas de sitio en `rss.xml.ts` y `sitemap.xml.ts`.
+   - Generación automática de feeds y mapas de sitio en `rss.xml.ts` y `sitemap.xml.ts` (solo indexables, sin barra final).
+   - JSON-LD: `WebSite` y `Organization` en todas las páginas, `BreadcrumbList` en las internas (`src/lib/seo.ts`; cada página pasa `metadata.migas`).
+   - Imágenes para compartir 1200×630 generadas en el build (`src/lib/og.ts`, `src/pages/og/[nombre].png.ts`, plantillas en `src/assets/og/`). Cada página pasa `metadata.og.nombre`.
 
 7. **Página de Articulación del CBC ("Tu Futuro" - `/futuro` - `src/pages/futuro.astro`):**
    - Compara las materias necesarias para cualquier carrera de la UBA con las aprobadas de forma automática al egresar de 5to año (resolución `RESCS-2026-890-E-UBA-REC`).
@@ -142,6 +146,7 @@ El enrutamiento es estático y dinámico, estructurado de la siguiente forma:
   - `src/lib/decks.ts` prepara el HTML en build: quita las notas del orador (`<aside>`), convierte `<x-icon>` en SVG inline, agrega `loading="lazy"` desde la segunda diapositiva y extrae el título de cada una para la barra de progreso.
   - Renderiza dentro de un Shadow DOM declarativo para que los estilos `.markdown` del blog no rompan las diapositivas (`src/components/slide-deck/deck.css`), escalando el lienzo con `ResizeObserver`.
   - `src/components/slide-deck/deck-element.ts` define el custom element `<cd-slide-deck>`: flechas, Inicio/Fin, barra espaciadora, swipe en celulares, clic en la diapositiva (izquierda vuelve, derecha avanza), barra de progreso clickeable, pantalla completa con la tecla F (con rotación automática a horizontal en celulares en vertical) y enlace directo a cada diapositiva con `#<deck>-<número>`. Funciona también tras la navegación del `ClientRouter`.
+
 ---
 
 ## 6. Configuración de Estilo y Sistema de Diseño

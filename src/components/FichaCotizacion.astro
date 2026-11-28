@@ -1,12 +1,13 @@
 ---
 import type { Cotizaciones } from "@/lib/cotizaciones";
 import { textosFicha, type Ficha } from "@/lib/fichas";
+import { rutaTipo } from "@/lib/tipos";
 
 const { ficha, casas }: { ficha: Ficha; casas: Cotizaciones["casas"] } =
   Astro.props;
 const { valor, sub } = textosFicha(ficha.id, casas);
-// Solo la tarjeta tiene a dónde ir: la calculadora
-const href = ficha.id === "tarjeta" ? "/calculadora" : undefined;
+// Cada tipo lleva a su página; la brecha es un indicador y no tiene
+const href = ficha.id === "brecha" ? undefined : rutaTipo(ficha.clase);
 const Etiqueta = href ? "a" : "div";
 ---
 

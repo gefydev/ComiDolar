@@ -1,9 +1,14 @@
 ---
 const { metadata } = Astro.props;
+// Sin `og`, la imagen de la home
+const imagenOg = await urlOg(metadata.og?.nombre ?? "home");
+const altOg = `${metadata.title.replace(/^Comi Dólar \| | \| (Comi Dólar|comi\.dolar)$| - ComiDolar$/g, "")} · comi.dolar`;
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import { ClientRouter } from "astro:transitions";
 import PostHog from "@/components/posthog.astro";
+import { urlOg } from "@/lib/og";
+import { jsonLdMigas, jsonLdSitio, jsonSeguro } from "@/lib/seo";
 import "@/styles/global.css";
 ---
 
@@ -71,48 +76,45 @@ import "@/styles/global.css";
       });
     </script>
     <meta property="og:type" content={metadata.blog ? "article" : "website"} />
+    <meta property="og:site_name" content="comi.dolar" />
+    <meta property="og:locale" content="es_AR" />
     {metadata.canonical && (
       <meta property="og:url" content={metadata.canonical} />
     )}
-    {metadata.title && <meta property="og:title" content={metadata.title} />}
-    {metadata.description.og && (
-      <meta property="og:description" content={metadata.description.og} />
-    )}
-    {metadata.og && <meta property="og:image" content={metadata.og.image} />}
-    {metadata.og && <meta property="og:video" content={metadata.og.video} />}
+    <meta property="og:title" content={metadata.title} />
+    <meta property="og:description" content={metadata.description.og} />
+    <meta property="og:image" content={imagenOg} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={altOg} />
     <meta property="fb:app_id" content="3122887071196448" />
-    <meta property="twitter:card" content="summary_large_image" />
-    {metadata.cannonical && (
-      <meta property="twitter:url" content={metadata.cannonical} />
-    )}
-    {metadata.title && (
-      <meta property="twitter:title" content={metadata.title} />
-    )}
-    {metadata.description.og && (
-      <meta property="twitter:description" content={metadata.description.og} />
-    )}
-    {metadata.og && (
-      <meta property="twitter:image" content={metadata.og.image} />
-    )}
-    <meta property="twitter:site" content="@comidolar" />
-    <meta property="twitter:creator" content="@comidolar" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={metadata.title} />
+    <meta name="twitter:description" content={metadata.description.og} />
+    <meta name="twitter:image" content={imagenOg} />
+    <meta name="twitter:image:alt" content={altOg} />
+    <meta name="twitter:site" content="@comidolar" />
+    <meta name="twitter:creator" content="@comidolar" />
     {metadata.blog && (
       <>
         <meta name="author" content={metadata.blog.author} />
         <meta name="copyright" content={metadata.blog.copyright} />
         <meta name="date" content={metadata.blog.date} />
         <meta property="article:author" content={metadata.blog.author} />
-        {metadata.og.date && (
-          <meta property="article:published_time" content={metadata.og.date} />
-        )}
-        {metadata.og.theme && (
-          <meta property="article:section" content={metadata.og.theme} />
-        )}
-        {metadata.og &&
-          metadata.og.tags.map((tag) => (
-            <meta property="article:tag" content={tag} />
-          ))}
+        <meta property="article:published_time" content={metadata.blog.iso} />
+        <meta property="article:section" content={metadata.blog.theme} />
+        {metadata.blog.tags?.map((tag) => (
+          <meta property="article:tag" content={tag} />
+        ))}
       </>
+    )}
+
+    <script type="application/ld+json" set:html={jsonSeguro(jsonLdSitio())} />
+    {metadata.migas && (
+      <script
+        type="application/ld+json"
+        set:html={jsonSeguro(jsonLdMigas(metadata.migas))}
+      />
     )}
 
     {metadata.noindex && <meta name="robots" content="noindex" />}
@@ -139,6 +141,7 @@ import "@/styles/global.css";
     ></script>
     <script>
       import "@/lib/anuncios";
+      import "@/lib/transiciones";
     </script>
   </body>
 </html>

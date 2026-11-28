@@ -14,10 +14,7 @@ const metadata = {
   title: "comi.dolar: dólar hoy, dólar tarjeta y calculadora",
   description: { meta: descripcion, og: descripcion },
   canonical: "https://comidolar.com.ar",
-  og: {
-    image: "https://comidolar.com.ar/assets/img/opengraph/home.webp",
-    video: "https://comidolar.com.ar/assets/img/opengraph/video.webm",
-  },
+  og: { nombre: "home" },
 };
 
 const { cotizaciones, fresco } = await cotizacionesParaRender();

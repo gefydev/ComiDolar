@@ -2,67 +2,79 @@
 import AdSlot from "@/components/AdSlot.astro";
 import Layout from "@/layouts/layout.astro";
 
+// Texto: textos.md §5 (Borges). Si cambia, actualizar la fecha.
+const descripcion =
+  "Cómo ComiDólar trata tus datos: analítica, anuncios de Google, la lista de donantes y tus derechos según la Ley 25.326.";
 const metadata = {
   title: "Comi Dólar | Política de privacidad",
-  description: {
-    meta: "Política de privacidad de Comi Dólar, la comisión de dólar del Colegio Nacional de Buenos Aires. Te explicamos como tratamos tus datos personales, para que no tengas preocupaciones visitando el sitio.",
-    og: "Política de privacidad de Comi Dólar, la comisión de dólar del Colegio Nacional de Buenos Aires. Te explicamos como tratamos tus datos personales, para que no tengas preocupaciones visitando el sitio.",
-  },
+  description: { meta: descripcion, og: descripcion },
   canonical: "https://comidolar.com.ar/privacidad",
+  og: { nombre: "privacidad" },
+  migas: [["Política de privacidad", "/privacidad"]],
   noindex: true,
 };
 ---
 
 <Layout metadata={metadata}>
-  <main class="pagina angosta texto">
+  <main class="pagina angosta texto privacidad">
     <h1 class="h1">Política de privacidad</h1>
-    <p>
-      En ComiDólar, nos comprometemos a proteger tu privacidad. Esta política
-      describe cómo recopilamos, utilizamos y protegemos tu información cuando
-      visitas nuestro sitio web.
-    </p>
+    <p class="note">Última actualización: 28 de noviembre de 2026</p>
+    <p>En ComiDólar cuidamos tus datos. Esta página explica qué información se trata cuando visitás el sitio, quién la trata y qué podés hacer al respecto.</p>
 
-    <h2>1. Recopilación de Información</h2>
-    <p>
-      No recopilamos ninguna información personal identificable de nuestros
-      usuarios. Este sitio no requiere registro ni recopila datos como nombre,
-      dirección de correo electrónico o cualquier otra información personal.
-    </p>
+    <h2>1. Quién es responsable</h2>
+    <p>ComiDólar es operado por Genaro Febbo Yapur. Para cualquier consulta sobre privacidad, escribinos a <!--email_off--><a href="mailto:hi@gefy.dev">hi@gefy.dev</a><!--/email_off-->.</p>
 
-    <h2>2. Uso de Cookies</h2>
-    <p>
-      Este sitio no utiliza cookies ni otras tecnologías de seguimiento. No
-      almacenamos información sobre tus visitas ni registramos tu comportamiento
-      en línea.
-    </p>
+    <h2>2. Qué datos se tratan</h2>
+    <ul>
+      <li><strong>Analítica (PostHog):</strong> registra visitas y eventos de uso del sitio, para saber qué páginas se visitan y cómo se usan. Se carga de forma diferida. No graba sesiones ni muestra encuestas.</li>
+      <li><strong>Anuncios (Google AdSense):</strong> el sitio muestra anuncios de Google y de terceros. Google y esos terceros usan cookies para mostrarlos.</li>
+      <li><strong>Hosting y red (Cloudflare y Vercel):</strong> sirven el sitio y registran datos técnicos de cada conexión. Cloudflare registra IP y datos técnicos de cada visita en sus registros de red, sin un plazo fijo; su analítica de plan gratuito conserva al menos 31 días. Vercel guarda los datos técnicos lo mínimo necesario; sus registros de ejecución duran 1 hora en el plan gratuito y 1 día en Pro.</li>
+      <li><strong>Lista de donantes:</strong> el sitio muestra públicamente el nombre y el monto de cada donación. La carga el administrador. Si tu donación figura y querés que se corrija o se quite, escribinos a <!--email_off--><a href="mailto:hi@gefy.dev">hi@gefy.dev</a><!--/email_off-->. Lo corregimos o lo quitamos dentro de los 5 días hábiles de recibido el pedido, como fija el artículo 16 de la Ley 25.326.</li>
+    </ul>
 
-    <h2>3. Enlaces Externos</h2>
-    <p>
-      El sitio puede contener enlaces a sitios web de terceros. No nos hacemos
-      responsables por las prácticas de privacidad de dichos sitios y te
-      recomendamos revisar sus políticas de privacidad.
-    </p>
+    <h2>3. Cookies</h2>
+    <p>Usamos cookies y tecnologías similares. Las de Google para anuncios son de Google y de terceros. PostHog guarda una cookie <code>{"ph_<token>_posthog"}</code> que vence a los 365 días, y más datos en el almacenamiento local del navegador. Si el análisis se configura en modo memoria, no guarda nada entre páginas.</p>
 
-    <h2>4. Seguridad</h2>
-    <p>
-      Tomamos medidas razonables para proteger tu información, aunque, debido a
-      la naturaleza de internet, no podemos garantizar la seguridad absoluta de
-      los datos transmitidos a través de la red.
-    </p>
+    <h2>4. Anuncios personalizados</h2>
+    <p>Podés desactivar los anuncios personalizados en Mi centro de anuncios de Google (myadcenter.google.com). Si lo hacés, Google deja de usar tu actividad para elegirlos. Los anuncios siguen apareciendo, pero no personalizados.</p>
+    <p>Si visitás desde el Espacio Económico Europeo o el Reino Unido, Google te muestra un mensaje de consentimiento antes de cargar anuncios personalizados. Ahí elegís si aceptás las cookies de publicidad. Esa elección se gestiona desde ese mensaje.</p>
 
-    <h2>5. Cambios en la Política de Privacidad</h2>
-    <p>
-      Podemos actualizar esta política en cualquier momento. Los cambios serán
-      publicados en esta página, por lo que te recomendamos revisarla
-      periódicamente para estar informado sobre cómo estamos protegiendo tu
-      privacidad.
-    </p>
+    <h2>5. Para qué usamos los datos</h2>
+    <p>La analítica sirve para entender cuánta gente visita el sitio y qué secciones usa. La lista de donantes sirve para mostrar las donaciones recibidas.</p>
 
-    <h2>6. Contacto</h2>
-    <p>
-      Si tienes alguna pregunta sobre esta Política de Privacidad, puedes
-      contactarnos en <!--email_off--><a href="mailto:hi@gefy.dev">hi@gefy.dev</a><!--/email_off-->.
-    </p>
+    <h2>6. Tus derechos</h2>
+    <p>Según la Ley 25.326 de Protección de Datos Personales, podés pedir:</p>
+    <ul>
+      <li><strong>Acceso:</strong> saber qué datos tuyos están en nuestros registros.</li>
+      <li><strong>Rectificación:</strong> corregir datos inexactos.</li>
+      <li><strong>Supresión:</strong> que borremos tus datos.</li>
+    </ul>
+    <p>Para ejercer cualquiera de estos derechos, escribinos a <!--email_off--><a href="mailto:hi@gefy.dev">hi@gefy.dev</a><!--/email_off-->.</p>
+    <p>La autoridad de control es la Agencia de Acceso a la Información Pública (AAIP). Si considerás que no atendimos tu pedido, podés presentar un reclamo ante ella.</p>
+
+    <h2>7. Cambios en esta política</h2>
+    <p>Podemos actualizar esta política. La fecha de "Última actualización" indica la versión vigente.</p>
+
+    <h2>8. Contacto</h2>
+    <p><!--email_off--><a href="mailto:hi@gefy.dev">hi@gefy.dev</a><!--/email_off--></p>
     <AdSlot ubicacion="interna" />
   </main>
 </Layout>
+
+<style>
+  li a {
+    text-decoration: underline;
+  }
+  ul {
+    margin-top: 8px;
+    max-width: 68ch;
+    padding-left: 20px;
+    list-style: disc;
+  }
+  li {
+    margin-top: 6px;
+  }
+  code {
+    overflow-wrap: anywhere;
+  }
+</style>

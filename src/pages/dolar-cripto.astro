@@ -1,0 +1,12 @@
+---
+import DetalleCotizacion from "@/components/DetalleCotizacion.astro";
+import { datosDetalle } from "@/lib/detalle-servidor";
+
+export const prerender = false;
+
+const datos = await datosDetalle("cripto");
+// Con un 5xx, ISR conserva la última versión buena en vez de cachear esta
+if (!datos.fresco) Astro.response.status = 503;
+---
+
+<DetalleCotizacion {...datos} />

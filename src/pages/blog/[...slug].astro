@@ -1,9 +1,10 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { getCollection, render } from "astro:content";
+import { render } from "astro:content";
+import { getPosts } from "@/lib/blog";
 import Layout from "@/layouts/layout.astro";
 export async function getStaticPaths() {
-  const posts = await getCollection("blog");
+  const posts = await getPosts();
   return posts.map((post) => ({
     params: { slug: post.id },
     props: post,
@@ -56,6 +57,8 @@ const formattedDate = jsDate.toLocaleString("es-AR", {
         <div class="relative mb-6">
           <img
             src={metadata.og.image}
+            width="1200"
+            height="630"
             alt={`Post de ComiDolar titulado ${metadata.title}`}
             class="sm:h-[400px] w-full object-cover rounded-lg border border-divider shadow-lg"
           />

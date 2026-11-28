@@ -1,10 +1,9 @@
-import { getCollection } from "astro:content";
-import type { APIContext } from "astro";
+import { getPosts } from "@/lib/blog";
 
-export async function GET(context: APIContext) {
+export async function GET() {
   const siteUrl = "https://comidolar.com.ar";
 
-  const blogPosts = await getCollection("blog");
+  const blogPosts = await getPosts();
 
   const urls = [
     { url: `${siteUrl}/`, changefreq: "hourly", priority: 1.0 },

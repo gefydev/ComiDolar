@@ -17,17 +17,19 @@ Para expandir el alcance de la comunidad, se desarrolló la plataforma web **com
 
 El proyecto está construido sobre una arquitectura moderna orientada a la performance, SEO y soporte para islas interactivas.
 
-- **Framework Principal:** [Astro v7.0.2](https://astro.build/) configurado en modo estático/híbrido utilizando la API Content Layer. Para optimizar el build, se implementó un mecanismo de caché en memoria de 1 minuto para llamadas externas a DolarAPI (`src/lib/dolarApi.ts`) y Better Stack (`src/lib/getMonitorStatus.ts`), lo que reduce drásticamente el tiempo de compilación.
-- **Framework de UI (Islas):** [React v19.2.4](https://react.dev/) para componentes interactivos y carruseles.
-- **Estilos:** [Tailwind CSS v4.2.1](https://tailwindcss.com/) integrado vía `@tailwindcss/vite` (configuración moderna y performante).
-- **Base de Datos / Backend-as-a-Service:** [Supabase](https://supabase.com/) (`@supabase/supabase-js` v2.98.0) para almacenamiento y consulta de datos en tiempo real (ej. tabla de donaciones).
+- **Framework Principal:** [Astro v7.4](https://astro.build/) configurado en modo estático/híbrido utilizando la API Content Layer. Para optimizar el build, se implementó un mecanismo de caché en memoria de 1 minuto para llamadas externas a DolarAPI (`src/lib/dolarApi.ts`) y Better Stack (`src/lib/getMonitorStatus.ts`), lo que reduce drásticamente el tiempo de compilación.
+- **Framework de UI (Islas):** [React v19.3](https://react.dev/) para componentes interactivos y carruseles.
+- **Estilos:** [Tailwind CSS v4.3](https://tailwindcss.com/) integrado vía `@tailwindcss/vite` (configuración moderna y performante).
+- **Base de Datos / Backend-as-a-Service:** [Supabase](https://supabase.com/) (`@supabase/supabase-js` v2.119) para almacenamiento y consulta de datos en tiempo real (ej. tabla de donaciones).
 - **Manejador de Paquetes:** [Bun](https://bun.sh/) (debe usarse siempre para scripts, instalaciones y ejecuciones).
 - **Hosting:** Optimizado para Vercel (`vercel.json` configurado).
+- **CI:** `.github/workflows/ci.yml` corre `bun run lint` y `bun run build` en cada PR.
 - **Librerías de UI Clave:**
   - `embla-carousel-react` (v8.6.0) para sliders adaptables y touch-friendly.
-  - `astro-loading-indicator` (v0.7.1) para feedback visual en transiciones de página.
+  - `astro-loading-indicator` (v0.9) para feedback visual en transiciones de página.
+  - `atropos` para el efecto 3D de las tarjetas (`AtroposComponent.astro`).
   - `markdown-it` y `sanitize-html` para el procesamiento seguro de posts del blog.
-  - `@astrojs/mdx` (v7.0.8, compatible con Astro 7.0.x) para poder usar componentes Astro dentro de los posts `.mdx`.
+  - `@astrojs/mdx` (v7.0.8) para poder usar componentes Astro dentro de los posts `.mdx`.
 
 ---
 
@@ -59,7 +61,6 @@ La estructura de directorios sigue los estándares de Astro con aliases definido
 │   └── types/                  # Definición de tipos TypeScript globales
 ├── astro.config.mjs            # Configuración de Astro e integraciones
 ├── package.json                # Dependencias y scripts de construcción
-├── tailwind.config.mjs         # Configuración específica para el compilador de Tailwind
 ├── tsconfig.json               # Configuración de TypeScript y aliases como "@/components"
 └── vercel.json                 # Reglas de redirección, headers y configuración para Vercel
 ```
@@ -103,6 +104,7 @@ El enrutamiento es estático y dinámico, estructurado de la siguiente forma:
 
 5. **Blog (`/blog` - `src/pages/blog.astro` y `src/pages/blog/[...slug].astro`):**
    - Renderiza las entradas de blog a partir del contenido de `src/content/blog/` mediante la API Content Layer de Astro (usando el loader `glob` en `src/content.config.ts`), donde las entradas se identifican a través de su `id` en lugar del antiguo `slug`.
+   - Los posts con `draft: true` no se publican: todas las páginas, el RSS y el sitemap leen con `getPosts()` (`src/lib/blog.ts`).
    - Soporte para búsquedas por etiquetas (`tag/`), temas (`tema/`) y autores (`autor/`).
    - Los posts actuales son:
      - `comprar-exterior-barato.md`: Guía de compras en Amazon usando la tarifa plana de $5 e importando con dólar MEP (opción recomendada por ser más económica que el dólar tarjeta).

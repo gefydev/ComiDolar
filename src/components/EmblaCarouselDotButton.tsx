@@ -39,6 +39,8 @@ export const useDotButton = (
   useEffect(() => {
     if (!emblaApi) return;
 
+    // Sincroniza el estado con Embla al montarse (patrón oficial de Embla)
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     onInit(emblaApi);
     onSelect(emblaApi);
     emblaApi.on("reInit", onInit).on("reInit", onSelect).on("select", onSelect);

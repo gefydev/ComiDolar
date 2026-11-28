@@ -3,7 +3,7 @@ import AtroposComponent from "@/components/AtroposComponent.astro";
 import type { PaymentMethodType } from "@/db/payment.ts";
 const { name, short, image, pallete, cbu, alias, isWallet }: PaymentMethodType =
   Astro.props as PaymentMethodType;
-const { background, gradientfrom, gradientto, border, shadow } = pallete;
+const { background, gradientfrom, gradientto, border } = pallete;
 ---
 
 <AtroposComponent customClass=`paymethod-atropos-${short}`>
@@ -79,7 +79,7 @@ const { background, gradientfrom, gradientto, border, shadow } = pallete;
     </svg></button
   >
 </div>
-<style define:vars={{ background, gradientfrom, gradientto, border, shadow }}>
+<style define:vars={{ background, gradientfrom, gradientto, border }}>
   .paymethod {
     background: var(--background);
     background: linear-gradient(
@@ -212,8 +212,8 @@ const { background, gradientfrom, gradientto, border, shadow } = pallete;
   copyCBU.addEventListener("click", () => copyToClipboard(`cbu-${short}`));
   copyALIAS.addEventListener("click", () => copyToClipboard(`alias-${short}`));
   function copyToClipboard(elementId) {
-    var copyText = document.getElementById(elementId);
-    var tempInput = document.createElement("input");
+    const copyText = document.getElementById(elementId);
+    const tempInput = document.createElement("input");
     tempInput.value = copyText.textContent;
     document.body.appendChild(tempInput);
     tempInput.select();

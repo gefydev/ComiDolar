@@ -4,8 +4,7 @@ import {
   CBC_SUBJECTS,
   CNBA_APPROVED_5TH,
   PELLE_APPROVED_5TH,
-  type Career,
-} from "../db/carrerasUba";
+  } from "../db/carrerasUba";
 
 export default function FutureCalculator() {
   const [colegio, setColegio] = useState<"cnba" | "pelle">("cnba");
@@ -68,8 +67,8 @@ export default function FutureCalculator() {
   const totalPending5th = pendingCompulsory.length + numPendingElectives;
 
   // Estimación temporal del CBC Directo
-  let cbcTimeEstimate = "";
-  let cbcEntryDate = "";
+  let cbcTimeEstimate: string;
+  let cbcEntryDate: string;
 
   if (totalPending5th === 0) {
     cbcTimeEstimate = "0 cuatrimestres (¡Ingresás directo!)";
@@ -91,9 +90,7 @@ export default function FutureCalculator() {
   const {
     orientation: sixthOrientation,
     coveredCompulsory,
-    notCoveredCompulsory,
     coveredElectives,
-    notCoveredElectives,
     notes: sixthNotes,
   } = sixthYearPathInfo;
 

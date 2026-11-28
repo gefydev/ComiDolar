@@ -1,9 +1,9 @@
 ---
 import Layout from "@/layouts/layout.astro";
 import BlogPostCard from "@/components/BlogPostCard.astro";
-import { getCollection } from "astro:content";
+import { getPosts } from "@/lib/blog";
 
-const posts = await getCollection("blog");
+const posts = await getPosts();
 
 const metadata = {
   title: "Comi Dólar | Blog",

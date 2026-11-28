@@ -1,5 +1,5 @@
 import rss from "@astrojs/rss";
-import { getCollection } from "astro:content";
+import { getPosts } from "@/lib/blog";
 import sanitizeHtml from "sanitize-html";
 import MarkdownIt from "markdown-it";
 const parser = new MarkdownIt({ html: true });
@@ -32,7 +32,7 @@ const prohibitedTags = [
 ];
 
 export async function GET(context) {
-  const blog = await getCollection("blog");
+  const blog = await getPosts();
   return rss({
     title: "Blog de ComiDólar",
     description:

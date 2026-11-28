@@ -24,14 +24,22 @@ export type Numero =
 
 /**
  * Lee un número escrito a la argentina: "1.000.000", "10,5", "US$ 100".
- * Un punto que no separa miles se toma como decimal ("10.5").
+ * Un punto que no separa miles se toma como decimal ("10.5", "0.185").
+ * `puntoDecimal`: para cotizaciones entre monedas, donde "1.085" no es mil.
  */
-export function leerNumero(texto: string, { permiteCero = false } = {}): Numero {
+export function leerNumero(
+  texto: string,
+  { permiteCero = false, puntoDecimal = false } = {},
+): Numero {
   const limpio = texto.replace(/\s|US\$|R\$|\$|€|%/g, "");
   if (!limpio) return { error: "vacio" };
   const sinSigno = limpio.replace(/^-/, "");
   let normal: string;
-  if (/^(\d{1,3}(\.\d{3})+|\d+)(,\d*)?$/.test(sinSigno))
+  // Un grupo que empieza en 0 nunca es de miles
+  const argentino = puntoDecimal
+    ? /^\d+(,\d*)?$/
+    : /^([1-9]\d{0,2}(\.\d{3})+|\d+)(,\d*)?$/;
+  if (argentino.test(sinSigno))
     normal = sinSigno.replace(/\./g, "").replace(",", ".");
   else if (/^\d*\.\d+$|^\d+\.$/.test(sinSigno)) normal = sinSigno;
   else return { error: "letras" };
@@ -75,9 +83,9 @@ export function digital(d: Digital) {
   const convertido = centavos(enPesos ? d.monto : d.monto * d.tc);
   // Cobrado en pesos no hay cambio de divisas: no corresponde el 30 %
   const percepcion = enPesos ? 0 : centavos(convertido * PERCEPCION);
-  const neto = d.incluyeIva ? convertido / (1 + IVA_DIGITAL) : convertido;
-  const iva =
-    !enPesos || d.sumarIva ? centavos(neto * IVA_DIGITAL) : 0;
+  const neto =
+    d.incluyeIva && !enPesos ? convertido / (1 + IVA_DIGITAL) : convertido;
+  const iva = !enPesos || d.sumarIva ? centavos(neto * IVA_DIGITAL) : 0;
   const iibb = centavos((convertido * d.iibb) / 100);
   const total = centavos(convertido + percepcion + iva + iibb);
   return {
@@ -106,7 +114,11 @@ export interface Envio {
   iva: number;
   /** Ya usó los envíos con franquicia del año */
   sinCupo?: boolean;
-  /** Porcentaje de derechos y tasa, solo fuera de franquicia */
+  /**
+   * Porcentaje de derechos y tasa. Con cupo se aplica solo al excedente de la
+   * franquicia (ARCA, novedad del 30/07/2026); sin cupo, a todo el valor
+   * (según la prensa, sin confirmar).
+   */
   derechos?: number | null;
 }
 
@@ -116,14 +128,16 @@ export function envio(e: Envio) {
   const convertido = centavos(e.usd * e.tc);
   const percepcion = centavos(convertido * PERCEPCION);
   const iva = centavos((convertido * e.iva) / 100);
+  const usdGravados = e.sinCupo ? e.usd : Math.max(0, e.usd - FRANQUICIA_USD);
   const derechos = !fueraDeFranquicia
     ? 0
     : e.derechos == null
       ? null
-      : centavos((convertido * e.derechos) / 100);
+      : centavos((usdGravados * e.tc * e.derechos) / 100);
   return {
     excedeMaximo,
     fueraDeFranquicia,
+    usdGravados: fueraDeFranquicia ? usdGravados : 0,
     convertido,
     percepcion,
     iva,

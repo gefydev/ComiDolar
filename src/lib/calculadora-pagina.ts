@@ -36,6 +36,7 @@ const leerCampos = (form: HTMLFormElement): Campos => {
     campos[el.name] =
       el.type === "checkbox" ? (el.checked ? "si" : "") : el.value;
   }
+  if (!casas.oficial) campos["sin-cotizacion"] = "si";
   return campos;
 };
 
@@ -49,7 +50,8 @@ const marcarErrores = (
     const mensaje = errores[el.name];
     const id = `error-${el.name}`;
     let p = form.querySelector(`#${id}`);
-    el.toggleAttribute("aria-invalid", Boolean(mensaje));
+    if (mensaje) el.setAttribute("aria-invalid", "true");
+    else el.removeAttribute("aria-invalid");
     if (!mensaje) {
       p?.remove();
       el.removeAttribute("aria-describedby");
@@ -77,6 +79,7 @@ document.addEventListener("astro:page-load", () => {
   let medido = "";
   let espera: ReturnType<typeof setTimeout>;
   let esperaMedir: ReturnType<typeof setTimeout>;
+  let esperaAnunciar: ReturnType<typeof setTimeout>;
 
   const caso = () =>
     (form.querySelector<HTMLInputElement>('[name="caso"]:checked')?.value ??
@@ -110,7 +113,7 @@ document.addEventListener("astro:page-load", () => {
     const cruzada =
       campos["ext-moneda"] === "USD"
         ? 1
-        : leerNumero(campos["ext-x"] ?? "").valor;
+        : leerNumero(campos["ext-x"] ?? "", { puntoDecimal: true }).valor;
     const usd = precio && cruzada ? precio * cruzada : null;
     const total = armarTicket("exterior", {
       ...campos,
@@ -128,6 +131,16 @@ document.addEventListener("astro:page-load", () => {
     fila("pesos", total);
     for (const id of ["bolsa", "cripto"] as const)
       fila(id, usd && casas[id] ? conDolares(usd, casas[id].venta) : null);
+  };
+
+  /** El lector de pantalla oye solo el total, y solo si la persona cambió algo. */
+  const anunciar = () => {
+    const suma = form.querySelector(`[data-ticket="${caso()}"] .suma`);
+    if (suma)
+      escribir(
+        $("[data-anuncio]"),
+        Array.from(suma.children, (el) => el.textContent).join(": "),
+      );
   };
 
   const medirCalculo = () => {
@@ -163,7 +176,13 @@ document.addEventListener("astro:page-load", () => {
       ",",
     );
   };
-  const guardada = localStorage.getItem(PROVINCIA);
+  // Con el almacenamiento bloqueado, leer o guardar tira una excepción
+  let guardada: string | null = null;
+  try {
+    guardada = localStorage.getItem(PROVINCIA);
+  } catch {
+    // sin provincia guardada
+  }
   if (guardada && [...provincia.options].some((o) => o.value === guardada)) {
     provincia.value = guardada;
     usarProvincia();
@@ -185,6 +204,8 @@ document.addEventListener("astro:page-load", () => {
     if (el.matches("[data-tc]")) editados.add(el.name);
     clearTimeout(espera);
     espera = setTimeout(pintar, 120);
+    clearTimeout(esperaAnunciar);
+    esperaAnunciar = setTimeout(anunciar, 800);
     medirCalculo();
   });
   form.addEventListener("change", (e) => {
@@ -194,10 +215,15 @@ document.addEventListener("astro:page-load", () => {
       medir("cambiar_caso", { caso: el.value });
     }
     if (el.name === "dig-provincia") {
-      localStorage.setItem(PROVINCIA, el.value);
+      try {
+        localStorage.setItem(PROVINCIA, el.value);
+      } catch {
+        // no se recuerda para la próxima
+      }
       usarProvincia();
     }
     pintar();
+    anunciar();
     medirCalculo();
   });
 

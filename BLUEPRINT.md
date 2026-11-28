@@ -73,7 +73,7 @@ El enrutamiento es estático y dinámico, estructurado de la siguiente forma:
    - Bloque de la calculadora con dos ejemplos y las ocho fichas (`FichaCotizacion.astro`, datos en `src/lib/fichas.ts`), un espacio de anuncio y la presentación del proyecto.
 
 2. **Calculadora de Dólar Tarjeta (`/calculadora` - `src/pages/calculadora/index.astro`):**
-   - Cuatro casos: compra en el exterior (30 %), servicio digital (en dólares: 30 % + IVA 21 % + IIBB; en pesos: sin 30 %), viaje en pesos (30 %) y envío del exterior (franquicia US$400, 5 por año, máximo US$3.000).
+   - Cuatro casos: compra en el exterior (30 %), servicio digital (en dólares: 30 % + IVA 21 % + IIBB; en pesos: sin 30 %), viaje en pesos (30 %) y envío del exterior (franquicia US$400, 5 por año, máximo US$3.000; derechos solo sobre el excedente si queda cupo, sobre todo el valor sin cupo).
    - Fórmulas en `src/lib/calculadora.ts`, desglose en `src/lib/ticket.ts` (mismo código en servidor y navegador), formulario en `src/lib/calculadora-pagina.ts`. Con tests.
    - Alícuotas de Ingresos Brutos en `PROVINCIAS`: solo CABA confirmada; lo no confirmado es editable y avisa.
    - Preguntas frecuentes en `src/db/faqCalculadora.ts` (página y JSON-LD `FAQPage`). Dos espacios de anuncio (`calculadora-1` y `calculadora-2`).

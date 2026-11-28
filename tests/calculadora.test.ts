@@ -36,16 +36,16 @@ describe("compra en el exterior", () => {
 
 describe("servicio digital", () => {
   test("US$10 en CABA = $24.862,50", () => {
-    expect(
-      digital({ monto: 10, cobro: "usd", tc: TC, iibb: 2 }),
-    ).toMatchObject({
-      convertido: 16250,
-      percepcion: 4875,
-      iva: 3412.5,
-      iibb: 325,
-      total: 24862.5,
-      porDolar: 2486.25,
-    });
+    expect(digital({ monto: 10, cobro: "usd", tc: TC, iibb: 2 })).toMatchObject(
+      {
+        convertido: 16250,
+        percepcion: 4875,
+        iva: 3412.5,
+        iibb: 325,
+        total: 24862.5,
+        porDolar: 2486.25,
+      },
+    );
   });
   test("sin Ingresos Brutos: $24.537,50 (investigación §7.2, caso A)", () => {
     expect(digital({ monto: 10, cobro: "usd", tc: TC, iibb: 0 }).total).toBe(
@@ -115,9 +115,10 @@ describe("envío del exterior", () => {
   test("afuera sin derechos cargados queda incompleto", () => {
     const r = envio({ usd: 500, tc: TC, iva: 21 });
     expect([r.derechos, r.incompleto]).toEqual([null, true]);
-    expect(
-      envio({ usd: 500, tc: TC, iva: 21, derechos: 50 }),
-    ).toMatchObject({ derechos: 406250, incompleto: false });
+    expect(envio({ usd: 500, tc: TC, iva: 21, derechos: 50 })).toMatchObject({
+      derechos: 81250,
+      incompleto: false,
+    });
   });
   test("más de US$3.000 supera el máximo", () => {
     expect(envio({ usd: 3000, tc: TC, iva: 21 }).excedeMaximo).toBe(false);
@@ -132,6 +133,23 @@ describe("lectura de números", () => {
     expect(leerNumero("10,50").valor).toBe(10.5);
     expect(leerNumero("10.5").valor).toBe(10.5);
     expect(leerNumero(" US$ 100 ").valor).toBe(100);
+  });
+  test("un grupo que empieza en 0 no es de miles", () => {
+    expect(leerNumero("0.185").valor).toBe(0.185);
+    expect(leerNumero("1.085").valor).toBe(1085);
+    expect(leerNumero("1.085", { puntoDecimal: true }).valor).toBe(1.085);
+    expect(leerNumero("1,085", { puntoDecimal: true }).valor).toBe(1.085);
+  });
+  test("en pesos no se usa la casilla de IVA incluido", () => {
+    const r = digital({
+      monto: 10000,
+      cobro: "pesos",
+      tc: 1,
+      iibb: 0,
+      incluyeIva: true,
+      sumarIva: true,
+    });
+    expect(r.total).toBe(12100);
   });
   test("rechaza vacíos, negativos, cero y letras", () => {
     expect(leerNumero("").error).toBe("vacio");

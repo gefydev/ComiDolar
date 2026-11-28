@@ -37,6 +37,39 @@ describe("desglose", () => {
       expect(t.html).not.toContain("$-");
     }
   });
+  test("cotización cruzada: el punto es decimal", () => {
+    for (const x of ["0.185", "0,185"])
+      expect(
+        armarTicket("exterior", {
+          "ext-m": "250",
+          "ext-tc": "1625",
+          "ext-moneda": "BRL",
+          "ext-x": x,
+        }).total,
+      ).toBe(97703.13);
+  });
+  test("sin datos del servidor avisa que falta la cotización", () => {
+    const t = armarTicket("exterior", {
+      "ext-m": "100",
+      "ext-tc": "",
+      "sin-cotizacion": "si",
+    });
+    expect(t.errores["ext-tc"]).toContain("No pudimos cargar la cotización");
+  });
+  test("envío con cupo: derechos solo sobre el excedente", () => {
+    const campos = {
+      "env-m": "450",
+      "env-tc": "1625",
+      "env-iva": "21",
+      "env-der": "50",
+    };
+    expect(texto(armarTicket("envio", campos).html)).toContain(
+      "50% sobre US$50 · editable $40.625",
+    );
+    expect(
+      texto(armarTicket("envio", { ...campos, "env-sincupo": "si" }).html),
+    ).toContain("50% sobre US$450 · editable $365.625");
+  });
   test("sin cotización no inventa un total", () => {
     expect(
       armarTicket("exterior", { "ext-m": "100", "ext-tc": "" }).total,

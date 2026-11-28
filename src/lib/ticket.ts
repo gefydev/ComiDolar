@@ -41,8 +41,7 @@ const AVISO =
   "Estimación orientativa. No es asesoramiento impositivo. Confirmá con tu banco o con ARCA antes de pagar.";
 const PERCEPCION = "Percepción Ganancias / Bienes Personales";
 
-const e = (v: string) =>
-  v.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+const e = (v: string) => v.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 const linea = (rotulo: string, detalle: string, valor: string) =>
   `<div class="linea"><span>${e(rotulo)}<small>${e(detalle)}</small></span><b>${e(valor)}</b></div>`;
 const suma = (titulo: string, total: string, detalle = "") =>
@@ -55,21 +54,33 @@ export function armarTicket(caso: Caso, campos: Campos): Ticket {
   const errores: Record<string, string> = {};
 
   /** Lee un campo; si falta o está mal, anota el error y devuelve null. */
-  const numero = (nombre: string, mensaje?: string, permiteCero = false) => {
-    const r = leerNumero(campos[nombre] ?? "", { permiteCero });
+  const numero = (
+    nombre: string,
+    mensaje?: string,
+    permiteCero = false,
+    puntoDecimal = false,
+  ) => {
+    const r = leerNumero(campos[nombre] ?? "", { permiteCero, puntoDecimal });
     if (r.error === undefined) return r.valor;
-    errores[nombre] = mensaje && r.error !== "letras" ? mensaje : MENSAJES[r.error];
+    errores[nombre] =
+      mensaje && r.error !== "letras" ? mensaje : MENSAJES[r.error];
     return null;
   };
   const tipoDeCambio = (nombre: string) =>
-    numero(nombre, "El tipo de cambio tiene que ser mayor a cero.");
+    numero(
+      nombre,
+      campos["sin-cotizacion"] === "si" && !campos[nombre]?.trim()
+        ? "No pudimos cargar la cotización. Cargá el tipo de cambio a mano o probá en unos minutos."
+        : "El tipo de cambio tiene que ser mayor a cero.",
+    );
 
   /** Campos de cuotas: [cantidad, tipo de cambio] o null si no aplica. */
   const cuotas = (prefijo: string) => {
     if (campos[`${prefijo}-cuotas`] !== "si") return null;
     const n = leerNumero(campos[`${prefijo}-n`] ?? "").valor;
     if (!n || !Number.isInteger(n) || n < 2) {
-      errores[`${prefijo}-n`] = "Ingresá un número entero de cuotas, mayor a 1.";
+      errores[`${prefijo}-n`] =
+        "Ingresá un número entero de cuotas, mayor a 1.";
       return null;
     }
     return n;
@@ -81,7 +92,11 @@ export function armarTicket(caso: Caso, campos: Campos): Ticket {
     errores,
     total: null,
   });
-  const listo = (partes: string[], barra: string, total: number | null): Ticket => ({
+  const listo = (
+    partes: string[],
+    barra: string,
+    total: number | null,
+  ): Ticket => ({
     html: [...partes, `<p class="note">${AVISO}</p>`].join(""),
     barra,
     errores,
@@ -108,7 +123,12 @@ export function armarTicket(caso: Caso, campos: Campos): Ticket {
     const cruzada =
       moneda === "USD"
         ? 1
-        : numero("ext-x", "Cargá la cotización de esa moneda en dólares.");
+        : numero(
+            "ext-x",
+            "Cargá la cotización de esa moneda en dólares.",
+            false,
+            true,
+          );
     const tc = tipoDeCambio("ext-tc");
     const n = cuotas("ext");
     if (precio === null || cruzada === null || tc === null) return vacio();
@@ -137,14 +157,26 @@ export function armarTicket(caso: Caso, campos: Campos): Ticket {
     ];
     if (propios) {
       partes.push(
-        suma("Pagás en dólares", usd(enUsd), `equivale a ${pesos(r.convertido)} al tipo de cambio elegido`),
+        suma(
+          "Pagás en dólares",
+          usd(enUsd),
+          `equivale a ${pesos(r.convertido)} al tipo de cambio elegido`,
+        ),
         ojo("Según Banco Provincia. Confirmalo con tu banco antes de pagar."),
       );
       return listo(partes, usd(enUsd), r.convertido);
     }
-    partes.push(suma("Total en pesos", pesos(r.total), `${pesos(r.porDolar)} por cada dólar`));
+    partes.push(
+      suma(
+        "Total en pesos",
+        pesos(r.total),
+        `${pesos(r.porDolar)} por cada dólar`,
+      ),
+    );
     if (n)
-      partes.push(avisoCuotas("ext", n, (t) => exterior({ usd: enUsd, tc: t }).total));
+      partes.push(
+        avisoCuotas("ext", n, (t) => exterior({ usd: enUsd, tc: t }).total),
+      );
     return listo(partes, pesos(r.total), r.total);
   }
 
@@ -155,7 +187,9 @@ export function armarTicket(caso: Caso, campos: Campos): Ticket {
     // Cobrado en pesos hay un campo aparte, en 0 salvo que el resumen diga otra cosa
     const campoIibb = cobro === "usd" ? "dig-iibb" : "dig-iibbp";
     const crudo = (campos[campoIibb] ?? "").trim();
-    const iibb = crudo ? numero(campoIibb, "Ingresos Brutos no puede ser negativo.", true) : 0;
+    const iibb = crudo
+      ? numero(campoIibb, "Ingresos Brutos no puede ser negativo.", true)
+      : 0;
     const n = cuotas("dig");
     if (monto === null || tc === null || iibb === null) return vacio();
     const datos = {
@@ -163,15 +197,21 @@ export function armarTicket(caso: Caso, campos: Campos): Ticket {
       cobro: cobro as "usd" | "pesos",
       tc,
       iibb,
-      incluyeIva: campos["dig-iva"] === "si",
+      // la casilla queda oculta (y quizás marcada) al pasar a pesos
+      incluyeIva: cobro === "usd" && campos["dig-iva"] === "si",
       sumarIva: campos["dig-sumariva"] === "si",
     };
     const r = digital(datos);
-    const provincia = PROVINCIAS.find((p) => p.id === campos["dig-provincia"]) ?? PROVINCIAS[0];
+    const provincia =
+      PROVINCIAS.find((p) => p.id === campos["dig-provincia"]) ?? PROVINCIAS[0];
     if (cobro === "usd" && campos["dig-propios"] === "si")
       return listo(
         [
-          linea("Precio convertido", `${usd(monto)} × ${pesos(tc)}`, pesos(r.convertido)),
+          linea(
+            "Precio convertido",
+            `${usd(monto)} × ${pesos(tc)}`,
+            pesos(r.convertido),
+          ),
           linea(PERCEPCION, "No se aplica si pagás con dólares propios", "$0"),
           suma("Total", "—", "Todavía no calculamos este caso"),
           ojo("Confirmá con tu banco qué impuestos cobra si pagás en dólares."),
@@ -181,7 +221,11 @@ export function armarTicket(caso: Caso, campos: Campos): Ticket {
       );
     const partes = [
       cobro === "usd"
-        ? linea("Precio convertido", `${usd(monto)} × ${pesos(tc)}`, pesos(r.convertido))
+        ? linea(
+            "Precio convertido",
+            `${usd(monto)} × ${pesos(tc)}`,
+            pesos(r.convertido),
+          )
         : linea("Precio", "cobrado en pesos", pesos(r.convertido)),
       linea(
         PERCEPCION,
@@ -190,24 +234,56 @@ export function armarTicket(caso: Caso, campos: Campos): Ticket {
       ),
       linea(
         "IVA servicios digitales",
-        r.iva ? (datos.incluyeIva ? "21% sobre el precio sin IVA · RG 4240" : "21% · RG 4240") : "Incluido en el precio, o no corresponde",
+        r.iva
+          ? datos.incluyeIva
+            ? "21% sobre el precio sin IVA · RG 4240"
+            : "21% · RG 4240"
+          : "Incluido en el precio, o no corresponde",
         pesos(r.iva),
       ),
       linea(
         `Ingresos Brutos${cobro === "pesos" || provincia.id === "otra" ? "" : ` ${provincia.nombre}`}`,
-        crudo ? `${pct(iibb)} · editable` : cobro === "usd" ? "sin dato: no está incluido" : "0% · editable",
+        crudo
+          ? `${pct(iibb)} · editable`
+          : cobro === "usd"
+            ? "sin dato: no está incluido"
+            : "0% · editable",
         crudo || cobro === "pesos" ? pesos(r.iibb) : "—",
       ),
-      suma("Total estimado", pesos(r.total), r.porDolar ? `${pesos(r.porDolar)} por cada dólar` : ""),
+      suma(
+        "Total estimado",
+        pesos(r.total),
+        r.porDolar ? `${pesos(r.porDolar)} por cada dólar` : "",
+      ),
     ];
     if (cobro === "pesos")
-      partes.push(ojo("Cobrado en pesos no lleva el 30%. Qué otros impuestos se aplican depende del prestador: revisá tu resumen."));
+      partes.push(
+        ojo(
+          "Cobrado en pesos no lleva el 30%. Qué otros impuestos se aplican depende del prestador: revisá tu resumen.",
+        ),
+      );
     else if (!crudo)
-      partes.push(ojo("Para esta provincia no tenemos el dato de Ingresos Brutos. El total no lo incluye. Cargá el valor de tu resumen."));
+      partes.push(
+        ojo(
+          "Para esta provincia no tenemos el dato de Ingresos Brutos. El total no lo incluye. Cargá el valor de tu resumen.",
+        ),
+      );
+    else if (provincia.id === "santafe")
+      partes.push(
+        ojo(
+          "Santa Fe, sin confirmar: según la prensa es 3% en suscripciones audiovisuales (Netflix, Spotify) y 4,5% en el resto. Cambialo según tu servicio y revisá tu resumen.",
+        ),
+      );
     else if (!provincia.confirmado)
-      partes.push(ojo("La alícuota de esta provincia no está confirmada: revisala en tu resumen."));
+      partes.push(
+        ojo(
+          "La alícuota de esta provincia no está confirmada: revisala en tu resumen.",
+        ),
+      );
     if (n && cobro === "usd")
-      partes.push(avisoCuotas("dig", n, (t) => digital({ ...datos, tc: t }).total));
+      partes.push(
+        avisoCuotas("dig", n, (t) => digital({ ...datos, tc: t }).total),
+      );
     return listo(partes, pesos(r.total), r.total);
   }
 
@@ -243,11 +319,16 @@ export function armarTicket(caso: Caso, campos: Campos): Ticket {
       : null;
   const r = envio({ usd: valor, tc, iva, sinCupo, derechos });
   if (r.excedeMaximo) {
-    errores["env-m"] = `El máximo por envío para uso personal es de US$${pesos(FOB_MAXIMO_USD).slice(1)}.`;
+    errores["env-m"] =
+      `El máximo por envío para uso personal es de US$${pesos(FOB_MAXIMO_USD).slice(1)}.`;
     return vacio();
   }
   const partes = [
-    linea("Precio convertido", `${usd(valor)} × ${pesos(tc)} · sin envío`, pesos(r.convertido)),
+    linea(
+      "Precio convertido",
+      `${usd(valor)} × ${pesos(tc)} · sin envío`,
+      pesos(r.convertido),
+    ),
     linea(PERCEPCION, "30% · si pagás con tarjeta", pesos(r.percepcion)),
     linea("IVA de importación", `${pct(iva)} · editable`, pesos(r.iva)),
     linea(
@@ -256,7 +337,7 @@ export function armarTicket(caso: Caso, campos: Campos): Ticket {
         ? "Exento dentro de la franquicia"
         : r.incompleto
           ? "Falta cargar el porcentaje"
-          : `${pct(derechos!)} · editable`,
+          : `${pct(derechos!)} sobre ${usd(r.usdGravados)} · editable`,
       r.derechos === null ? "—" : pesos(r.derechos),
     ),
     r.incompleto
@@ -266,11 +347,15 @@ export function armarTicket(caso: Caso, campos: Campos): Ticket {
   if (r.fueraDeFranquicia)
     partes.push(
       ojo(
-        valor > FRANQUICIA_USD
-          ? `Supera la franquicia de US$${FRANQUICIA_USD} por envío: se paga el régimen general de importación.`
-          : `Sin cupo: la franquicia es para ${ENVIOS_POR_ANIO} envíos por año.`,
+        sinCupo
+          ? `Sin cupo: la franquicia es para ${ENVIOS_POR_ANIO} envíos por año. Calculamos los derechos sobre todo el valor (según la prensa, sin confirmar).`
+          : `Supera la franquicia: los derechos se pagan solo sobre ${usd(r.usdGravados)}, lo que excede los US$${FRANQUICIA_USD} (ARCA).`,
       ),
     );
-  partes.push(ojo("Estimación: las reglas de courier todavía no están confirmadas con fuente oficial."));
+  partes.push(
+    ojo(
+      "Estimación: las reglas de courier todavía no están confirmadas con fuente oficial.",
+    ),
+  );
   return listo(partes, pesos(r.total), r.total);
 }

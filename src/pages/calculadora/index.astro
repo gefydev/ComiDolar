@@ -42,6 +42,7 @@ const iniciales: Campos = {
   "env-m": "100",
   "env-tc": tc,
   "env-iva": "21",
+  "sin-cotizacion": tc ? "" : "si",
 };
 const tickets = Object.fromEntries(
   CASOS.map((caso) => [caso, armarTicket(caso, iniciales)]),
@@ -154,7 +155,7 @@ const faq = {
           </div>
           <CamposCuotas prefijo="ext" tc={tc} />
         </div>
-        <div class="ticket" id="t-exterior" aria-live="polite" data-ticket="exterior" set:html={tickets.exterior.html} />
+        <div class="ticket" id="t-exterior" data-ticket="exterior" set:html={tickets.exterior.html} />
       </section>
 
       <section class="panel-calc p-digital" aria-label="Servicio digital">
@@ -206,7 +207,7 @@ const faq = {
             <input class="campo" id="dig-iibbp" name="dig-iibbp" inputmode="decimal" value="0" />
           </div>
         </div>
-        <div class="ticket" id="t-digital" aria-live="polite" data-ticket="digital" set:html={tickets.digital.html} />
+        <div class="ticket" id="t-digital" data-ticket="digital" set:html={tickets.digital.html} />
       </section>
 
       <section class="panel-calc p-viaje" aria-label="Viaje en pesos">
@@ -225,7 +226,7 @@ const faq = {
           </p>
           <CamposCuotas prefijo="via" tc={tc} conTc={false} />
         </div>
-        <div class="ticket" id="t-viaje" aria-live="polite" data-ticket="viaje" set:html={tickets.viaje.html} />
+        <div class="ticket" id="t-viaje" data-ticket="viaje" set:html={tickets.viaje.html} />
       </section>
 
       <section class="panel-calc p-envio" aria-label="Envío del exterior">
@@ -258,8 +259,10 @@ const faq = {
             <p class="note">Dejalo vacío si no sabés: el total queda incompleto.</p>
           </div>
         </div>
-        <div class="ticket" id="t-envio" aria-live="polite" data-ticket="envio" set:html={tickets.envio.html} />
+        <div class="ticket" id="t-envio" data-ticket="envio" set:html={tickets.envio.html} />
       </section>
+
+      <p class="sr-only" role="status" data-anuncio></p>
 
       <div class="acciones">
         <button class="btn" type="button" data-compartir>Compartir resultado</button>
@@ -338,7 +341,7 @@ const faq = {
         derechos de importación ni tasa de estadística (ARCA, novedad del
         30/07/2026). El IVA de importación dentro de la franquicia no está
         confirmado: la calculadora lo deja editable. Fuera de la franquicia, el
-        total solo se completa si cargás el porcentaje de derechos.
+        total solo se completa si cargás el porcentaje de derechos. Si superás los US$400 y te queda cupo, los derechos se pagan solo sobre el excedente (ARCA). Sin cupo, los calculamos sobre todo el valor, según informa la prensa (sin confirmar).
       </p>
       <p>
         <strong>Pagar con dólares propios.</strong> Según Banco Provincia, si el

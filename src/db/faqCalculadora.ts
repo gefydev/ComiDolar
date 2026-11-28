@@ -48,7 +48,7 @@ export const FAQ_CALCULADORA = [
   {
     pregunta: "¿Cómo se paga en cuotas?",
     respuesta:
-      "Según informan fuentes especializadas, la percepción de una compra con tarjeta se practica en el resumen donde se cobra, y cada cuota se convierte con el dólar de ese resumen. Puede variar según el banco. Para compras en cuotas, la calculadora te deja cargar el tipo de cambio de cada resumen.",
+      "Según informan fuentes especializadas, la percepción de una compra con tarjeta se practica en el resumen donde se cobra, y cada cuota se convierte con el dólar de ese resumen. Puede variar según el banco. Para compras en cuotas, la calculadora te deja cargar el dólar del resumen para estimar cuánto sería cada cuota.",
   },
   {
     pregunta: "¿Cuánto Ingresos Brutos pago?",

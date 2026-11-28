@@ -8,7 +8,10 @@ import { EDITOR, UBICACIONES, type Ubicacion } from "@/config/anuncios";
 const { ubicacion }: { ubicacion: Ubicacion } = Astro.props;
 ---
 
-<aside class="ad" aria-label="Publicidad" data-ubicacion={ubicacion}>
+<aside
+  class="ad"
+  aria-label={ubicacion.endsWith("-2") ? "Publicidad 2" : "Publicidad"}
+  data-ubicacion={ubicacion}>
   <span>Publicidad</span>
   <div class="ad-slot">
     <ins

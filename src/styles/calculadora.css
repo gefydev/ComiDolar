@@ -194,7 +194,8 @@
 .solo-cruzada {
   display: none;
 }
-.campos:has([name="ext-moneda"] option:not([value="USD"]):checked) .solo-cruzada {
+.campos:has([name="ext-moneda"] option:not([value="USD"]):checked)
+  .solo-cruzada {
   display: block;
 }
 .solo-pesos {

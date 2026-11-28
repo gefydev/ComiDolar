@@ -127,10 +127,10 @@ El enrutamiento es estático y dinámico, estructurado de la siguiente forma:
 - **`layout.astro` (Layout principal):**
   - Administra todas las etiquetas meta cruciales para SEO (título, meta descripción, canonical) y OpenGraph/Twitter Cards.
   - Habilita `ClientRouter` (View Transitions) para navegación instantánea sin recarga de página.
-  - Implementa la inyección de PostHog para analíticas y scripts de AdSense condicionales para monetización.
+  - Implementa la inyección de PostHog para analíticas y AdSense diferido.
 - **`Header.astro` y `Footer.astro`:**
   - Marca, píldoras de navegación (con `aria-current`) y botón "Instalar", que solo aparece si el navegador permite instalar (`src/lib/instalar.ts`). No hay menú lateral.
-- **`Anuncio.astro`:** espacio de publicidad de alto fijo (250 px; 90 px desde 900 px).
+- **`AdSlot.astro`:** espacio de publicidad de alto fijo (250 px; 90 px desde 900 px) en cada página pública (menos la 404). La unidad de cada ubicación está en `src/config/anuncios.ts` y el script se carga una vez, diferido (`src/lib/anuncios.ts`). Sin anuncios automáticos.
 - **`Lore.astro`:**
   - Componente que obtiene textos del archivo estático `src/db/lores.ts` y los renderiza según la sección actual para otorgar profundidad histórica al portal.
 - **`Donantes.astro`:** lista de donantes por año, con búsqueda y orden, leída de la API de solo lectura.

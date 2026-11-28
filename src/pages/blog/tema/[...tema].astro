@@ -1,4 +1,5 @@
 ---
+import AdSlot from "@/components/AdSlot.astro";
 import ListaPosts from "@/components/ListaPosts.astro";
 import { getPosts } from "@/lib/blog";
 import Layout from "@/layouts/layout.astro";
@@ -48,5 +49,6 @@ const metadata = {
     <a class="link" href="/blog">
       Ver todo el blog
     </a>
+    <AdSlot ubicacion="blog" />
   </main>
 </Layout>

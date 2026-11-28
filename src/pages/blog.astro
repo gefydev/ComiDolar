@@ -1,6 +1,6 @@
 ---
 import ListaPosts from "@/components/ListaPosts.astro";
-import Anuncio from "@/components/Anuncio.astro";
+import AdSlot from "@/components/AdSlot.astro";
 import Layout from "@/layouts/layout.astro";
 import { getPosts } from "@/lib/blog";
 
@@ -29,6 +29,6 @@ const metadata = {
       dólar y sus ventajas.
     </p>
     <ListaPosts posts={posts} />
-    <Anuncio slot="detalle" />
+    <AdSlot ubicacion="blog" />
   </main>
 </Layout>

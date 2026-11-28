@@ -118,13 +118,6 @@ import "@/styles/global.css";
 
     <ClientRouter />
     <PostHog />
-    {metadata.canonical === "https://comidolar.com.ar/calculadora" && (
-      <script
-        async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8853864974633365"
-        crossorigin="anonymous"
-      />
-    )}
   </head>
   <body transition:animate="none">
     <a class="saltar" href="#contenido">
@@ -144,5 +137,8 @@ import "@/styles/global.css";
       data-cf-beacon='{"token": "4536a67fe2714c37845c5aaadcd0f4d2"}'
       defer
     ></script>
+    <script>
+      import "@/lib/anuncios";
+    </script>
   </body>
 </html>

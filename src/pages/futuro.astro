@@ -1,5 +1,5 @@
 ---
-import Anuncio from "@/components/Anuncio.astro";
+import AdSlot from "@/components/AdSlot.astro";
 import Layout from "@/layouts/layout.astro";
 import FutureCalculator from "@/components/FutureCalculator";
 
@@ -30,6 +30,6 @@ const metadata = {
     </header>
 
     <FutureCalculator client:load />
-    <Anuncio slot="detalle" />
+    <AdSlot ubicacion="interna" />
   </main>
 </Layout>

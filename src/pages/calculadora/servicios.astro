@@ -1,5 +1,5 @@
 ---
-import Anuncio from "@/components/Anuncio.astro";
+import AdSlot from "@/components/AdSlot.astro";
 import Layout from "@/layouts/layout.astro";
 import { digitalServices } from "@/db/digitalServices";
 
@@ -36,7 +36,7 @@ const metadata = {
       </a>
       .
     </p>
-    <Anuncio slot="detalle" />
+    <AdSlot ubicacion="interna" />
     <input
       class="campo mt-4"
       type="search"

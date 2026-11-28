@@ -140,10 +140,15 @@
     font-size: 21px;
     letter-spacing: -0.02em;
   }
+  /* el logo entero, sobre un cuadrado blanco (también en modo oscuro) */
   .brand img {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    padding: 3px;
+    object-fit: contain;
+    background: #fff;
+    border: 1px solid var(--hair);
+    border-radius: 10px;
   }
   .btn {
     display: inline-flex;
@@ -170,7 +175,17 @@
     overflow-x: auto;
     order: 3;
     width: 100%;
-    padding: 3px;
+    /* lugar para el contorno de foco, que el scroll recortaría */
+    padding: 6px;
+    margin-block: -3px;
+    scroll-padding-inline: 6px;
+    scrollbar-width: none;
+  }
+  .pills::-webkit-scrollbar {
+    display: none;
+  }
+  .pills a:focus-visible {
+    outline-offset: 2px;
   }
   .pills a {
     display: flex;
@@ -405,6 +420,11 @@
     overflow: hidden;
     border-radius: 8px;
     background: var(--soft);
+  }
+  .ad-slot ins {
+    display: block;
+    width: 100%;
+    height: var(--ad-h) !important;
   }
 
   /* pie */

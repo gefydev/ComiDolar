@@ -1,6 +1,6 @@
 ---
 import Layout from "@/layouts/layout.astro";
-import Anuncio from "@/components/Anuncio.astro";
+import AdSlot from "@/components/AdSlot.astro";
 import EstadoCotizaciones from "@/components/EstadoCotizaciones.astro";
 import FichaCotizacion from "@/components/FichaCotizacion.astro";
 import { cotizacionesParaRender } from "@/lib/cotizaciones-servidor";
@@ -79,7 +79,7 @@ const casas = cotizaciones?.casas ?? {};
       </ul>
     </section>
 
-    <Anuncio slot="home" />
+    <AdSlot ubicacion="home" />
 
     <section class="seccion texto">
       <h2>Qué es comi.dolar</h2>

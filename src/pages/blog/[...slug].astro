@@ -1,5 +1,5 @@
 ---
-import Anuncio from "@/components/Anuncio.astro";
+import AdSlot from "@/components/AdSlot.astro";
 import type { CollectionEntry } from "astro:content";
 import { render } from "astro:content";
 import { getPosts } from "@/lib/blog";
@@ -74,7 +74,7 @@ const formattedDate = jsDate.toLocaleString("es-AR", {
         </a>
       </p>
     </footer>
-    <Anuncio slot="detalle" />
+    <AdSlot ubicacion="blog" />
   </main>
 </Layout>
 <style is:global>

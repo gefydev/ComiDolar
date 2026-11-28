@@ -2,7 +2,7 @@
 const { metadata } = Astro.props;
 // Sin `og`, la imagen de la home
 const imagenOg = await urlOg(metadata.og?.nombre ?? "home");
-const altOg = `${metadata.title.replace(/^Comi Dólar \| | \| (Comi Dólar|comi\.dolar)$| - ComiDolar$/g, "")} · comi.dolar`;
+const altOg = `${metadata.title.replace(/^Comi Dólar \| | \| (Comi Dólar|ComiDólar)$| - ComiDólar$/g, "")} · ComiDólar`;
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import { ClientRouter } from "astro:transitions";
@@ -47,7 +47,7 @@ import "@/styles/global.css";
     />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <meta name="apple-mobile-web-app-title" content="comi.dolar" />
+    <meta name="apple-mobile-web-app-title" content="ComiDólar" />
     <meta
       name="theme-color"
       content="#ffffff"
@@ -75,7 +75,7 @@ import "@/styles/global.css";
       });
     </script>
     <meta property="og:type" content={metadata.blog ? "article" : "website"} />
-    <meta property="og:site_name" content="comi.dolar" />
+    <meta property="og:site_name" content="ComiDólar" />
     <meta property="og:locale" content="es_AR" />
     {metadata.canonical && (
       <meta property="og:url" content={metadata.canonical} />

@@ -1,11 +1,11 @@
 ---
-title: 'Lanzamos "Tu Futuro": Planificá tu CBC y 6to año - ComiDolar'
+title: 'Lanzamos "Tu Futuro": Planificá tu CBC y 6to año - ComiDólar'
 description: Conocé la nueva herramienta interactiva para calcular qué materias del CBC te aprueba la UBA automáticamente si egresás del CNBA o Pellegrini.
 date: 2026-06-12T18:35:00.000-0300
 draft: false
 author: Gena
 rssauthor: gena@comidolar.com.ar (Genaro Febbo Yapur)
-copyright: 2026 ©️ComiDolar
+copyright: 2026 ©️ComiDólar
 theme: Grupo
 tags: [CBC, CNBA, Pelle, Equivalencias, UBA, Herramienta, Futuro]
 ---

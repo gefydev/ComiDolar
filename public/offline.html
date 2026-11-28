@@ -14,7 +14,7 @@
       content="#151515"
       media="(prefers-color-scheme: dark)"
     />
-    <title>No pudimos conectar · comi.dolar</title>
+    <title>No pudimos conectar · ComiDólar</title>
     <style>
       @font-face {
         font-family: Archivo;
@@ -117,7 +117,7 @@
       comi.dolar
     </header>
     <main>
-      <h1 id="titulo">No pudimos conectar con comidolar</h1>
+      <h1 id="titulo">No pudimos conectar con ComiDólar</h1>
       <p id="estado">No hay cotizaciones guardadas en este dispositivo.</p>
       <table id="tabla" hidden>
         <thead>
@@ -189,10 +189,10 @@
       (function () {
         var titular = function () {
           var titulo = navigator.onLine
-            ? "No pudimos conectar con comidolar"
+            ? "No pudimos conectar con ComiDólar"
             : "Sin conexión";
           document.getElementById("titulo").textContent = titulo;
-          document.title = titulo + " · comi.dolar";
+          document.title = titulo + " · ComiDólar";
         };
         var reintentar = function () {
           location.reload();

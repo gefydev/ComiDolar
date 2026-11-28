@@ -1,11 +1,11 @@
 ---
-title: Resultados Encuestas Elecciones del CENBA 2024 - ComiDolar
+title: Resultados Encuestas Elecciones del CENBA 2024 - ComiDólar
 description: La intención de voto en todas las áreas de los integrantes de ComiDólar para las elecciones del Centro de Estudiantes del Colegio Nacional de Buenos Aires.
 date: 2024-10-30T22:10:00.000-0300
 draft: false
 author: Gena
 rssauthor: gena@comidolar.com.ar (Genaro Febbo Yapur)
-copyright: 2024 ©️ComiDolar
+copyright: 2024 ©️ComiDólar
 theme: Política
 tags: [Elecciones, Voto, Argentina, Censo, Resultados, CENBA]
 hideImage: true

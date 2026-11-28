@@ -52,12 +52,12 @@ const generico = (titulo: string, bajada: string): ImagenOg => {
 
 const GENERICAS: Record<string, [string, string]> = {
   blog: ["Blog", "Noticias y guías sobre el dólar."],
-  donaciones: ["Donaciones", "comi.dolar es un proyecto sin fines de lucro."],
+  donaciones: ["Donaciones", "ComiDólar es un proyecto sin fines de lucro."],
   servicios: [
     "Lista de servicios digitales",
     "Los servicios alcanzados por el IVA del 21 % al pagar con tarjeta.",
   ],
-  whatsapp: ["Grupo de WhatsApp", "La comunidad de comi.dolar."],
+  whatsapp: ["Grupo de WhatsApp", "La comunidad de ComiDólar."],
   futuro: ["Tu Futuro", "CBC o 6to año: compará los dos caminos."],
   terminos: ["Términos y condiciones", "Condiciones de uso del sitio."],
   privacidad: ["Política de privacidad", "Cómo ComiDólar trata tus datos."],
@@ -133,7 +133,7 @@ async function armarLista() {
       },
     });
     const deBlog = (clave: string, titulo: string) =>
-      lista.set(clave, generico(titulo, "Del blog de comi.dolar."));
+      lista.set(clave, generico(titulo, "Del blog de ComiDólar."));
     for (const tag of data.tags ?? [])
       deBlog(`tag-${nombreOg(tag)}`, `#${tag.toLowerCase()}`);
     deBlog(`tema-${nombreOg(data.theme)}`, data.theme);

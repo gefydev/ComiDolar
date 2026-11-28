@@ -1,11 +1,11 @@
 ---
-title: El impuesto pais fue eliminado, calculá tus compras! - ComiDolar
+title: El impuesto pais fue eliminado, calculá tus compras! - ComiDólar
 description: El impuesto pais fue eliminado, conoce todos los cambios que están surgiendo en tus compras en moneda extranjera, y cómo podés calcularlo.
 date: 2024-12-24T17:20:00.000-0300
 draft: false
 author: Gena
 rssauthor: gena@comidolar.com.ar (Genaro Febbo Yapur)
-copyright: 2024 ©️ComiDolar
+copyright: 2024 ©️ComiDólar
 theme: Finanzas
 tags: [Impuestos, Dolar, Argentina, Compras, Impuesto]
 ---
@@ -33,9 +33,9 @@ Aunque la eliminación del Impuesto PAIS beneficia ampliamente a los consumidore
 
 Según estimaciones oficiales, **11 millones de personas** dejarán de pagar el Impuesto PAIS. Esto incluye tanto a empleados como a monotributistas, jubilados y usuarios que consumen servicios digitales internacionales. La medida busca aliviar los costos asociados a compras y servicios contratados en el exterior, lo que representa un ahorro significativo para los consumidores argentinos.
 
-### 📊 Calculadora de dólar tarjeta actualizada de ComiDolar
+### 📊 Calculadora de dólar tarjeta actualizada de ComiDólar
 
-Con estos cambios, **ComiDolar ha actualizado su calculadora del dólar tarjeta** para reflejar la eliminación del Impuesto PAIS y facilitar el cálculo exacto del costo de tus compras internacionales o servicios digitales.
+Con estos cambios, **ComiDólar ha actualizado su calculadora del dólar tarjeta** para reflejar la eliminación del Impuesto PAIS y facilitar el cálculo exacto del costo de tus compras internacionales o servicios digitales.
 
 Accede ahora y aprovecha las nuevas condiciones para calcular tus gastos:  
 [**Ir a la calculadora de dólar tarjeta**](https://comidolar.com.ar/calculadora)

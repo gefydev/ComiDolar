@@ -1,11 +1,11 @@
 ---
-title: Comprar en el exterior al menor precio en 2024 en Amazon! - ComiDolar
+title: Comprar en el exterior al menor precio en 2024 en Amazon! - ComiDólar
 description: Una serie de consejos para aprovechar la tarifa plana de envíos de Amazon durante este 2024 accediendo a productos importados a menor precio que comprados aquí.
 date: 2024-09-25T18:00:00.000-0300
 draft: false
 author: Gena
 rssauthor: gena@comidolar.com.ar (Genaro Febbo Yapur)
-copyright: 2024 ©️ComiDolar
+copyright: 2024 ©️ComiDólar
 theme: Finanzas
 tags: [Dolar, Amazon, Argentina, Envio, Tecnologia, Ahorro]
 ---
@@ -31,7 +31,7 @@ A pesar de lo atractiva que es esta tarifa plana, hay **varios factores** que de
 1. **Visita el sitio de Amazon**: Navega por la amplia selección de productos disponibles en Amazon.
 2. **Selecciona tus productos**: Agrega al carrito aquellos artículos que deseas adquirir.
 3. **Revisa las tarifas de envío**: Asegúrate de que el costo de envío sea de USD 5 antes de finalizar tu compra.
-4. **Calcula el precio final en pesos y compra**: Usa ComiDolar para averiguar exactamente cuanto te cobraran por la compra, asi no te llevas sorpresas!
+4. **Calcula el precio final en pesos y compra**: Usa ComiDólar para averiguar exactamente cuanto te cobraran por la compra, asi no te llevas sorpresas!
 
 ### 💳 Opciones de Pago para compras en Amazon
 
@@ -39,13 +39,13 @@ Al momento de realizar tu compra, tienes **dos opciones de pago** que pueden inf
 
 #### 1. Pagar con tarjeta de débito/crédito 💳
 
-Si eliges pagar con tu tarjeta de débito o crédito, el costo se cobrará en dólares según la **cotización del dólar tarjeta** del momento. Para calcular cuánto te costará realmente la compra, te recomendamos usar la **calculadora del dólar tarjeta de ComiDolar**. Puedes acceder a ella <a href="/calculadora">aqui</a>.
+Si eliges pagar con tu tarjeta de débito o crédito, el costo se cobrará en dólares según la **cotización del dólar tarjeta** del momento. Para calcular cuánto te costará realmente la compra, te recomendamos usar la **calculadora del dólar tarjeta de ComiDólar**. Puedes acceder a ella <a href="/calculadora">aqui</a>.
 
 #### 2. **Opción RECOMENDADA** ✨: Dólar MEP/Bolsa
 
 La segunda opción es utilizar **billeteras virtuales** como Brubank, Prex, o cualquier otra que permita comprar dólares MEP. Esta opción te brinda acceso a una **cotización mucho más baja** que el dólar tarjeta, lo que significa un mayor ahorro en tus compras en Amazon.
 
-Para consultar la cotización actual del dólar MEP, visita la **página principal de ComiDolar** <a href="/">aqui</a>.
+Para consultar la cotización actual del dólar MEP, visita la **página principal de ComiDólar** <a href="/">aqui</a>.
 
 ### 💵 Comparacion de precio con MercadoLibre
 
@@ -55,4 +55,4 @@ Para consultar la cotización actual del dólar MEP, visita la **página princip
 
 Podemos ver lo ampliamente conveniente que es esta modalidad.
 
-ComiDolar
+ComiDólar

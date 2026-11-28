@@ -87,7 +87,10 @@ export default function DonationGrid() {
 
   if (!lista && fallo) {
     return (
-      <div role="alert" className="py-8 text-center space-y-4">
+      <div
+        role="alert"
+        className="w-full h-[500px] flex flex-col items-center justify-center text-center gap-4"
+      >
         <p>No pudimos cargar los donantes.</p>
         <button
           onClick={cargar}

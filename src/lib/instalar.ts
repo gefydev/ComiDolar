@@ -77,11 +77,16 @@ document.addEventListener("click", async (e) => {
   window.__instalar = null;
   pintar();
   medir("instalacion_iniciada");
-  await evento.prompt();
-  const { outcome } = await evento.userChoice;
-  medir(
-    outcome === "accepted" ? "instalacion_aceptada" : "instalacion_rechazada",
-  );
+  try {
+    await evento.prompt();
+    const { outcome } = await evento.userChoice;
+    medir(
+      outcome === "accepted" ? "instalacion_aceptada" : "instalacion_rechazada",
+    );
+  } catch {
+    // el navegador no abrió su diálogo; si vuelve a ofrecer, vuelve el botón
+    medir("instalacion_fallida");
+  }
 });
 
 window.addEventListener("appinstalled", () => {

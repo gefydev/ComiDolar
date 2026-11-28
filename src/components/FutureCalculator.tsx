@@ -140,6 +140,7 @@ export default function FutureCalculator() {
         <div className="inline-flex p-1 bg-zinc-200/50 dark:bg-zinc-800/50 rounded-xl">
           <button
             onClick={() => setColegio("cnba")}
+            aria-pressed={colegio === "cnba"}
             className={`min-h-11 px-6 py-3 rounded-lg font-bold transition-all duration-300 ${
               colegio === "cnba"
                 ? "bg-[var(--brand)] text-[var(--on-brand)] scale-105"
@@ -150,6 +151,7 @@ export default function FutureCalculator() {
           </button>
           <button
             onClick={() => setColegio("pelle")}
+            aria-pressed={colegio === "pelle"}
             className={`min-h-11 px-6 py-3 rounded-lg font-bold transition-all duration-300 ${
               colegio === "pelle"
                 ? "bg-[var(--brand)] text-[var(--on-brand)] scale-105"

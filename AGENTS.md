@@ -53,12 +53,7 @@ El proyecto brinda información precisa sobre:
 
 Permite a los usuarios calcular el costo real de sus consumos en dólares con tarjeta (como compras generales o servicios digitales).
 
-- **Esquema Impositivo Actual (Post-Eliminación Impuesto PAIS - 24/12/2024):**
-  - **Impuesto PAIS:** 0% (se eliminó a finales de 2024).
-  - **Percepción de Ganancias:** 30% fijo sobre el dólar oficial para todas las compras en moneda extranjera.
-  - **IVA Servicios Digitales:** 21% (se suma únicamente si el usuario marca el switch indicando que es un _servicio digital_ registrado en AFIP como Netflix, Spotify, Steam, etc.).
-  - **Cálculo Final:** 51% de recargo impositivo total para servicios digitales, o 30% de recargo impositivo para otras compras físicas.
-- En la calculadora, si el usuario desactiva el check "Es un servicio digital", el IVA (21%) se oculta en la UI y el texto del total impositivo pasa dinámicamente de "Solo Impuestos (51%)" a "Solo Impuestos (30%)".
+- Casos y reglas: ver `BLUEPRINT.md` y `src/lib/calculadora.ts`. El Impuesto PAIS no existe desde diciembre de 2024.
 
 #### 2. Donaciones (`/donaciones`)
 

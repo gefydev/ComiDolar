@@ -31,6 +31,7 @@
       Total: <span data-total></span>
     </p>
     <ul class="mt-2" data-lista></ul>
+    <p class="mt-2" role="status" data-sin-resultados></p>
     <button class="btn mt-3" type="button" data-todos>
       Ver todos
     </button>
@@ -83,6 +84,9 @@
           return li;
         }),
       );
+      $("[data-sin-resultados]").textContent = filas.length
+        ? ""
+        : "No hay donantes con esa búsqueda.";
       todos.hidden = filas.length <= 10;
       todos.textContent = completo ? "Ver menos" : "Ver todos";
     };

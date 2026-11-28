@@ -1,103 +1,26 @@
 ---
-import { featuredProjects } from "@/db/featuredProjects";
-import Release from "./Release.astro"
+const enlaces = [
+  { href: "/whatsapp", nombre: "Grupo de WhatsApp" },
+  { href: "/donaciones", nombre: "Donaciones" },
+  { href: "https://wa.me/5491127556546/", nombre: "Contacto" },
+  { href: "https://mundial.comidolar.com.ar", nombre: "Mundial de Comis" },
+  { href: "https://status.comidolar.com.ar", nombre: "Estado del servicio" },
+  { href: "/terminos", nombre: "Términos" },
+  { href: "/privacidad", nombre: "Privacidad" },
+];
 ---
 
-<section
-  class="flex flex-col items-center justify-center gap-2 border border-divider mt-12 p-2 bg-whiteless/50 dark:bg-darkless/50 backdrop-blur-2xl rounded-lg"
->
-  <h4>Otros proyectos:</h4>
-  <div class="flex flex-wrap gap-2">
-    {
-      featuredProjects.map(({ url, title, description, favicon }) => (
-        <a
-          title={description}
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="flex items-center gap-2 p-4 bg-zinc-100/50 hover:bg-zinc-100/70 dark:bg-backgroundDark/20 transition duration-200 hover:dark:bg-backgroundDark/40 backdrop-blur-2xl rounded-lg"
-        >
-          <img
-            src={favicon.url}
-            alt={title}
-            width="48px"
-            height="48px"
-            loading="lazy"
-            decoding="async"
-            fetchpriority="high"
-            class={`object-contain ${favicon.scheme === "light" ? "dark:invert" : ""}`}
-          />
-          <p class="text-zinc-600 dark:text-zinc-200 text-center">{title}</p>
-        </a>
-      ))
-    }
-  </div>
-</section>
-<section
-  class="flex items-center justify-center gap-2 mt-2 p-2 border border-divider bg-whiteless/50 dark:bg-darkless/50 backdrop-blur-2xl rounded-lg"
->
-  <div
-    class="text-green-500 hover:text-green-400 h-full transition duration-200 p-2 border-r-2 dark:border-whiteless/50"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      width="48px"
-      height="48px"
-      ><path
-        fill="currentColor"
-        d="M16 11H8a1 1 0 0 1-1-1V7a5 5 0 0 1 10 0v3a1 1 0 0 1-1 1M9 9h6V7a3 3 0 0 0-6 0Z"
-        opacity="0.5"></path><rect
-        width="16"
-        height="13"
-        x="4"
-        y="9"
-        fill="currentColor"
-        rx="3"></rect></svg
-    >
-  </div>
-  <p>
-    ©ComiDólar protege tu información personal y privada. Lee los <a
-      class="text-green-500 font-bold"
-      href="/terminos">Términos y condiciones</a
-    > y nuestra <a class="text-green-500 font-bold" href="/privacidad"
-      >Política de privacidad</a
-    >.
+<footer class="pie">
+  <nav aria-label="Pie">
+    {enlaces.map(({ href, nombre }) => (
+      <a class="link" href={href}>
+        {nombre}
+      </a>
+    ))}
+  </nav>
+  <p class="note">
+    comi.dolar · economía para todos. Nacimos en el Colegio Nacional de Buenos
+    Aires. © <a href="https://gefy.dev/">GefyDev</a> ·
+    <a href="https://github.com/gefydev/ComiDolar">Código</a>
   </p>
-</section>
-<footer
-  transition:persist
-  class="bg-white/50 backdrop-blur-2xl border border-divider rounded-lg shadow mt-4 dark:bg-darkless/50 flex items-center w-full justify-between px-6 py-2"
->
-  <img
-    alt="Logo ancho de ComiDolar"
-    width="128px"
-    height="72px"
-    loading="lazy"
-    src="/assets/img/wide-c.webp"
-  />
-  <div class="max-w-screen-xl md:flex md:items-center md:justify-between">
-    <span
-      class="text-sm flex flex-col text-zinc-600 sm:text-center dark:text-zinc-400"
-    >
-      ComiDolar Bundle Version <Release/> (stable)
-      <div class="text-zinc-600 dark:text-zinc-200 mt-2 sm:hidden">
-        <p>
-          <a
-            class="font-bold hover:text-green-500 transition"
-            href="https://github.com/gefydev/"
-            referrerpolicy="no-referrer"
-            target="_blank">©gefydev</a
-          > & <a
-            class="font-bold hover:text-green-500 transition"
-            href="https://genahost.vercel.app/"
-            referrerpolicy="no-referrer"
-            target="_blank">®GenaHost</a
-          >
-          {new Date().getFullYear()}
-        </p>
-        <p>Todos los derechos reservados</p>
-      </div>
-    </span>
-  </div>
 </footer>

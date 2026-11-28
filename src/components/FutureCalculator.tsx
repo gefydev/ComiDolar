@@ -137,12 +137,12 @@ export default function FutureCalculator() {
         <h2 className="text-xl font-medium mb-4 text-zinc-600 dark:text-zinc-300">
           Seleccioná tu colegio secundario:
         </h2>
-        <div className="inline-flex p-1 bg-zinc-200/50 dark:bg-zinc-800/50 rounded-xl backdrop-blur-md">
+        <div className="inline-flex p-1 bg-zinc-200/50 dark:bg-zinc-800/50 rounded-xl">
           <button
             onClick={() => setColegio("cnba")}
-            className={`px-6 py-3 rounded-lg font-bold transition-all duration-300 ${
+            className={`min-h-11 px-6 py-3 rounded-lg font-bold transition-all duration-300 ${
               colegio === "cnba"
-                ? "bg-green-500 text-white shadow-md scale-105"
+                ? "bg-[var(--brand)] text-[var(--on-brand)] scale-105"
                 : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-white"
             }`}
           >
@@ -150,9 +150,9 @@ export default function FutureCalculator() {
           </button>
           <button
             onClick={() => setColegio("pelle")}
-            className={`px-6 py-3 rounded-lg font-bold transition-all duration-300 ${
+            className={`min-h-11 px-6 py-3 rounded-lg font-bold transition-all duration-300 ${
               colegio === "pelle"
-                ? "bg-green-500 text-white shadow-md scale-105"
+                ? "bg-[var(--brand)] text-[var(--on-brand)] scale-105"
                 : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-white"
             }`}
           >
@@ -162,15 +162,16 @@ export default function FutureCalculator() {
       </div>
 
       {/* Selectores de Carrera */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 bg-zinc-100/50 dark:bg-darkless/50 backdrop-blur-2xl p-6 rounded-2xl shadow-lg border border-zinc-200/50 dark:border-zinc-800/50">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 bg-zinc-100/50 dark:bg-darkless/50 p-6 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50">
         <div>
           <label className="block text-sm font-semibold mb-2 text-zinc-600 dark:text-zinc-300">
             Facultad de la UBA:
           </label>
           <select
+            aria-label="Facultad"
             value={selectedFacultyIdx}
             onChange={handleFacultyChange}
-            className="w-full p-3 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white border border-zinc-300 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none transition"
+            className="w-full p-3 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white border border-zinc-300 dark:border-zinc-700 rounded-xl transition"
           >
             {UBA_FACULTIES.map((fac, idx) => (
               <option key={fac.name} value={idx}>
@@ -185,9 +186,10 @@ export default function FutureCalculator() {
             Carrera elegida:
           </label>
           <select
+            aria-label="Carrera"
             value={selectedCareerId}
             onChange={handleCareerChange}
-            className="w-full p-3 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white border border-zinc-300 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none transition"
+            className="w-full p-3 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white border border-zinc-300 dark:border-zinc-700 rounded-xl transition"
           >
             {selectedFaculty.careers.map((car) => (
               <option key={car.id} value={car.id}>
@@ -205,7 +207,7 @@ export default function FutureCalculator() {
         </h2>
         <p className="text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto mb-6">
           Esta carrera requiere un total de{" "}
-          <span className="font-bold text-green-500">
+          <span className="font-bold text-[var(--link)]">
             {quantityTotal} materias
           </span>{" "}
           en el Ciclo Básico Común (CBC)
@@ -224,7 +226,7 @@ export default function FutureCalculator() {
         <div
           className={`inline-flex items-center gap-3 px-6 py-4 rounded-2xl border ${
             isCbcRecommended
-              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-800 dark:text-emerald-300"
+              ? "bg-green-500/10 border-green-500/30 text-green-800 dark:text-green-300"
               : "bg-amber-500/10 border-amber-500/30 text-amber-800 dark:text-amber-300"
           }`}
         >
@@ -243,9 +245,9 @@ export default function FutureCalculator() {
       {/* Los Dos Caminos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch mb-12 text-left">
         {/* CAMINO A: Egresar en 5to y hacer el CBC UBA */}
-        <div className="flex flex-col bg-zinc-100/50 dark:bg-darkless/50 backdrop-blur-2xl rounded-2xl shadow-xl border border-zinc-200/50 dark:border-zinc-800/50 overflow-hidden">
-          <div className="p-6 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-b border-zinc-200/50 dark:border-zinc-800/50">
-            <span className="text-xs font-bold uppercase tracking-wider text-green-600 dark:text-green-400 bg-green-500/10 px-3 py-1 rounded-full">
+        <div className="flex flex-col bg-zinc-100/50 dark:bg-darkless/50 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 overflow-hidden">
+          <div className="p-6 bg-green-500/10 border-b border-zinc-200/50 dark:border-zinc-800/50">
+            <span className="text-sm font-bold uppercase tracking-wider text-[var(--link)] bg-green-500/10 px-3 py-1 rounded-full">
               Camino Rápido
             </span>
             <h3 className="text-2xl font-bold mt-2 text-zinc-900 dark:text-white">
@@ -265,7 +267,7 @@ export default function FutureCalculator() {
                   <span className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
                     Avance total del CBC:
                   </span>
-                  <span className="text-lg font-bold text-green-500">
+                  <span className="text-lg font-bold text-[var(--link)]">
                     {percentage5th}%
                   </span>
                 </div>
@@ -275,14 +277,14 @@ export default function FutureCalculator() {
                     style={{ width: `${percentage5th}%` }}
                   ></div>
                 </div>
-                <p className="text-xs text-zinc-500 mt-2">
+                <p className="text-sm text-[var(--muted)] mt-2">
                   ({totalApproved5th} de {quantityTotal} materias cubiertas)
                 </p>
               </div>
 
               {/* Seccion 1: Materias Obligatorias */}
               <div className="mb-6">
-                <h4 className="font-bold text-xs text-zinc-500 uppercase tracking-wider mb-3">
+                <h4 className="font-bold text-sm text-[var(--muted)] uppercase tracking-wider mb-3">
                   1. Materias Obligatorias Fijas ({compulsorySubjects.length}):
                 </h4>
                 <div className="space-y-2">
@@ -297,13 +299,13 @@ export default function FutureCalculator() {
                         key={subjCode}
                         className={`flex items-center gap-3 p-3 rounded-xl border ${
                           isApproved
-                            ? "bg-emerald-500/5 border-emerald-500/20 text-emerald-800 dark:text-emerald-300"
+                            ? "bg-green-500/5 border-green-500/20 text-green-800 dark:text-green-300"
                             : "bg-zinc-200/30 dark:bg-zinc-800/30 border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
                         }`}
                       >
                         <span
                           className={`text-xl font-bold ${
-                            isApproved ? "text-green-500" : "text-zinc-400"
+                            isApproved ? "text-[var(--link)]" : "text-zinc-400"
                           }`}
                         >
                           {isApproved ? "✓" : "○"}
@@ -312,7 +314,7 @@ export default function FutureCalculator() {
                           <p className="font-semibold text-sm">
                             {subject.name}
                           </p>
-                          <p className="text-xs text-zinc-500">
+                          <p className="text-sm text-[var(--muted)]">
                             {isApproved
                               ? `Equivalencia automática (Código ${subject.code})`
                               : `Pendiente de rendir (Código ${subject.code})`}
@@ -327,12 +329,12 @@ export default function FutureCalculator() {
               {/* Seccion 2: Electivas */}
               {quantityToChoose > 0 && (
                 <div className="mb-6">
-                  <h4 className="font-bold text-xs text-zinc-500 uppercase tracking-wider mb-2">
+                  <h4 className="font-bold text-sm text-[var(--muted)] uppercase tracking-wider mb-2">
                     2. Materias Electivas (Elegir {quantityToChoose}):
                   </h4>
 
                   {/* Mensaje Pedagogico de Relleno de Electivas */}
-                  <div className="p-3 bg-zinc-200/50 dark:bg-zinc-800/40 rounded-xl text-xs text-zinc-600 dark:text-zinc-400 mb-3 border border-zinc-300/30 dark:border-zinc-700/30">
+                  <div className="p-3 bg-zinc-200/50 dark:bg-zinc-800/40 rounded-xl text-sm text-zinc-600 dark:text-zinc-400 mb-3 border border-zinc-300/30 dark:border-zinc-700/30">
                     💡 <strong>Asignación óptima de electivas:</strong> El
                     colegio te aprueba automáticamente{" "}
                     {approvedElectivesIn5th.length} de las opciones del pool
@@ -350,16 +352,16 @@ export default function FutureCalculator() {
                       return (
                         <div
                           key={subjCode}
-                          className="flex items-center gap-3 p-3 rounded-xl border bg-emerald-500/5 border-emerald-500/20 text-emerald-800 dark:text-emerald-300"
+                          className="flex items-center gap-3 p-3 rounded-xl border bg-green-500/5 border-green-500/20 text-green-800 dark:text-green-300"
                         >
-                          <span className="text-xl font-bold text-green-500">
+                          <span className="text-xl font-bold text-[var(--link)]">
                             ✓
                           </span>
                           <div className="flex-grow">
                             <p className="font-semibold text-sm">
                               {subject.name}
                             </p>
-                            <p className="text-xs text-zinc-500">
+                            <p className="text-sm text-[var(--muted)]">
                               Aprobada y asignada al cupo (Código {subject.code}
                               )
                             </p>
@@ -375,7 +377,7 @@ export default function FutureCalculator() {
                           Pendiente: Debés cursar y rendir {numPendingElectives}{" "}
                           de las siguientes opciones:
                         </p>
-                        <ul className="space-y-1 pl-4 list-disc text-xs text-zinc-600 dark:text-zinc-400">
+                        <ul className="space-y-1 pl-4 list-disc text-sm text-zinc-600 dark:text-zinc-400">
                           {remainingElectiveOptions.map((subjCode) => {
                             const subject = CBC_SUBJECTS[subjCode] || {
                               code: subjCode,
@@ -417,16 +419,16 @@ export default function FutureCalculator() {
                 <span className="text-zinc-600 dark:text-zinc-400">
                   Ingreso a carrera:
                 </span>
-                <span className="font-bold text-green-500">{cbcEntryDate}</span>
+                <span className="font-bold text-[var(--link)]">{cbcEntryDate}</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* CAMINO B: Hacer el 6to año en el Colegio */}
-        <div className="flex flex-col bg-zinc-100/50 dark:bg-darkless/50 backdrop-blur-2xl rounded-2xl shadow-xl border border-zinc-200/50 dark:border-zinc-800/50 overflow-hidden">
-          <div className="p-6 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 border-b border-zinc-200/50 dark:border-zinc-800/50">
-            <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full">
+        <div className="flex flex-col bg-zinc-100/50 dark:bg-darkless/50 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 overflow-hidden">
+          <div className="p-6 bg-green-500/10 border-b border-zinc-200/50 dark:border-zinc-800/50">
+            <span className="text-sm font-bold uppercase tracking-wider text-[var(--link)] bg-green-500/10 px-3 py-1 rounded-full">
               Camino Tradicional
             </span>
             <h3 className="text-2xl font-bold mt-2 text-zinc-900 dark:text-white">
@@ -442,10 +444,10 @@ export default function FutureCalculator() {
             <div>
               {/* Orientación escolar */}
               <div className="mb-6">
-                <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider block mb-1">
+                <span className="text-sm font-semibold text-[var(--muted)] uppercase tracking-wider block mb-1">
                   Orientación / Trayecto a cursar:
                 </span>
-                <p className="text-base font-bold text-blue-500 dark:text-blue-400">
+                <p className="text-base font-bold text-[var(--link)]">
                   {sixthOrientation}
                 </p>
               </div>
@@ -456,24 +458,24 @@ export default function FutureCalculator() {
                   <span className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
                     Cobertura del CBC en 6to:
                   </span>
-                  <span className="text-lg font-bold text-blue-500">
+                  <span className="text-lg font-bold text-[var(--link)]">
                     {percentageSixth}%
                   </span>
                 </div>
                 <div className="w-full bg-zinc-300 dark:bg-zinc-800 rounded-full h-3">
                   <div
-                    className="bg-blue-500 h-3 rounded-full transition-all duration-500"
+                    className="bg-green-500 h-3 rounded-full transition-all duration-500"
                     style={{ width: `${percentageSixth}%` }}
                   ></div>
                 </div>
-                <p className="text-xs text-zinc-500 mt-2">
+                <p className="text-sm text-[var(--muted)] mt-2">
                   ({totalApprovedSixth} de {quantityTotal} materias cubiertas)
                 </p>
               </div>
 
               {/* Seccion 1: Obligatorias en 6to */}
               <div className="mb-6">
-                <h4 className="font-bold text-xs text-zinc-500 uppercase tracking-wider mb-3">
+                <h4 className="font-bold text-sm text-[var(--muted)] uppercase tracking-wider mb-3">
                   1. Cobertura de Obligatorias:
                 </h4>
                 <div className="space-y-2">
@@ -488,13 +490,13 @@ export default function FutureCalculator() {
                         key={subjCode}
                         className={`flex items-center gap-3 p-3 rounded-xl border ${
                           isCovered
-                            ? "bg-blue-500/5 border-blue-500/20 text-blue-800 dark:text-blue-300"
+                            ? "bg-green-500/5 border-green-500/20 text-green-800 dark:text-green-300"
                             : "bg-red-500/5 border-red-500/20 text-red-800 dark:text-red-300"
                         }`}
                       >
                         <span
                           className={`text-xl font-bold ${
-                            isCovered ? "text-blue-500" : "text-red-500"
+                            isCovered ? "text-[var(--link)]" : "text-red-500"
                           }`}
                         >
                           {isCovered ? "✓" : "✗"}
@@ -503,7 +505,7 @@ export default function FutureCalculator() {
                           <p className="font-semibold text-sm">
                             {subject.name}
                           </p>
-                          <p className="text-xs text-zinc-500">
+                          <p className="text-sm text-[var(--muted)]">
                             {isCovered
                               ? "Aprobada cursando 6º Año"
                               : "Deberá rendirse por fuera en sede del CBC"}
@@ -518,7 +520,7 @@ export default function FutureCalculator() {
               {/* Seccion 2: Electivas en 6to */}
               {quantityToChoose > 0 && (
                 <div className="mb-6">
-                  <h4 className="font-bold text-xs text-zinc-500 uppercase tracking-wider mb-2">
+                  <h4 className="font-bold text-sm text-[var(--muted)] uppercase tracking-wider mb-2">
                     2. Cobertura de Electivas:
                   </h4>
 
@@ -531,16 +533,16 @@ export default function FutureCalculator() {
                       return (
                         <div
                           key={subjCode}
-                          className="flex items-center gap-3 p-3 rounded-xl border bg-blue-500/5 border-blue-500/20 text-blue-800 dark:text-blue-300"
+                          className="flex items-center gap-3 p-3 rounded-xl border bg-green-500/5 border-green-500/20 text-green-800 dark:text-green-300"
                         >
-                          <span className="text-xl font-bold text-blue-500">
+                          <span className="text-xl font-bold text-[var(--link)]">
                             ✓
                           </span>
                           <div className="flex-grow">
                             <p className="font-semibold text-sm">
                               {subject.name}
                             </p>
-                            <p className="text-xs text-zinc-500">
+                            <p className="text-sm text-[var(--muted)]">
                               Aprobada cursando 6º Año (Asignada al cupo)
                             </p>
                           </div>
@@ -549,7 +551,7 @@ export default function FutureCalculator() {
                     })}
 
                     {numSixthPendingElectives > 0 && (
-                      <div className="p-3 bg-red-500/5 border border-red-500/20 rounded-xl text-red-800 dark:text-red-300 text-xs">
+                      <div className="p-3 bg-red-500/5 border border-red-500/20 rounded-xl text-red-800 dark:text-red-300 text-sm">
                         <strong>Pendiente:</strong> Debés rendir{" "}
                         {numSixthPendingElectives} electiva(s) en sede del CBC
                         por no estar cubiertas en el plan escolar de 6to.
@@ -561,7 +563,7 @@ export default function FutureCalculator() {
 
               {/* Notas de 6to año */}
               {sixthNotes && (
-                <div className="mb-6 p-3 bg-zinc-200/50 dark:bg-zinc-800/40 border-l-4 border-blue-500 rounded text-xs text-zinc-600 dark:text-zinc-400 text-left">
+                <div className="mb-6 p-3 bg-zinc-200/50 dark:bg-zinc-800/40 border-l-4 border-green-500 rounded text-sm text-zinc-600 dark:text-zinc-400 text-left">
                   <strong>Nota del plan de estudios:</strong> {sixthNotes}
                 </div>
               )}
@@ -581,7 +583,7 @@ export default function FutureCalculator() {
                 <span className="text-zinc-600 dark:text-zinc-400">
                   Ingreso a carrera:
                 </span>
-                <span className="font-bold text-blue-500">Marzo de 2028</span>
+                <span className="font-bold text-[var(--link)]">Marzo de 2028</span>
               </div>
             </div>
           </div>
@@ -589,14 +591,14 @@ export default function FutureCalculator() {
       </div>
 
       {/* Panel de Pros y Contras Pedagógico */}
-      <div className="bg-zinc-100/50 dark:bg-darkless/50 backdrop-blur-2xl p-6 rounded-2xl shadow-xl border border-zinc-200/50 dark:border-zinc-800/50 text-left mb-10">
+      <div className="bg-zinc-100/50 dark:bg-darkless/50 p-6 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 text-left mb-10">
         <h3 className="text-2xl font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-2">
           <span>🧐</span> ¿Cómo tomar la decisión adecuada?
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
-            <h4 className="font-bold text-emerald-600 dark:text-emerald-400 mb-3 flex items-center gap-2">
+            <h4 className="font-bold text-[var(--link)] mb-3 flex items-center gap-2">
               <span>🚀</span> Egresar en 5to + CBC Directo
             </h4>
             <ul className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400 list-disc list-inside">
@@ -621,7 +623,7 @@ export default function FutureCalculator() {
           </div>
 
           <div>
-            <h4 className="font-bold text-blue-600 dark:text-blue-400 mb-3 flex items-center gap-2">
+            <h4 className="font-bold text-[var(--link)] mb-3 flex items-center gap-2">
               <span>🏫</span> Hacer el 6to Año en el Colegio
             </h4>
             <ul className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400 list-disc list-inside">
@@ -650,21 +652,21 @@ export default function FutureCalculator() {
         <a
           href="/docs/RESCS-2026-03373199-UBA-REC.pdf"
           target="_blank"
-          className="flex items-center gap-2 text-xs font-semibold px-4 py-2 bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-lg hover:bg-zinc-300 dark:hover:bg-zinc-700 transition"
+          className="min-h-11 flex items-center gap-2 text-sm font-semibold px-4 py-2 bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-lg hover:bg-zinc-300 dark:hover:bg-zinc-700 transition"
         >
           <span>📄</span> Res. CBC UBA 5to (RESCS-2026-03373199)
         </a>
         <a
           href="/docs/sexto_cnba.pdf"
           target="_blank"
-          className="flex items-center gap-2 text-xs font-semibold px-4 py-2 bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-lg hover:bg-zinc-300 dark:hover:bg-zinc-700 transition"
+          className="min-h-11 flex items-center gap-2 text-sm font-semibold px-4 py-2 bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-lg hover:bg-zinc-300 dark:hover:bg-zinc-700 transition"
         >
           <span>📄</span> Plan 6to Año CNBA (PDF)
         </a>
         <a
           href="/docs/sexto_pelle.pdf"
           target="_blank"
-          className="flex items-center gap-2 text-xs font-semibold px-4 py-2 bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-lg hover:bg-zinc-300 dark:hover:bg-zinc-700 transition"
+          className="min-h-11 flex items-center gap-2 text-sm font-semibold px-4 py-2 bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-lg hover:bg-zinc-300 dark:hover:bg-zinc-700 transition"
         >
           <span>📄</span> Plan 6to Año PELLE (PDF)
         </a>
@@ -672,7 +674,7 @@ export default function FutureCalculator() {
 
       {/* Disclaimer y Botón de Reporte */}
       <div className="mt-12 p-6 bg-red-500/5 dark:bg-red-500/10 border border-red-500/20 rounded-2xl text-center max-w-2xl mx-auto">
-        <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">
+        <p className="text-sm text-[var(--muted)] leading-relaxed mb-4">
           ⚠️ <strong>Disclaimer de información:</strong> Los planes de estudio y
           equivalencias se basan en resoluciones oficiales de la UBA vigentes
           para 2025/2026. Sin embargo, los planes de carreras pueden cambiar y
@@ -683,7 +685,7 @@ export default function FutureCalculator() {
           href="https://wa.me/5491127556546?text=Hola%20Gena!%20Encontr%C3%A9%20un%20error%20en%20las%20equivalencias%20de%20Tu%20Futuro%20en%20ComiD%C3%B3lar%20con%20la%20carrera..."
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold text-sm rounded-xl transition duration-300 transform hover:scale-105 shadow-md"
+          className="min-h-11 inline-flex items-center gap-2 px-5 py-2.5 font-bold text-sm rounded-xl transition duration-300 transform hover:scale-105 bg-[var(--brand)] text-[var(--on-brand)]"
         >
           <span>💬</span> Reportar Error por WhatsApp
         </a>

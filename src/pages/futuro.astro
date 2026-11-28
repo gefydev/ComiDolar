@@ -1,4 +1,5 @@
 ---
+import AdSlot from "@/components/AdSlot.astro";
 import Layout from "@/layouts/layout.astro";
 import FutureCalculator from "@/components/FutureCalculator";
 
@@ -16,17 +17,19 @@ const metadata = {
 };
 ---
 
-<Layout bodyclass="pt-12" metadata={metadata}>
-  <main class="space-y-8 max-w-screen-xl mx-auto px-4 text-center">
+<Layout metadata={metadata}>
+  <main class="pagina space-y-6">
     <header class="space-y-2">
-      <h1 class="text-5xl font-extrabold tracking-tight text-zinc-900 dark:text-white bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent">
-        Tu Futuro (CBC vs 6to Año)
-      </h1>
-      <p class="text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
-        Según la resolución <strong>RESCS-2026-890-E-UBA-REC</strong>, conocé al instante cuántas materias del Ciclo Básico Común ya tenés aprobadas de forma automática al egresar de 5to año y compará el camino del CBC tradicional con cursar el 6to año optativo.
+      <h1 class="h1">Tu Futuro (CBC vs 6to Año)</h1>
+      <p class="max-w-[68ch]">
+        Según la resolución <strong>RESCS-2026-890-E-UBA-REC</strong>, conocé al
+        instante cuántas materias del Ciclo Básico Común ya tenés aprobadas de
+        forma automática al egresar de 5to año y compará el camino del CBC
+        tradicional con cursar el 6to año optativo.
       </p>
     </header>
 
     <FutureCalculator client:load />
+    <AdSlot ubicacion="interna" />
   </main>
 </Layout>

@@ -22,8 +22,8 @@ Antes de dar por finalizada cualquier tarea o proponer cambios, debés seguir es
      - Linter del repositorio completo: `bun run lint` (no uses `eslint .` o similares para todo el repositorio).
      - Formateo o linter de archivo/s específico/s: Usar `bunx prettier --write <archivo>` o `bunx eslint <archivo>` únicamente cuando se quiera formatear o lintear un archivo o conjunto de archivos en particular (y corregir los errores/warnings que surjan antes de reportar la tarea como completada).
 
-4. **Actualización de Versión:**
-   - Si se te solicita actualizar la versión de ComiDólar, **únicamente** debés modificar el texto plano dentro del componente [`src/components/Release.astro`](./src/components/Release.astro). No modifiques la versión en otros lados; este componente actúa como la fuente única de verdad y se renderiza automáticamente donde corresponda.
+4. **Diseño:**
+   - Los colores, la tipografía y los componentes salen de [`src/styles/global.css`](./src/styles/global.css). El sitio no muestra número de versión.
 
 ---
 
@@ -84,14 +84,6 @@ Contiene artículos y guías sobre finanzas personales elaborados por Gena. Algu
 - _Amazon con Tarifa Plana:_ Guía para importar artículos de tecnología y del hogar de EE. UU. pagando solo USD 5 de envío y abonándolos mediante dólar MEP (comprado en billeteras como Brubank o Prex), siendo esta una opción más económica que pagar con dólar tarjeta.
 - _Fin del Impuesto PAIS:_ Explicación técnica de la baja del costo del dólar tarjeta del $1.671,20 a $1.358 (según cotizaciones de finales de 2024).
 - _Encuestas y Censo CENBA (2024/2025):_ Sondeos interactivos de intención de voto para las elecciones del Centro de Estudiantes del Colegio Nacional de Buenos Aires (CENBA).
-
-#### 5. Proyectos Destacados del Ecosistema
-
-En la página principal se promocionan otros desarrollos creados por Gena:
-
-- **BlackMaps** (`https://blackmaps.vercel.app`): Cartografía interactiva y mapas temáticos basados en datos de redes sociales.
-- **YourProfiles** (`https://yourprofiles.vercel.app`): Plataforma para crear y compartir perfiles/tarjetas personales virtuales.
-- **Comi Buenas Noches** (`https://comibuenasnoches.vercel.app`): Sitio web humorístico para postularse como pretendiente de los administradores.
 
 ---
 

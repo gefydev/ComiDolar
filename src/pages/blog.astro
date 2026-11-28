@@ -1,6 +1,7 @@
 ---
+import ListaPosts from "@/components/ListaPosts.astro";
+import AdSlot from "@/components/AdSlot.astro";
 import Layout from "@/layouts/layout.astro";
-import BlogPostCard from "@/components/BlogPostCard.astro";
 import { getPosts } from "@/lib/blog";
 
 const posts = await getPosts();
@@ -20,32 +21,14 @@ const metadata = {
 ---
 
 <Layout metadata={metadata}>
-  <main>
-    <h1 class="text-4xl font-bold mb-4 text-center">Comi Dólar | Blog</h1>
-    <p class="text-lg">
+  <main class="pagina">
+    <h1 class="h1">Blog</h1>
+    <p class="mt-2 max-w-[68ch]">
       Blog oficial de Comi Dólar, la comisión de dólar del Colegio Nacional de
       Buenos Aires. Encontrarás aquí las últimas noticias y anuncios sobre el
       dólar y sus ventajas.
     </p>
-
-    <p class="my-6 text-xl">Últimos posteos:</p>
-
-    <div class="grid gap-6 justify-items-center sm:grid-cols-1 lg:grid-cols-2">
-      {
-        posts.map((post) => (
-          <BlogPostCard
-            key={post.id}
-            title={post.data.title}
-            description={post.data.description}
-            date={post.data.date}
-            author={post.data.author}
-            theme={post.data.theme}
-            tags={post.data.tags}
-            slug={post.id}
-            className="w-full max-w-[400px] h-[500px]"
-          />
-        ))
-      }
-    </div>
+    <ListaPosts posts={posts} />
+    <AdSlot ubicacion="blog" />
   </main>
 </Layout>

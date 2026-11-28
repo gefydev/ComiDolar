@@ -1,4 +1,5 @@
 ---
+import AdSlot from "@/components/AdSlot.astro";
 import Layout from "@/layouts/layout.astro";
 import { digitalServices } from "@/db/digitalServices";
 
@@ -17,35 +18,58 @@ const metadata = {
 ---
 
 <Layout metadata={metadata}>
-  <main>
-    <img
-      src="/assets/img/opengraph/servicios.webp"
-      alt="AFIP Servicios digitales"
-      class="w-full h-64 object-cover object-center rounded-lg"
-    />
-    <h1 class="text-4xl font-bold mt-8 mb-4 text-center">
-      Lista de Servicios Digitales AFIP
-    </h1>
-    <h2 class="text-2xl mb-6 text-center">
+  <main class="pagina angosta">
+    <h1 class="h1">Lista de Servicios Digitales AFIP</h1>
+    <p class="mt-2">
       Esta página contiene la lista completa de los servicios digitales
       alcanzado por el IVA a Servicios digitales (21%) en pagos al exterior con
       tarjeta.
-    </h2>
-    <p>
-      Datos impuestos por la <a
-        class="text-blue-500 hover:underline"
+    </p>
+    <p class="mt-2">
+      Datos impuestos por la{" "}
+      <a
         target="_blank"
         referrerpolicy="no-referrer"
         href="https://www.afip.gob.ar/iva/servicios-digitales/concepto.asp"
-        >Resolución General N° 4240/2018 de AFIP</a
-      >.
+      >
+        Resolución General N° 4240/2018 de AFIP
+      </a>
+      .
     </p>
-    <section class="flex flex-col bg-white dark:bg-black p-2 mt-2 gap-2 rounded-lg font-mono text-black dark:text-white">
-      {
-        digitalServices.map((service) => (
-          <p>{service}</p>
-        ))
-      }
-    </section>
+    <input
+      class="campo mt-4"
+      type="search"
+      placeholder="Buscar un servicio…"
+      aria-label="Buscar un servicio"
+      data-buscar-servicio
+    />
+    <p class="note mt-2" role="status" data-cuantos>
+      {digitalServices.length} servicios
+    </p>
+    <ul class="mt-2" data-servicios>
+      {digitalServices.map((service) => (
+        <li class="py-2 border-b border-[var(--hair)]">{service}</li>
+      ))}
+    </ul>
+    <AdSlot ubicacion="interna" />
   </main>
 </Layout>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const campo = document.querySelector<HTMLInputElement>(
+      "[data-buscar-servicio]",
+    );
+    const cuantos = document.querySelector("[data-cuantos]");
+    const filas = document.querySelectorAll<HTMLElement>("[data-servicios] li");
+    campo?.addEventListener("input", () => {
+      const texto = campo.value.trim().toLowerCase();
+      let visibles = 0;
+      for (const fila of filas) {
+        fila.hidden = !fila.textContent!.toLowerCase().includes(texto);
+        if (!fila.hidden) visibles++;
+      }
+      cuantos!.textContent = `${visibles} servicios`;
+    });
+  });
+</script>

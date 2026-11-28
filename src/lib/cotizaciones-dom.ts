@@ -1,6 +1,6 @@
 import type { Cotizaciones } from "@/lib/cotizaciones";
 import { mantenerCotizaciones } from "@/lib/cotizaciones-cliente";
-import { formatearFecha } from "@/lib/formato";
+import { textoEstado } from "@/lib/estado";
 
 /**
  * Conecta una página que incluye <EstadoCotizaciones /> con el refresco.
@@ -18,22 +18,20 @@ export function enPagina(
     const datos = document.querySelector("[data-cotizaciones]");
     const estado = document.querySelector("[data-estado-cotizaciones]");
     // El módulo queda cargado al navegar: solo actúa en su propia página
-    if (!datos || !estado || !document.querySelector(`[data-pagina-cotizaciones="${pagina}"]`))
+    if (
+      !datos ||
+      !estado ||
+      !document.querySelector(`[data-pagina-cotizaciones="${pagina}"]`)
+    )
       return;
 
     detener = mantenerCotizaciones(
       JSON.parse(datos.textContent || "null"),
       (c, fallo) => {
-        if (!c) {
-          estado.textContent =
-            "No pudimos obtener la cotización. Reintentando…";
-          return;
-        }
-        pintar(c);
-        const cuando = formatearFecha(c.consultado);
-        estado.textContent = fallo
-          ? `No pudimos actualizar. Último valor consultado: ${cuando} (${c.fuente})`
-          : `Consultado: ${cuando} (${c.fuente})`;
+        estado.textContent = textoEstado(c, fallo);
+        // dato viejo o sin dato: con estilo de aviso
+        estado.classList.toggle("warn", fallo);
+        if (c) pintar(c);
       },
     );
   });

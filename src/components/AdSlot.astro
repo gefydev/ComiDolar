@@ -1,0 +1,19 @@
+---
+// Espacio de publicidad de alto fijo (diseno-spec.md §4): 250 px, 90 px desde
+// 900 px. Con anuncio, sin anuncio o sin script ocupa lo mismo.
+// La unidad se pide con ese alto exacto: sin data-ad-format ni ancho completo
+// automático, para que no se agrande.
+import { EDITOR, UBICACIONES, type Ubicacion } from "@/config/anuncios";
+
+const { ubicacion }: { ubicacion: Ubicacion } = Astro.props;
+---
+
+<aside class="ad" aria-label="Publicidad" data-ubicacion={ubicacion}>
+  <span>Publicidad</span>
+  <div class="ad-slot">
+    <ins
+      class="adsbygoogle"
+      data-ad-client={EDITOR}
+      data-ad-slot={UBICACIONES[ubicacion]}></ins>
+  </div>
+</aside>

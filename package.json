@@ -40,5 +40,8 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "prettier-plugin-astro": "^1.1.2",
     "typescript-eslint": "^8.74.0"
+  },
+  "overrides": {
+    "path-to-regexp": "^6.3.0"
   }
 }

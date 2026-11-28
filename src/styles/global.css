@@ -798,6 +798,10 @@
   .detalle .cols > * + * {
     margin-top: 16px;
   }
+  /* una sola hora (la del dato); el renglón de estado solo si algo falla */
+  .detalle [data-estado-cotizaciones]:not(.warn) {
+    display: none;
+  }
   .detalle-titulo {
     display: flex;
     align-items: center;

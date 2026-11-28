@@ -13,7 +13,7 @@ export function vistaDetalle(tipo: Tipo, casas: Cotizaciones["casas"]) {
   const c = casas[tipo.casa];
   const oficial = casas.oficial;
   const venta = c ? pesos(c.venta) : "—";
-  const nota = c ? `Venta · dato del ${formatearCorta(c.fecha)}` : "Sin dato";
+  const nota = c ? `Venta · actualizado ${formatearCorta(c.fecha)}` : "Sin dato";
 
   if (tipo.casa === "tarjeta") {
     const base = oficial?.venta;

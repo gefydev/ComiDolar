@@ -45,7 +45,7 @@ export const PAYMENT_METHODS: PaymentMethodType[] = [
     alias: "el.gena.prov",
   },
   {
-    name: "Banco Nacion",
+    name: "Banco Nación",
     short: "bn",
     image: "/assets/img/bn.webp",
     pallete: {

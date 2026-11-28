@@ -6,8 +6,8 @@ import { digitalServices } from "@/db/digitalServices";
 const metadata = {
   title: "Comi Dólar | Lista de servicios digitales",
   description: {
-    meta: "Lista completa de los servicios digitales alcanzado por el IVA a Servicios digitales (21%) en pagos al exterior con tarjeta. Datos impuestos por la Resolución General N° 4240/2018 de AFIP.",
-    og: "Lista completa de los servicios digitales alcanzado por el IVA a Servicios digitales (21%) en pagos al exterior con tarjeta. Datos impuestos por la Resolución General N° 4240/2018 de AFIP.",
+    meta: "Lista completa de los servicios digitales alcanzados por el IVA a servicios digitales (21%) en pagos al exterior con tarjeta. Según la Resolución General N° 4240/2018 de AFIP (hoy ARCA).",
+    og: "Lista completa de los servicios digitales alcanzados por el IVA a servicios digitales (21%) en pagos al exterior con tarjeta. Según la Resolución General N° 4240/2018 de AFIP (hoy ARCA).",
   },
   canonical: "https://comidolar.com.ar/calculadora/servicios",
   og: { nombre: "servicios" },
@@ -17,10 +17,10 @@ const metadata = {
 
 <Layout metadata={metadata}>
   <main class="pagina angosta">
-    <h1 class="h1">Lista de Servicios Digitales AFIP</h1>
+    <h1 class="h1">Lista de servicios digitales de ARCA</h1>
     <p class="mt-2">
       Esta página contiene la lista completa de los servicios digitales
-      alcanzado por el IVA a Servicios digitales (21%) en pagos al exterior con
+      alcanzados por el IVA a servicios digitales (21%) en pagos al exterior con
       tarjeta.
     </p>
     <p class="mt-2">
@@ -30,7 +30,7 @@ const metadata = {
         referrerpolicy="no-referrer"
         href="https://www.afip.gob.ar/iva/servicios-digitales/concepto.asp"
       >
-        Resolución General N° 4240/2018 de AFIP
+        Resolución General N° 4240/2018 de AFIP (hoy ARCA)
       </a>
       .
     </p>
@@ -67,7 +67,7 @@ const metadata = {
         fila.hidden = !fila.textContent!.toLowerCase().includes(texto);
         if (!fila.hidden) visibles++;
       }
-      cuantos!.textContent = `${visibles} servicios`;
+      cuantos!.textContent = `${visibles} ${visibles === 1 ? "servicio" : "servicios"}`;
     });
   });
 </script>

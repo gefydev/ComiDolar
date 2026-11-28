@@ -1,7 +1,7 @@
 {
   "id": "cdwapp",
-  "name": "comi.dolar",
-  "short_name": "comi.dolar",
+  "name": "ComiDólar",
+  "short_name": "ComiDólar",
   "description": "Cotizaciones del dólar en Argentina (oficial, blue, MEP, cripto) y una calculadora para saber cuánto te sale una compra con tarjeta en el exterior.",
   "lang": "es-AR",
   "dir": "ltr",
@@ -85,7 +85,7 @@
     {
       "name": "Grupo de WhatsApp",
       "url": "/whatsapp",
-      "description": "La comunidad de comi.dolar",
+      "description": "La comunidad de ComiDólar",
       "icons": [
         {
           "src": "/assets/img/wsp_192.png",
@@ -106,7 +106,7 @@
       "sizes": "444x896",
       "type": "image/webp",
       "form_factor": "narrow",
-      "label": "Captura de pantalla de la página de inicio de Comi Dólar"
+      "label": "Captura de pantalla de la página de inicio de ComiDólar"
     },
     {
       "src": "/assets/img/screenshot2.webp",
@@ -127,7 +127,7 @@
       "sizes": "1400x804",
       "type": "image/webp",
       "form_factor": "wide",
-      "label": "Captura de pantalla de la página de inicio de Comi Dólar"
+      "label": "Captura de pantalla de la página de inicio de ComiDólar"
     },
     {
       "src": "/assets/img/screenshot2-wide.webp",

@@ -1,9 +1,9 @@
 /* global self, caches, fetch, URL */
-// Service worker de comi.dolar. No guarda ninguna página: las cotizaciones del
+// Service worker de ComiDólar. No guarda ninguna página: las cotizaciones del
 // HTML quedarían viejas sin avisar. Si no puede mostrar una página (sin
 // internet, o el servidor caído) muestra /offline.html, que lee la última
 // cotización guardada en el dispositivo, con su fecha.
-const CACHE = "comidolar-v2";
+const CACHE = "comidolar-v3";
 const ESPERA_MS = 15000;
 const FIJOS = [
   "/offline.html",

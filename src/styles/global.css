@@ -206,33 +206,6 @@
     color: var(--bg);
   }
 
-  /* pasos para instalar donde el navegador no ofrece hacerlo */
-  .guia {
-    margin: auto;
-    width: min(360px, calc(100% - 32px));
-    padding: 20px;
-    border: 2px solid var(--line);
-    border-radius: 14px;
-    background: var(--surface);
-    color: var(--ink);
-    overscroll-behavior: contain;
-  }
-  .guia::backdrop {
-    background: rgb(0 0 0 / 0.6);
-  }
-  .guia h2 {
-    font-size: 21px;
-    font-weight: 800;
-  }
-  .guia ol {
-    margin: 12px 0 16px;
-    padding-left: 20px;
-    list-style: decimal;
-  }
-  .guia li {
-    margin-top: 8px;
-  }
-
   /* texto */
   .h1 {
     font-size: 32px;

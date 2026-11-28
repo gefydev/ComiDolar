@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import {
   brecha,
+  leerCopia,
   leerCriptoYa,
   leerDolarApi,
   obtenerCotizaciones,
@@ -86,6 +87,39 @@ describe("obtenerCotizaciones", () => {
       });
       expect((await obtenerCotizaciones())?.fuente).toBe("CriptoYa");
     }
+  });
+
+  test("completa con CriptoYa una respuesta parcial", async () => {
+    simular({
+      "dolarapi.com": () => Response.json(dolarApi),
+      "criptoya.com": () => Response.json(criptoYa),
+    });
+    const c = await obtenerCotizaciones();
+    expect(c?.fuente).toBe("DolarApi");
+    expect(c?.casas.tarjeta?.venta).toBe(2112.5);
+    expect(c?.casas.blue?.venta).toBe(1695);
+  });
+
+  test("descarta copias guardadas rotas o del futuro", () => {
+    const casas = leerDolarApi([]);
+    const oficial = {
+      venta: 1625,
+      compra: 1575,
+      fecha: "2026-11-27T18:00:00.000Z",
+    };
+    const buena = {
+      fuente: "DolarApi",
+      consultado: Date.now(),
+      casas: { oficial },
+    };
+    expect(leerCopia(buena)?.casas.oficial?.venta).toBe(1625);
+    for (const mala of [
+      { ...buena, casas: { oficial: {} } },
+      { ...buena, consultado: 9e15 },
+      { ...buena, casas },
+      null,
+    ])
+      expect(leerCopia(mala)).toBeNull();
   });
 
   test("devuelve null si caen las dos", async () => {

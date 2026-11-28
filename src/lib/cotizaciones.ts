@@ -41,6 +41,13 @@ export interface Cotizaciones {
 const DOLARAPI = "https://dolarapi.com/v1/dolares";
 const CRIPTOYA = "https://criptoya.com/api/dolar";
 
+/** AbortSignal.timeout no existe en iOS anterior a 16. */
+export function limite(ms: number) {
+  const control = new AbortController();
+  setTimeout(() => control.abort(), ms);
+  return control.signal;
+}
+
 type Json = Record<string, unknown>;
 
 const objeto = (v: unknown): Json =>
@@ -106,7 +113,28 @@ export function brecha(casas: Cotizaciones["casas"]): number | null {
   return ((blue.venta - oficial.venta) / oficial.venta) * 100;
 }
 
+const completas = (casas: Cotizaciones["casas"]) =>
+  CASAS.every((casa) => casas[casa]);
+
+/** Revalida una copia guardada con el mismo criterio que las fuentes. */
+export function leerCopia(json: unknown): Cotizaciones | null {
+  const raiz = objeto(json);
+  const { fuente, consultado } = raiz;
+  if (fuente !== "DolarApi" && fuente !== "CriptoYa") return null;
+  // Una fecha de consulta en el futuro le ganaría para siempre a los datos nuevos
+  if (typeof consultado !== "number" || !(consultado <= Date.now() + 300_000))
+    return null;
+  const casas: Cotizaciones["casas"] = {};
+  for (const casa of CASAS) {
+    const d = objeto(objeto(raiz.casas)[casa]);
+    const c = cotizacion(d.venta, d.compra, new Date(String(d.fecha)));
+    if (c) casas[casa] = c;
+  }
+  return casas.oficial ? { fuente, consultado, casas } : null;
+}
+
 /**
+ * Si DolarApi responde incompleta, completa lo que falta con CriptoYa.
  * Devuelve `null` si ninguna fuente entrega al menos el oficial.
  * Nunca lanza: quien llama decide qué mostrar.
  */
@@ -118,17 +146,24 @@ export async function obtenerCotizaciones(
     { fuente: "CriptoYa", url: CRIPTOYA, leer: leerCriptoYa },
   ] as const;
 
+  let resultado: Cotizaciones | null = null;
   for (const { fuente, url, leer } of fuentes) {
     try {
       // Sin headers propios: DolarApi no responde el preflight de CORS
-      const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) });
+      const res = await fetch(url, { signal: limite(timeoutMs) });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const casas = leer(await res.json());
-      if (casas.oficial) return { fuente, consultado: Date.now(), casas };
-      throw new Error("respuesta sin dólar oficial");
+      if (resultado) resultado.casas = { ...casas, ...resultado.casas };
+      else if (casas.oficial)
+        resultado = { fuente, consultado: Date.now(), casas };
+      else throw new Error("respuesta sin dólar oficial");
+      if (completas(resultado.casas)) break;
     } catch (error) {
       console.warn(`Cotizaciones: falló ${fuente}`, error);
     }
   }
-  return null;
+  return resultado;
 }
+
+export const estanCompletas = (c: Cotizaciones | null) =>
+  c !== null && completas(c.casas);

@@ -335,6 +335,9 @@ const pesos = (factor: number) =>
           totalTaxLabel.textContent = `Solo Impuestos (${digital ? 51 : 30}%)`;
         recalcularPronto();
       });
+
+      // El precio puede haber llegado antes que este listener
+      recalcular();
     });
   </script>
 </Layout>

@@ -1,3 +1,5 @@
+import { limite } from "@/lib/cotizaciones";
+
 /** API pública de solo lectura (PostgREST) con la lista que muestra /donaciones. */
 const URL_DONANTES =
   "https://donantes.comidolar.com.ar/donantes?select=name,total,year";
@@ -36,7 +38,7 @@ export function listaGuardada(): Lista | null {
 
 export async function pedirDonantes(timeoutMs = 8000): Promise<Lista> {
   const res = await fetch(URL_DONANTES, {
-    signal: AbortSignal.timeout(timeoutMs),
+    signal: limite(timeoutMs),
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const lista = {

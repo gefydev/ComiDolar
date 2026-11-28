@@ -1,12 +1,15 @@
-import { obtenerCotizaciones, type Cotizaciones } from "@/lib/cotizaciones";
+import {
+  leerCopia,
+  obtenerCotizaciones,
+  type Cotizaciones,
+} from "@/lib/cotizaciones";
 
 const CLAVE = "comidolar:cotizaciones";
 const CADA_MS = 60_000;
 
 const leerGuardadas = (): Cotizaciones | null => {
   try {
-    const c = JSON.parse(localStorage.getItem(CLAVE) ?? "null");
-    return c?.casas?.oficial && Number.isFinite(c.consultado) ? c : null;
+    return leerCopia(JSON.parse(localStorage.getItem(CLAVE) ?? "null"));
   } catch {
     return null;
   }
@@ -45,8 +48,9 @@ export function mantenerCotizaciones(
     enCurso = false;
     if (!activo) return;
     if (nuevas) {
-      actual = nuevas;
-      guardar(nuevas);
+      // Lo que esta respuesta no traiga se conserva de la anterior
+      actual = { ...nuevas, casas: { ...actual?.casas, ...nuevas.casas } };
+      guardar(actual);
     }
     pintar(actual, !nuevas);
   };

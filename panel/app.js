@@ -1,6 +1,6 @@
-// Panel de donaciones: HTML en el servidor, sin dependencias ni JavaScript en el navegador.
+// Panel de donaciones: HTML en el servidor, sin dependencias.
 // El login lo hace oauth2-proxy; acá se vuelve a comprobar quién llega y desde dónde.
-import { createHmac, timingSafeEqual } from "node:crypto";
+import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
 
 const igual = (a, b) => {
   const x = Buffer.from(a);
@@ -63,14 +63,31 @@ body{font-family:system-ui,sans-serif;max-width:760px;margin:0 auto;padding:16px
 form.f{display:grid;gap:8px;max-width:360px;margin:12px 0}input,button,select{font:inherit;padding:8px;min-height:44px;box-sizing:border-box}
 table{width:100%;border-collapse:collapse}td,th{padding:6px;border-bottom:1px solid #8886;text-align:left}td.n,th.n{text-align:right}
 .msg{padding:8px;border:1px solid;border-radius:6px}a{display:inline-block;padding:6px 2px}
-</style></head><body>${cuerpo}</body></html>`;
+</style><script src="/panel.js" defer></script></head><body>${cuerpo}</body></html>`;
 
 const campos = (d = {}) => `
 <label>Nombre <input name="name" required maxlength="100" list="nombres" autocomplete="off" value="${e(d.name ?? "")}"></label>
 <label>Monto (ARS) <input name="total" required inputmode="decimal" value="${e(d.total ?? "")}"></label>
 <label>Año <input name="year" required pattern="20[0-9]{2}" inputmode="numeric" value="${e(d.year ?? "")}"></label>`;
 
-const AVISOS = { alta: "Donación registrada.", editada: "Cambios guardados.", borrada: "Fila borrada." };
+// Único JavaScript del panel: evita el segundo clic mientras se envía
+const SCRIPT = `
+addEventListener("submit", (e) => {
+  const form = e.target;
+  if (form.dataset.enviado) return e.preventDefault();
+  form.dataset.enviado = "1";
+  form.querySelector("button").disabled = true;
+});
+addEventListener("pageshow", () => {
+  for (const form of document.forms) {
+    delete form.dataset.enviado;
+    form.querySelector("button").disabled = false;
+  }
+});
+`;
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
+const AVISOS = { repetida: "Ese formulario ya se había enviado: no se cargó de nuevo.", alta: "Donación registrada.", editada: "Cambios guardados.", borrada: "Fila borrada." };
 
 export function crearApp({ db, usuario, secreto, origen }) {
   const html = (cuerpo, status = 200, titulo = "Donaciones ComiDólar") =>
@@ -79,7 +96,7 @@ export function crearApp({ db, usuario, secreto, origen }) {
       headers: {
         "content-type": "text/html; charset=utf-8",
         "cache-control": "no-store",
-        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'",
+        "content-security-policy": "default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'",
         "x-content-type-options": "nosniff",
         "referrer-policy": "same-origin",
       },
@@ -100,7 +117,7 @@ export function crearApp({ db, usuario, secreto, origen }) {
 ${aviso ? `<p class="msg" role="status">${aviso}</p>` : ""}
 <h2>Registrar donación</h2>
 <p>Cada donación es una fila nueva. El sitio muestra la suma por persona y año.</p>
-<form class="f" method="post" action="/alta">${csrf}${campos({ year: actual })}<button>Registrar</button></form>
+<form class="f" method="post" action="/alta">${csrf}<input type="hidden" name="envio" value="${randomUUID()}">${campos({ year: actual })}<button>Registrar</button></form>
 <datalist id="nombres">${(await db.nombres()).map((n) => `<option value="${e(n)}">`).join("")}</datalist>
 <h2>${e(year)}: ${filas.length} filas, ${pesos(total)}</h2>
 <p>${years.map((y) => (y === year ? `<strong>${e(y)}</strong>` : `<a href="/?year=${e(y)}">${e(y)}</a>`)).join(" · ")}</p>
@@ -126,6 +143,10 @@ ${filas.map((f) => `<tr><td>${e(f.name)}</td><td class="n">${pesos(f.total)}</td
     const fila = /^\d{1,15}$/.test(id) ? await db.buscar(id) : null;
 
     if (req.method === "GET") {
+      if (url.pathname === "/panel.js")
+        return new Response(SCRIPT, {
+          headers: { "content-type": "text/javascript; charset=utf-8", "x-content-type-options": "nosniff" },
+        });
       if (url.pathname === "/") return inicio(url, csrf);
       if (url.pathname === "/editar" && fila)
         return html(`<h1>Editar</h1><form class="f" method="post" action="/editar">${csrf}<input type="hidden" name="id" value="${e(fila.id)}">${campos(fila)}<button>Guardar</button></form><p><a href="/?year=${e(fila.year)}">Cancelar</a></p>`);
@@ -142,9 +163,15 @@ ${filas.map((f) => `<tr><td>${e(f.name)}</td><td class="n">${pesos(f.total)}</td
         url.pathname === "/editar" ? fila : undefined,
       );
       if (mal) return error(mal);
-      if (url.pathname === "/alta") await db.agregar(donacion);
-      else await db.editar(fila.id, donacion);
-      return volver(donacion.year, url.pathname === "/alta" ? "alta" : "editada");
+      if (url.pathname === "/editar") {
+        await db.editar(fila.id, donacion);
+        return volver(donacion.year, "editada");
+      }
+      // Token de un solo uso: la base rechaza el segundo envío del mismo formulario
+      const envio = String(form.get("envio") ?? "");
+      if (!UUID.test(envio)) return error("Formulario inválido: recargá la página.");
+      const nueva = await db.agregar(donacion, envio);
+      return volver(donacion.year, nueva ? "alta" : "repetida");
     }
     return error("No encontrado.", 404);
   }

@@ -5,22 +5,17 @@ create table public.donors (
   -- sin escala fija: los datos migrados traen más de 2 decimales y se conservan
   total numeric not null check (total >= 0),
   year text not null check (year ~ '^20[0-9]{2}$'),
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  -- token de un solo uso del formulario de alta (evita el doble envío)
+  envio uuid unique
 );
 
 -- Lo único que se publica
 create schema api;
--- Suma por persona y año. Excepción: en 2024, 29 personas tienen dos filas migradas
--- (id <= 112) con el mismo monto; el sitio siempre las contó una vez.
+-- Cada fila es una donación: el total es la suma de todas, por persona y año.
 create view api.donantes as
 select name, sum(total) as total, year
-from (
-  select name, year, total, min(id) as id from public.donors
-  where year = '2024' and id <= 112 group by name, year, total
-  union all
-  select name, year, total, id from public.donors
-  where not (year = '2024' and id <= 112)
-) as filas
+from public.donors
 group by name, year
 order by min(id);
 

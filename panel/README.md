@@ -15,7 +15,7 @@ Corre en Coolify (proyecto `comidolar`), fuera de Vercel.
 3. La app exige además el secreto compartido con el proxy, el usuario permitido, el `Origin` propio y un token CSRF. No envía cabeceras CORS.
 
 ## Totales
-Cada donación es una fila; la vista pública suma por persona y año (ver la excepción de 2024 en `schema.sql`).
+Cada donación es una fila; la vista pública suma por persona y año (sin deduplicar: dos filas iguales son dos donaciones).
 
 ## Variables en Coolify
 - `PGHOST`: nombre interno de la base.

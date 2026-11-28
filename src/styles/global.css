@@ -574,6 +574,11 @@
     border-radius: 8px;
     background: var(--soft);
   }
+  /* Google no tiene anuncio para ese espacio: sin recuadro en blanco
+     (forma que recomienda AdSense: mirar data-ad-status) */
+  .ad:has(ins.adsbygoogle[data-ad-status="unfilled"]) {
+    display: none;
+  }
   .ad-slot ins {
     display: block;
     width: 100%;

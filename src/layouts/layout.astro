@@ -7,6 +7,7 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import { ClientRouter } from "astro:transitions";
 import PostHog from "@/components/posthog.astro";
+import { EDITOR } from "@/config/anuncios";
 import { urlOg } from "@/lib/og";
 import { jsonLdMigas, jsonLdSitio, jsonSeguro } from "@/lib/seo";
 import "@/styles/global.css";
@@ -15,6 +16,8 @@ import "@/styles/global.css";
 <html lang="es" transition:animate="none">
   <head>
     <meta charset="UTF-8" />
+    {/* el script de AdSense se carga diferido: así Google reconoce el sitio */}
+    <meta name="google-adsense-account" content={EDITOR} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{metadata.title}</title>
     <link type="image/webp" rel="icon" href="/assets/img/favicon.webp" />

@@ -1,0 +1,56 @@
+# Se despliega en Coolify (proyecto "comidolar"). Postgres es un recurso aparte, sin puerto público.
+# Las variables SERVICE_PASSWORD_* las genera y guarda Coolify.
+services:
+  postgrest:
+    image: postgrest/postgrest:v13.0.8
+    restart: unless-stopped
+    environment:
+      PGRST_DB_URI: "postgres://authenticator:${SERVICE_PASSWORD_PGRST}@${PGHOST:?}:5432/donantes"
+      PGRST_DB_SCHEMAS: api
+      PGRST_DB_ANON_ROLE: web_anon
+      PGRST_DB_MAX_ROWS: "5000"
+      PGRST_DB_POOL: "5"
+      PGRST_OPENAPI_MODE: disabled
+    networks: [default, coolify]
+
+  donaciones-app:
+    build: .
+    restart: unless-stopped
+    environment:
+      PGHOST: "${PGHOST:?}"
+      PGDATABASE: donantes
+      PGUSER: panel
+      PGPASSWORD: "${SERVICE_PASSWORD_PANEL}"
+      ALLOWED_USER: gefydev
+      PROXY_SECRET: "${SERVICE_PASSWORD_64_PROXY}"
+      PUBLIC_ORIGIN: https://panel.comidolar.com.ar
+    networks: [default, coolify]
+
+  oauth2-proxy:
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.15.6
+    restart: unless-stopped
+    depends_on: [donaciones-app]
+    environment:
+      OAUTH2_PROXY_PROVIDER: github
+      OAUTH2_PROXY_GITHUB_USERS: gefydev
+      OAUTH2_PROXY_EMAIL_DOMAINS: "*"
+      # Los carga Gena en las variables de Coolify (OAuth App de GitHub)
+      OAUTH2_PROXY_CLIENT_ID: "${GITHUB_CLIENT_ID:-pendiente}"
+      OAUTH2_PROXY_CLIENT_SECRET: "${GITHUB_CLIENT_SECRET:-pendiente}"
+      OAUTH2_PROXY_COOKIE_SECRET: "${SERVICE_PASSWORD_COOKIE}"
+      OAUTH2_PROXY_REDIRECT_URL: https://panel.comidolar.com.ar/oauth2/callback
+      OAUTH2_PROXY_HTTP_ADDRESS: 0.0.0.0:4180
+      OAUTH2_PROXY_UPSTREAMS: http://donaciones-app:3000
+      OAUTH2_PROXY_REVERSE_PROXY: "true"
+      OAUTH2_PROXY_PASS_BASIC_AUTH: "true"
+      OAUTH2_PROXY_BASIC_AUTH_PASSWORD: "${SERVICE_PASSWORD_64_PROXY}"
+      OAUTH2_PROXY_PASS_USER_HEADERS: "true"
+      OAUTH2_PROXY_COOKIE_SECURE: "true"
+      OAUTH2_PROXY_COOKIE_SAMESITE: lax
+      OAUTH2_PROXY_COOKIE_EXPIRE: 12h
+      OAUTH2_PROXY_SKIP_PROVIDER_BUTTON: "true"
+    networks: [default]
+
+networks:
+  coolify:
+    external: true

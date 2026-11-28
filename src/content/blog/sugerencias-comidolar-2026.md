@@ -1,11 +1,11 @@
 ---
-title: Dejá tu sugerencia para ComiDólar 2026 - ComiDolar
+title: Dejá tu sugerencia para ComiDólar 2026 - ComiDólar
 description: Entreganos tu sugerencia para mejorar o cambiar el rumbo de ComiDólar en 2026, podes incorporar nuevas ideas, actividades o eventors.
 date: 2026-02-23T02:39:00.000-0300
 draft: false
 author: Gena
 rssauthor: gena@comidolar.com.ar (Genaro Febbo Yapur)
-copyright: 2026 ©️ComiDolar
+copyright: 2026 ©️ComiDólar
 theme: Grupo
 tags: [Grupo, Sugerencias, Comi]
 hideImage: true

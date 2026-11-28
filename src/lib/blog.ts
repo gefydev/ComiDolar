@@ -11,4 +11,4 @@ export const getPosts = async () =>
 
 /** El título sin la marca repetida al final. */
 export const tituloCorto = (titulo: string) =>
-  titulo.replace(/\s*-\s*ComiDolar\s*$/i, "");
+  titulo.replace(/\s*-\s*Comi ?D[oó]lar\s*$/i, "");

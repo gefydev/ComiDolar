@@ -10,7 +10,7 @@ const blogCollection = defineCollection({
     draft: z.boolean(),
     author: z.string().default("Anonimo"),
     rssauthor: z.string().default("Anonimo"),
-    copyright: z.string().default("2024 ©️ComiDolar"),
+    copyright: z.string().default("2024 ©️ComiDólar"),
     theme: z.string(),
     tags: z.array(z.string()).optional(),
     hideImage: z.boolean().optional(),

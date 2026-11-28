@@ -2,7 +2,7 @@
 const { metadata } = Astro.props;
 // Sin `og`, la imagen de la home
 const imagenOg = await urlOg(metadata.og?.nombre ?? "home");
-const altOg = `${metadata.title.replace(/^Comi Dólar \| | \| (Comi Dólar|ComiDólar)$| - ComiDolar$/g, "")} · ComiDólar`;
+const altOg = `${metadata.title.replace(/^Comi Dólar \| | \| (Comi Dólar|ComiDólar)$| - ComiDólar$/g, "")} · ComiDólar`;
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import { ClientRouter } from "astro:transitions";

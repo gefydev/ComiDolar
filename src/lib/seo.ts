@@ -12,7 +12,7 @@ export const jsonLdSitio = () => ({
       "@id": `${SITIO}/#sitio`,
       url: `${SITIO}/`,
       name: "ComiDólar",
-      alternateName: ["Comi Dólar", "ComiDolar"],
+      alternateName: ["Comi Dólar"],
       inLanguage: "es-AR",
       publisher: { "@id": `${SITIO}/#organizacion` },
     },

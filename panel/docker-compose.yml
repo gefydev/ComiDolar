@@ -4,6 +4,8 @@ services:
   postgrest:
     image: postgrest/postgrest:v13.0.8
     restart: unless-stopped
+    mem_limit: 256m
+    cpus: 0.5
     environment:
       PGRST_DB_URI: "postgres://authenticator:${SERVICE_PASSWORD_PGRST}@${PGHOST:?}:5432/donantes"
       PGRST_DB_SCHEMAS: api
@@ -16,6 +18,8 @@ services:
   donaciones-app:
     build: .
     restart: unless-stopped
+    mem_limit: 256m
+    cpus: 0.5
     environment:
       PGHOST: "${PGHOST:?}"
       PGDATABASE: donantes
@@ -29,6 +33,8 @@ services:
   oauth2-proxy:
     image: quay.io/oauth2-proxy/oauth2-proxy:v7.15.6
     restart: unless-stopped
+    mem_limit: 256m
+    cpus: 0.5
     depends_on: [donaciones-app]
     environment:
       OAUTH2_PROXY_PROVIDER: github
@@ -42,6 +48,8 @@ services:
       OAUTH2_PROXY_HTTP_ADDRESS: 0.0.0.0:4180
       OAUTH2_PROXY_UPSTREAMS: http://donaciones-app:3000
       OAUTH2_PROXY_REVERSE_PROXY: "true"
+      # Red por la que entra Traefik; solo a ella se le creen las cabeceras X-Forwarded-*
+      OAUTH2_PROXY_TRUSTED_PROXY_IPS: "10.0.4.0/24"
       OAUTH2_PROXY_PASS_BASIC_AUTH: "true"
       OAUTH2_PROXY_BASIC_AUTH_PASSWORD: "${SERVICE_PASSWORD_64_PROXY}"
       OAUTH2_PROXY_PASS_USER_HEADERS: "true"

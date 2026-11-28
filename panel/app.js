@@ -33,11 +33,18 @@ const csrfValido = (recibido, secreto, usuario) =>
     igual(recibido, tokenCsrf(secreto, usuario, Date.now() - atras)),
   );
 
-export function leerDonacion(form) {
+/** `actual` es la fila que se edita: su monto, si no se toca, se conserva exacto. */
+export function leerDonacion(form, actual) {
   const name = String(form.get("name") ?? "").trim().replace(/\s+/g, " ");
   const texto = String(form.get("total") ?? "").trim().replace(",", ".");
   const year = String(form.get("year") ?? "").trim();
-  const total = /^\d{1,10}(\.\d{1,2})?$/.test(texto) ? Number(texto) : NaN;
+  const sinCambio =
+    actual !== undefined && texto === String(actual.total).trim();
+  const total = sinCambio
+    ? actual.total
+    : /^\d{1,10}(\.\d{1,2})?$/.test(texto)
+      ? Number(texto)
+      : NaN;
   if (!name || name.length > 100) return { error: "Falta el nombre (máximo 100 caracteres)." };
   if (!(total > 0)) return { error: "El monto tiene que ser un número mayor que cero, con hasta 2 decimales." };
   if (!/^20\d{2}$/.test(year)) return { error: "El año tiene que tener 4 cifras." };
@@ -92,7 +99,7 @@ export function crearApp({ db, usuario, secreto, origen }) {
     return html(`<h1>Donaciones</h1>
 ${aviso ? `<p class="msg" role="status">${aviso}</p>` : ""}
 <h2>Registrar donación</h2>
-<p>Si el nombre ya donó ese año, el monto se suma a su total.</p>
+<p>Cada donación es una fila nueva. El sitio muestra la suma por persona y año.</p>
 <form class="f" method="post" action="/alta">${csrf}${campos({ year: actual })}<button>Registrar</button></form>
 <datalist id="nombres">${(await db.nombres()).map((n) => `<option value="${e(n)}">`).join("")}</datalist>
 <h2>${e(year)}: ${filas.length} filas, ${pesos(total)}</h2>
@@ -130,9 +137,12 @@ ${filas.map((f) => `<tr><td>${e(f.name)}</td><td class="n">${pesos(f.total)}</td
       return volver(fila.year, "borrada");
     }
     if (form && (url.pathname === "/alta" || (url.pathname === "/editar" && fila))) {
-      const { donacion, error: mal } = leerDonacion(form);
+      const { donacion, error: mal } = leerDonacion(
+        form,
+        url.pathname === "/editar" ? fila : undefined,
+      );
       if (mal) return error(mal);
-      if (url.pathname === "/alta") await db.sumar(donacion);
+      if (url.pathname === "/alta") await db.agregar(donacion);
       else await db.editar(fila.id, donacion);
       return volver(donacion.year, url.pathname === "/alta" ? "alta" : "editada");
     }

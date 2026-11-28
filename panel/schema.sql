@@ -10,7 +10,19 @@ create table public.donors (
 
 -- Lo único que se publica
 create schema api;
-create view api.donantes as select name, total, year from public.donors order by id;
+-- Suma por persona y año. Excepción: en 2024, 29 personas tienen dos filas migradas
+-- (id <= 112) con el mismo monto; el sitio siempre las contó una vez.
+create view api.donantes as
+select name, sum(total) as total, year
+from (
+  select name, year, total, min(id) as id from public.donors
+  where year = '2024' and id <= 112 group by name, year, total
+  union all
+  select name, year, total, id from public.donors
+  where not (year = '2024' and id <= 112)
+) as filas
+group by name, year
+order by min(id);
 
 create role web_anon nologin;
 create role authenticator login noinherit;

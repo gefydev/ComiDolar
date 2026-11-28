@@ -14,6 +14,9 @@ Corre en Coolify (proyecto `comidolar`), fuera de Vercel.
 2. oauth2-proxy valida la sesión en cada pedido.
 3. La app exige además el secreto compartido con el proxy, el usuario permitido, el `Origin` propio y un token CSRF. No envía cabeceras CORS.
 
+## Totales
+Cada donación es una fila; la vista pública suma por persona y año (ver la excepción de 2024 en `schema.sql`).
+
 ## Variables en Coolify
 - `PGHOST`: nombre interno de la base.
 - `GITHUB_CLIENT_ID` y `GITHUB_CLIENT_SECRET`: de la OAuth App de GitHub (callback `https://panel.comidolar.com.ar/oauth2/callback`).

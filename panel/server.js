@@ -23,4 +23,4 @@ const app = crearApp({
 });
 
 Bun.serve({ port: 3000, maxRequestBodySize: 16 * 1024, fetch: app });
-console.log("Panel escuchando en :3000");
+console.info("Panel escuchando en :3000");

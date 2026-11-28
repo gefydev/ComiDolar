@@ -9,7 +9,7 @@ const db = {
   nombres: async () => [filas[0].name],
   listar: async () => filas,
   buscar: async (id) => filas.find((f) => String(f.id) === String(id)) ?? null,
-  sumar: async (d) => llamadas.push(["sumar", d]),
+  agregar: async (d) => llamadas.push(["agregar", d]),
   editar: async (id, d) => llamadas.push(["editar", id, d]),
   borrar: async (id) => llamadas.push(["borrar", id]),
 };
@@ -62,8 +62,15 @@ describe("operaciones", () => {
     expect((await pedir("/borrar?id=1")).status).toBe(200);
     expect(llamadas.some(([op]) => op === "borrar")).toBe(false);
     expect((await pedir("/borrar", { form: { id: "1" } })).status).toBe(303);
-    expect(llamadas.map(([op]) => op)).toEqual(["sumar", "editar", "borrar"]);
+    expect(llamadas.map(([op]) => op)).toEqual(["agregar", "editar", "borrar"]);
     expect(llamadas[0][1]).toEqual({ name: "Persona", total: 1500.5, year: "2026" });
+  });
+  test("editar el nombre no obliga a tocar un monto con muchos decimales", () => {
+    const actual = { total: "1234.01999999999999" };
+    const form = (total) => new URLSearchParams({ name: "Otro", total, year: "2024" });
+    expect(leerDonacion(form(actual.total), actual).donacion.total).toBe(actual.total);
+    expect(leerDonacion(form("1234.019"), actual).error).toBeDefined();
+    expect(leerDonacion(form(actual.total)).error).toBeDefined();
   });
   test("datos inválidos no llegan a la base", () => {
     for (const mal of [{ name: " " }, { total: "-5" }, { total: "0" }, { total: "1e9" }, { total: "1.234,5" }, { year: "26" }])

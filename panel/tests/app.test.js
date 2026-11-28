@@ -91,7 +91,10 @@ describe("operaciones", () => {
     const token = (h) => h.match(/name="envio" value="([0-9a-f-]{36})"/)[1];
     expect(token(uno)).not.toBe(token(dos));
     expect((await pedir("/")).headers.get("content-security-policy")).toContain("script-src 'self'");
-    expect(await (await pedir("/panel.js")).text()).toContain("disabled = true");
+    const src = uno.match(/<script src="(\/panel\.[0-9a-f]{12}\.js)"/)[1];
+    const script = await pedir(src);
+    expect(script.headers.get("cache-control")).toBe("no-store");
+    expect(await script.text()).toContain("disabled = true");
   });
   test("datos inválidos no llegan a la base", () => {
     for (const mal of [{ name: " " }, { total: "-5" }, { total: "0" }, { total: "1e9" }, { total: "1.234,5" }, { year: "26" }])

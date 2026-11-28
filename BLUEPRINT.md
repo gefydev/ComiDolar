@@ -108,6 +108,8 @@ El enrutamiento es estático y dinámico, estructurado de la siguiente forma:
 
 - **Detalle de cada dólar (`/dolar-oficial`, `-tarjeta`, `-blue`, `-mep`, `-ccl`, `-cripto`, `-mayorista`):** valor en vivo (ISR 60 s y refresco en el navegador), gráfico SVG de los últimos 10 días (ArgentinaDatos, en el servidor, `src/lib/historial.ts`), textos y preguntas (`src/db/textosCotizacion.ts`) con `FAQPage`. Los tipos están en `src/lib/tipos.ts`; las fichas de la home enlazan a cada uno.
 
+- **Carrusel de la home (`Destacados.astro`, `src/lib/carrusel.ts`):** calculadora (con el `h1`) y la última noticia del blog (`getPosts`, imagen `opengraph/blog/<slug>.webp`). Scroll-snap nativo, flechas y puntos, sin avance automático.
+
 6. **Páginas Institucionales y SEO:**
    - `privacidad.astro` (Políticas de privacidad y tratamiento de datos).
    - `terminos.astro` (Términos y condiciones de uso del portal).

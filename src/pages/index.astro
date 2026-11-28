@@ -1,10 +1,11 @@
 ---
 import Layout from "@/layouts/layout.astro";
 import AdSlot from "@/components/AdSlot.astro";
+import Destacados from "@/components/Destacados.astro";
 import EstadoCotizaciones from "@/components/EstadoCotizaciones.astro";
 import FichaCotizacion from "@/components/FichaCotizacion.astro";
 import { cotizacionesParaRender } from "@/lib/cotizaciones-servidor";
-import { ejemploExterior, FICHAS } from "@/lib/fichas";
+import { FICHAS } from "@/lib/fichas";
 
 export const prerender = false;
 
@@ -25,44 +26,7 @@ const casas = cotizaciones?.casas ?? {};
 
 <Layout metadata={metadata}>
   <main data-pagina-cotizaciones="home">
-    <div class="promo">
-      <h1>¿Cuánto te va a salir con la tarjeta?</h1>
-      <ul
-        class="stubs"
-        aria-label="Ejemplos"
-        data-ejemplos
-        hidden={!casas.oficial}
-      >
-        <li>
-          <span>
-            Compra en el exterior<small>US$100</small>
-          </span>
-          <b data-ejemplo>{ejemploExterior(casas)}</b>
-        </li>
-        <li>
-          <span>
-            Viaje en pesos<small>$1.000.000</small>
-          </span>
-          <b>$1.300.000</b>
-        </li>
-      </ul>
-      <a class="go" href="/calculadora">
-        Abrir la calculadora
-        <svg
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M5 12h14M13 6l6 6-6 6"></path>
-        </svg>
-      </a>
-    </div>
+    <Destacados casas={casas} />
 
     <section class="seccion" aria-labelledby="hoy">
       <h2 class="h2" id="hoy">

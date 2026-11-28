@@ -290,7 +290,6 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 8px;
-    margin: 8px 12px 0;
     padding: 12px;
     border-radius: 14px;
     background: var(--brand);
@@ -358,6 +357,116 @@
   }
   .promo :focus-visible {
     outline-color: #10200f;
+  }
+
+  /* carrusel de la home: calculadora y última noticia */
+  .carrusel {
+    margin-top: 8px;
+  }
+  .carrusel-pista {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 0 12px;
+    scroll-padding-inline: 12px;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    touch-action: manipulation;
+  }
+  .carrusel-pista::-webkit-scrollbar {
+    display: none;
+  }
+  .carrusel-pista:focus-visible {
+    outline-offset: -3px;
+  }
+  .diapo {
+    flex: 0 0 100%;
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+  /* si la noticia es más alta, la calculadora reparte el aire */
+  .promo {
+    align-content: center;
+  }
+  .noticia {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 104px;
+    grid-template-rows: 1fr auto;
+    gap: 8px;
+    padding: 10px;
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    background: var(--surface);
+  }
+  .noticia-texto {
+    min-width: 0;
+    align-self: center;
+  }
+  .noticia-antetitulo {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--link);
+  }
+  .noticia h2 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    font-size: 17px;
+    font-weight: 900;
+    line-height: 1.2;
+  }
+  .noticia img {
+    /* la imagen entera: trae su propio texto */
+    width: 104px;
+    height: auto;
+    aspect-ratio: 40 / 21;
+    align-self: center;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  .noticia .go {
+    grid-column: 1 / -1;
+  }
+  .carrusel-controles {
+    display: flex;
+    justify-content: center;
+    /* controles de 44 px que ocupan 28 de alto */
+    margin-block: -2px -14px;
+  }
+  .carrusel-controles button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 99px;
+    background: none;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .carrusel-controles button[aria-disabled="true"] {
+    color: var(--muted);
+    opacity: 0.45;
+    cursor: default;
+  }
+  .punto::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border: 2px solid var(--ink);
+    border-radius: 99px;
+  }
+  .punto[aria-current="true"]::before {
+    width: 22px;
+    background: var(--ink);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .carrusel-pista {
+      scroll-behavior: smooth;
+    }
   }
 
   /* fichas de cotización */
@@ -553,6 +662,34 @@
     }
     .promo .go {
       padding: 0 24px;
+    }
+    .noticia {
+      grid-template-columns: 150px minmax(0, 1fr) auto;
+      grid-template-rows: auto;
+      align-items: center;
+      column-gap: 24px;
+      padding: 8px 24px 8px 8px;
+    }
+    .noticia img {
+      width: 150px;
+      height: 79px;
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .noticia-texto {
+      grid-column: 2;
+      grid-row: 1;
+    }
+    .noticia h2 {
+      -webkit-line-clamp: 2;
+      font-size: 22px;
+    }
+    .noticia .go {
+      grid-column: 3;
+      padding: 0 24px;
+    }
+    .carrusel-pista {
+      scroll-padding-inline: 12px;
     }
     .promo:has(.stubs[hidden]) {
       grid-template-columns: minmax(0, 1fr) auto;
@@ -765,7 +902,8 @@
 /* en oscuro, el botón casi negro se pierde sobre el fondo de la página */
 @media (prefers-color-scheme: dark) {
   .pagina .go,
-  .detalle .go {
+  .detalle .go,
+  .noticia .go {
     background: var(--brand);
     color: var(--on-brand);
   }

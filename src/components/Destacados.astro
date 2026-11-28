@@ -1,0 +1,105 @@
+---
+// Carrusel de la home: calculadora y última noticia del blog. Scroll nativo con
+// scroll-snap; el script solo agrega flechas, puntos y el aviso al lector.
+// Sin avance automático. Las dos diapositivas comparten alto (la más alta).
+import { getPosts, tituloCorto } from "@/lib/blog";
+import { ejemploExterior } from "@/lib/fichas";
+import type { Cotizaciones } from "@/lib/cotizaciones";
+
+const { casas }: { casas: Cotizaciones["casas"] } = Astro.props;
+const [noticia] = await getPosts();
+const fecha =
+  noticia &&
+  new Date(noticia.data.date).toLocaleDateString("es-AR", {
+    timeZone: "America/Argentina/Buenos_Aires",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+const flecha =
+  '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
+---
+
+<section
+  class="carrusel"
+  aria-roledescription="carrusel"
+  aria-label="Destacados"
+  data-carrusel
+>
+  <div class="carrusel-pista" tabindex="0" role="group" aria-label="Diapositivas">
+    <div
+      class="diapo promo"
+      role="group"
+      aria-roledescription="diapositiva"
+      aria-label={noticia ? "1 de 2: calculadora" : "Calculadora"}
+    >
+      <h1>¿Cuánto te va a salir con la tarjeta?</h1>
+      <ul class="stubs" aria-label="Ejemplos" data-ejemplos hidden={!casas.oficial}>
+        <li>
+          <span>
+            Compra en el exterior<small>US$100</small>
+          </span>
+          <b data-ejemplo>{ejemploExterior(casas)}</b>
+        </li>
+        <li>
+          <span>
+            Viaje en pesos<small>$1.000.000</small>
+          </span>
+          <b>$1.300.000</b>
+        </li>
+      </ul>
+      <a class="go" href="/calculadora">
+        Abrir la calculadora
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6"></path>
+        </svg>
+      </a>
+    </div>
+
+    {noticia && (
+      <article
+        class="diapo noticia"
+        role="group"
+        aria-roledescription="diapositiva"
+        aria-label="2 de 2: última noticia"
+      >
+        <div class="noticia-texto">
+          <p class="noticia-antetitulo">Última noticia</p>
+          <h2>{tituloCorto(noticia.data.title)}</h2>
+          <p class="note">
+            <time datetime={noticia.data.date}>{fecha}</time>
+          </p>
+        </div>
+        <img
+          src={`/assets/img/opengraph/blog/${noticia.id}.webp`}
+          alt=""
+          width="1200"
+          height="630"
+          loading="lazy"
+          decoding="async"
+        />
+        <a class="go" href={`/blog/${noticia.id}`}>
+          Leer la noticia
+        </a>
+      </article>
+    )}
+  </div>
+
+  {noticia && (
+    <div class="carrusel-controles">
+      <button type="button" data-paso="-1" aria-label="Diapositiva anterior" aria-disabled="true">
+        <Fragment set:html={`${flecha}<path d="M15 6l-6 6 6 6"/></svg>`} />
+      </button>
+      <button type="button" class="punto" data-ir="0" aria-label="Ver la calculadora" aria-current="true" />
+      <button type="button" class="punto" data-ir="1" aria-label="Ver la última noticia" />
+      <button type="button" data-paso="1" aria-label="Diapositiva siguiente">
+        <Fragment set:html={`${flecha}<path d="M9 6l6 6-6 6"/></svg>`} />
+      </button>
+    </div>
+  )}
+  <p class="sr-only" role="status" data-anuncio></p>
+</section>
+
+<script>
+  import "@/lib/carrusel";
+</script>

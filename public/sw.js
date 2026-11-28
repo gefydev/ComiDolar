@@ -1,8 +1,10 @@
 /* global self, caches, fetch, URL */
 // Service worker de comi.dolar. No guarda ninguna página: las cotizaciones del
-// HTML quedarían viejas sin avisar. Sin conexión muestra /offline.html, que
-// lee la última cotización guardada en el dispositivo, con su fecha.
-const CACHE = "comidolar-v1";
+// HTML quedarían viejas sin avisar. Si no puede mostrar una página (sin
+// internet, o el servidor caído) muestra /offline.html, que lee la última
+// cotización guardada en el dispositivo, con su fecha.
+const CACHE = "comidolar-v2";
+const ESPERA_MS = 15000;
 const FIJOS = [
   "/offline.html",
   "/fonts/archivo-var.woff2",
@@ -68,6 +70,29 @@ async function renovar() {
   }
 }
 
+/** Respuesta de la página, o la de respaldo si el servidor no responde. */
+async function pagina(red) {
+  let reloj;
+  const tarde = new Promise((_, rechazar) => {
+    reloj = setTimeout(rechazar, ESPERA_MS, new Error("tardó demasiado"));
+  });
+  try {
+    const respuesta = await Promise.race([red, tarde]);
+    if (respuesta.status < 500) return respuesta;
+    // el sitio responde 503 con la página armada cuando faltan precios
+    if (
+      respuesta.status === 503 &&
+      (await respuesta.clone().text()).includes("data-pagina-cotizaciones")
+    )
+      return respuesta;
+    return (await caches.match("/offline.html")) || respuesta;
+  } catch {
+    return (await caches.match("/offline.html")) || red;
+  } finally {
+    clearTimeout(reloj);
+  }
+}
+
 self.addEventListener("fetch", (e) => {
   const { request } = e;
   const url = new URL(request.url);
@@ -76,10 +101,18 @@ self.addEventListener("fetch", (e) => {
 
   if (request.mode === "navigate") {
     const red = fetch(request);
-    e.respondWith(red.catch(() => caches.match("/offline.html")));
-    e.waitUntil(red.then(renovar, () => {}));
-  } else if (/^\/(_astro|fonts)\//.test(url.pathname))
+    e.respondWith(pagina(red));
+    e.waitUntil(
+      red.then(
+        (r) => r.ok && renovar(),
+        () => {},
+      ),
+    );
+  } else if (
+    /^\/(_astro|fonts)\//.test(url.pathname) ||
+    // el logo de la página de respaldo: con el servidor colgado, pedirlo a la
+    // red la dejaría cargando para siempre
+    (url.pathname !== "/offline.html" && FIJOS.includes(url.pathname))
+  )
     e.respondWith(copiaPrimero(request));
-  else if (FIJOS.includes(url.pathname))
-    e.respondWith(fetch(request).catch(() => caches.match(url.pathname)));
 });

@@ -14,7 +14,7 @@
       content="#151515"
       media="(prefers-color-scheme: dark)"
     />
-    <title>Sin conexión · comi.dolar</title>
+    <title>No pudimos conectar · comi.dolar</title>
     <style>
       @font-face {
         font-family: Archivo;
@@ -117,11 +117,8 @@
       comi.dolar
     </header>
     <main>
-      <h1>Sin conexión</h1>
-      <p id="estado">
-        No hay cotizaciones guardadas en este dispositivo. Conectate y volvé a
-        intentar.
-      </p>
+      <h1 id="titulo">No pudimos conectar con comidolar</h1>
+      <p id="estado">No hay cotizaciones guardadas en este dispositivo.</p>
       <table id="tabla" hidden>
         <thead>
           <tr>
@@ -188,9 +185,27 @@
           ". Pueden haber cambiado.";
         document.getElementById("tabla").hidden = false;
       })();
-      window.addEventListener("online", function () {
-        location.reload();
-      });
+      // "Sin conexión" solo si el dispositivo no tiene red
+      (function () {
+        var titular = function () {
+          var titulo = navigator.onLine
+            ? "No pudimos conectar con comidolar"
+            : "Sin conexión";
+          document.getElementById("titulo").textContent = titulo;
+          document.title = titulo + " · comi.dolar";
+        };
+        var reintentar = function () {
+          location.reload();
+        };
+        titular();
+        window.addEventListener("offline", titular);
+        // reintento solo: al volver la red o al volver a la pestaña
+        window.addEventListener("online", reintentar);
+        document.addEventListener("visibilitychange", function () {
+          if (document.visibilityState === "visible" && navigator.onLine)
+            reintentar();
+        });
+      })();
     </script>
   </body>
 </html>

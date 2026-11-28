@@ -131,7 +131,7 @@ El enrutamiento es estático y dinámico, estructurado de la siguiente forma:
   - Implementa la inyección de PostHog para analíticas y AdSense diferido.
 - **`Header.astro` y `Footer.astro`:**
   - Marca, píldoras de navegación (con `aria-current`) y botón "Instalar", que solo aparece si tocarlo sirve: con el aviso del navegador, o con los pasos para iPhone, iPad y Safari de Mac (`src/lib/instalacion.ts` decide, `src/lib/instalar.ts` actúa y mide en PostHog). No hay menú lateral.
-- **App instalable y sin conexión:** `public/manifest.json` (íconos `maskable` y `monochrome`, atajos) y `public/sw.js`, que no guarda páginas: sin red muestra `public/offline.html` con la última cotización guardada en el dispositivo y su fecha. Si cambia `sw.js` o `offline.html`, subir la versión de `CACHE`.
+- **App instalable y sin conexión:** `public/manifest.json` (íconos `maskable` y `monochrome`, atajos) y `public/sw.js`, que no guarda páginas: sin red, o con el servidor caído (5xx o 15 s sin respuesta), muestra `public/offline.html` con la última cotización guardada en el dispositivo y su fecha. Si cambia `sw.js` o `offline.html`, subir la versión de `CACHE`.
 - **`AdSlot.astro`:** espacio de publicidad responsive con alto reservado (250 px; 90 px desde 900 px) en cada página pública (menos la 404). La unidad de cada ubicación está en `src/config/anuncios.ts` y el script se carga una vez, diferido (`src/lib/anuncios.ts`). Sin anuncios automáticos.
 - **`Lore.astro`:**
   - Componente que obtiene textos del archivo estático `src/db/lores.ts` y los renderiza según la sección actual para otorgar profundidad histórica al portal.

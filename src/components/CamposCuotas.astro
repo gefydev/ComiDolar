@@ -1,0 +1,39 @@
+---
+// Opción "en cuotas" de un caso: cantidad y dólar del resumen.
+const {
+  prefijo,
+  tc,
+  conTc = true,
+}: { prefijo: string; tc: string; conTc?: boolean } = Astro.props;
+---
+
+<div class="opcion">
+  <label class="check">
+    <input type="checkbox" name={`${prefijo}-cuotas`} />
+    Lo pago en cuotas
+  </label>
+  <div class="revela">
+    <div class="fila2">
+      <div>
+        <label class="rotulo" for={`${prefijo}-n`}>Cuotas</label>
+        <input class="campo" id={`${prefijo}-n`} name={`${prefijo}-n`} inputmode="numeric" value="3" />
+      </div>
+      {
+        conTc && (
+          <div>
+            <label class="rotulo" for={`${prefijo}-tcc`}>Dólar del resumen</label>
+            <input class="campo" id={`${prefijo}-tcc`} name={`${prefijo}-tcc`} inputmode="decimal" value={tc} data-tc />
+          </div>
+        )
+      }
+    </div>
+    {
+      conTc && (
+        <p class="note">
+          Cada cuota se convierte con el dólar del resumen donde se cobra.
+          Cambialo para simular.
+        </p>
+      )
+    }
+  </div>
+</div>

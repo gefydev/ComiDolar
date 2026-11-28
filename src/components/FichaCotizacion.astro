@@ -1,0 +1,39 @@
+---
+import type { Cotizaciones } from "@/lib/cotizaciones";
+import { textosFicha, type Ficha } from "@/lib/fichas";
+import { rutaTipo } from "@/lib/tipos";
+
+const { ficha, casas }: { ficha: Ficha; casas: Cotizaciones["casas"] } =
+  Astro.props;
+const { valor, sub } = textosFicha(ficha.id, casas);
+// Cada tipo lleva a su página; la brecha es un indicador y no tiene
+const href = ficha.id === "brecha" ? undefined : rutaTipo(ficha.clase);
+const Etiqueta = href ? "a" : "div";
+---
+
+<li class={`q ${ficha.clase}`} data-ficha={ficha.id}>
+  <Etiqueta href={href}>
+    <div class="head">
+      <svg
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+        set:html={ficha.icono}
+      />
+      <h3>{ficha.nombre}</h3>
+    </div>
+    <div class="body">
+      <strong data-campo="valor">{valor}</strong>
+      <span class="sub" data-campo="sub">
+        {sub}
+      </span>
+      <span class="tag">{ficha.etiqueta}</span>
+    </div>
+  </Etiqueta>
+</li>

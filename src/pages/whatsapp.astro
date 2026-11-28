@@ -1,4 +1,5 @@
 ---
+import AdSlot from "@/components/AdSlot.astro";
 import Layout from "@/layouts/layout.astro";
 import Lore from "@/components/Lore.astro";
 
@@ -9,35 +10,30 @@ const metadata = {
     og: "Unite al grupo de Whatsapp de la Comision de Dolar del Colegio Nacional de Buenos Aires para enterarte en vivo de las ultimas novedades!",
   },
   canonical: "https://comidolar.com.ar/whatsapp",
-  og: {
-    image: "https://comidolar.com.ar/assets/img/opengraph/whatsapp.webp",
-    video: "https://comidolar.com.ar/assets/img/opengraph/video.webm",
-  },
+  og: { nombre: "whatsapp" },
+  migas: [["Grupo de WhatsApp", "/whatsapp"]],
 };
 ---
 
 <Layout metadata={metadata}>
-  <section class="flex flex-col items-center">
+  <main class="pagina angosta">
+    <h1 class="h1">Grupo de WhatsApp</h1>
+    <img
+      class="w-full max-w-[420px] h-auto my-4"
+      alt="Logo de la Comisión de Dólar del Colegio Nacional de Buenos Aires"
+      src="/assets/img/wide-c.webp"
+      width="512"
+      height="256"
+    />
     <a
-      class="text-xl rounded-lg w-full flex border border-divider justify-center bg-zinc-300 dark:bg-darkless"
-      href="https://comidolar.com.ar/"
-      ><img
-        alt="Logo grande de la Comisión de Dólar del Colegio Nacional de Buenos Aires"
-        src="https://comidolar.com.ar/assets/img/wide-c.webp"
-        width="512px"
-        height="256px"
-      /></a
+      class="go max-w-[420px]"
+      href="https://chat.whatsapp.com/CA29UgWsmr32O0kH6NysG2"
     >
-    <h1 class="text-2xl text-center mt-4 font-semibold mb-4">
-      Comi Dólar | Grupo de Whatsapp
-    </h1>
-    <a href="https://chat.whatsapp.com/CA29UgWsmr32O0kH6NysG2"
-      ><button
-        type="button"
-        class="btn text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg text-xl px-24 py-4 hover:scale-110 active:scale-90 transition text-center"
-        onclick="join()">Unirme</button
-      ></a
-    >
-  </section>
-  <Lore page="whatsapp"/>
+      Unirme al grupo
+    </a>
+    <div class="texto mt-6">
+      <Lore />
+    </div>
+    <AdSlot ubicacion="interna" />
+  </main>
 </Layout>

@@ -1,360 +1,407 @@
 ---
 import Layout from "@/layouts/layout.astro";
-import Lore from "@/components/Lore.astro";
-import { fetchDolares } from "@/lib/dolarApi";
+import AdSlot from "@/components/AdSlot.astro";
+import CamposCuotas from "@/components/CamposCuotas.astro";
+import EstadoCotizaciones from "@/components/EstadoCotizaciones.astro";
+import { conDolares, PROVINCIAS } from "@/lib/calculadora";
+import { cotizacionesParaRender } from "@/lib/cotizaciones-servidor";
+import { pesos } from "@/lib/formato";
+import { armarTicket, CASOS, type Caso, type Campos } from "@/lib/ticket";
+import { FAQ_CALCULADORA } from "@/db/faqCalculadora";
+import "@/styles/calculadora.css";
 
+export const prerender = false;
+
+const descripcion =
+  "Calculá cuánto te cuesta una compra con dólar tarjeta: percepción del 30 %, IVA de servicios digitales e Ingresos Brutos. Normas revisadas el 27/11/2026.";
 const metadata = {
-  title: "Comi Dólar | Calculadora Dólar Tarjeta",
-  description: {
-    meta: "Calcula cuanto valdra tu compra con impuestos! Impuestos steam, Impuestos Juegos, Dolar Tarjeta, impuesto pais, percepciones. Todo lo que necesitas saber!",
-    og: "Calcula cuanto valdra tu compra con impuestos! Impuestos steam, Impuestos Juegos, Dolar Tarjeta, impuesto pais, percepciones. Todo lo que necesitas saber!",
-  },
+  title: "Calculadora dólar tarjeta 2026: percepción 30 % e IVA",
+  description: { meta: descripcion, og: descripcion },
   canonical: "https://comidolar.com.ar/calculadora",
-  og: {
-    image: "https://comidolar.com.ar/assets/img/opengraph/calculadora.webp",
-    video: "https://comidolar.com.ar/assets/img/opengraph/video.webm",
-  },
+  og: { nombre: "calculadora" },
+  migas: [["Calculadora dólar tarjeta", "/calculadora"]],
 };
 
-const dolares = await fetchDolares();
+const { cotizaciones, fresco } = await cotizacionesParaRender();
+// Con un 5xx, ISR conserva la última versión buena en vez de cachear esta
+if (!fresco) Astro.response.status = 503;
+const casas = cotizaciones?.casas ?? {};
+const tc = casas.oficial ? pesos(casas.oficial.venta).slice(1) : "";
 
-const oficial = dolares[0].venta;
+// Valores iniciales: los mismos que muestra el HTML sin JavaScript
+const iniciales: Campos = {
+  "ext-m": "100",
+  "ext-tc": tc,
+  "dig-m": "10",
+  "dig-tc": tc,
+  "dig-iibb": "2",
+  "dig-provincia": "caba",
+  "via-m": "1.000.000",
+  "env-m": "100",
+  "env-tc": tc,
+  "env-iva": "21",
+  "sin-cotizacion": tc ? "" : "si",
+};
+const tickets = Object.fromEntries(
+  CASOS.map((caso) => [caso, armarTicket(caso, iniciales)]),
+) as Record<Caso, ReturnType<typeof armarTicket>>;
+
+const TARJETAS: { id: Caso; titulo: string; texto?: string; marca?: string }[] = [
+  {
+    id: "exterior",
+    titulo: "Compra en el exterior",
+    texto: "Viajes, tiendas y webs que cobran en moneda extranjera con tarjeta.",
+    marca: "+30%",
+  },
+  {
+    id: "digital",
+    titulo: "Servicio digital",
+    texto: "Netflix, Spotify, apps y otros servicios del exterior.",
+    marca: "Según cómo se cobre",
+  },
+  { id: "viaje", titulo: "Viaje en pesos" },
+  { id: "envio", titulo: "Envío del exterior" },
+];
+const BARRAS: Record<Caso, string> = {
+  exterior: "Compra en el exterior",
+  digital: "Servicio digital",
+  viaje: "Viaje en pesos",
+  envio: "Envío (estimado)",
+};
+const comparacion = [
+  { id: "pesos", rotulo: "Resumen en pesos", valor: tickets.exterior.total },
+  {
+    id: "bolsa",
+    rotulo: "Con dólares comprados por MEP",
+    valor: casas.bolsa ? conDolares(100, casas.bolsa.venta) : null,
+  },
+  {
+    id: "cripto",
+    rotulo: "Con dólares cripto",
+    valor: casas.cripto ? conDolares(100, casas.cripto.venta) : null,
+  },
+];
+const faq = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQ_CALCULADORA.map(({ pregunta, respuesta }) => ({
+    "@type": "Question",
+    name: pregunta,
+    acceptedAnswer: { "@type": "Answer", text: respuesta },
+  })),
+};
 ---
 
 <Layout metadata={metadata}>
-  <div class="flex justify-center overflow-x-hidden gap-1">
-    <div class="hidden lg:block">
-      <ins
-        class="adsbygoogle"
-        style="display:block"
-        data-ad-client="ca-pub-8853864974633365"
-        data-ad-slot="8423742279"
-        data-ad-format="auto"
-        data-full-width-responsive="true"></ins>
-      <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
+  <main data-pagina-cotizaciones="calculadora">
+    <div class="intro">
+      <h1 class="h1">Calculadora dólar tarjeta</h1>
+      <p class="mt-2 max-w-[68ch]">
+        Cargá el monto en dólares y elegí qué tipo de compra es. Te mostramos el
+        desglose, cada impuesto y de dónde sale. Es una estimación: confirmá con
+        tu banco antes de pagar.
+      </p>
+      <p class="note mt-2">
+        <a class="enlace" href="/dolar-oficial">Dólar oficial</a> venta{" "}
+        <b data-oficial>{casas.oficial ? pesos(casas.oficial.venta) : "—"}</b> ·
+        Normas revisadas el 27/11/2026
+      </p>
+      <EstadoCotizaciones cotizaciones={cotizaciones} />
     </div>
-    <div class="w-full">
-      <main
-        class="flex flex-col lg:flex-row items-start justify-center w-full gap-4 max-w-screen-xl mx-auto px-2 pt-[48px] lg:pt-0"
-      >
-        <ins
-          class="adsbygoogle"
-          style="display:block"
-          data-ad-client="ca-pub-8853864974633365"
-          data-ad-slot="4837249855"
-          data-ad-format="auto"
-          data-full-width-responsive="true"></ins>
-        <script is:inline>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
 
-        <section
-          id="calculadora"
-          class="flex flex-col items-center relative p-4 bg-zinc-100/50 backdrop-blur-2xl dark:bg-darkless/50 rounded-lg sm:rounded-l-lg shadow-lg w-full max-w-md"
-        >
-          <header
-            class="p-2 bg-green-500/50 w-full absolute top-0 rounded-t-lg flex justify-between items-center"
-          >
-            <p class="font-semibold">Ahora sin impuesto pais!</p>
-            <a
-              title="Post de ComiDolar titulado El impuesto pais fue eliminado, calculá tus compras! - ComiDolar"
-              href="https://comidolar.com.ar/blog/eliminacion-impuesto-pais"
-              class="hover:scale-110 transition-transform duration-300 ease-in-out"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-              >
-                <g fill="none">
-                  <path
-                    fill="currentColor"
-                    fill-opacity="0.16"
-                    d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2S2 6.477 2 12s4.477 10 10 10"
-                  ></path>
-                  <path
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-miterlimit="10"
-                    stroke-width="1.5"
-                    d="M12 8h.008M12 16v-5m10 1c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10"
-                  ></path>
-                </g>
-              </svg>
-            </a>
-          </header>
-          <h1 class="text-4xl font-bold mt-8 mb-4 text-center">
-            Calculadora Dolar Tarjeta
-          </h1>
-          <h2 class="text-2xl mb-6 text-center">
-            Introduce los valores en USD que desees convertir a pesos argentinos
-            y la calculadora hará el resto!
-          </h2>
-          <form class="w-full space-y-4">
-            <div class="origin">
-              <label for="originalPrice" class="block text-lg font-medium mb-1"
-                >Precio en USD:</label
-              >
-              <input
-                id="originalPrice"
-                type="number"
-                value="1"
-                class="border border-zinc-300 dark:bg-zinc-700/50 rounded-t-lg w-full p-2 text-right appearance-none"
-                min="0.5"
-              />
-              <div
-                class="flex items-center gap-2 w-full bg-zinc-200/50 dark:bg-zinc-800/50 rounded-b-lg p-2"
-              >
-                <input
-                  id="isDigitalService"
-                  type="checkbox"
-                  checked
-                  class="rounded-lg accent-green-500 cursor-pointer hover:scale-110 hover:accent-green-700 transition duration-300 ease-in-out"
-                />
-                <label for="isDigitalService">
-                  Es un servicio digital? <span class="inline-block font-bold"
-                    >--></span
-                  >
-                </label>
-                <a
-                  class="font-bold text-green-950 dark:text-green-500"
-                  href="/calculadora/servicios">Lista completa</a
-                >
-              </div>
-            </div>
-            <div
-              class="final flex flex-col gap-2 rounded-lg p-2 bg-zinc-400/50 dark:bg-backgroundDark/50"
-            >
-              <label for="finalPrice" class="block text-lg font-medium mb-1"
-                >Precio FINAL en ARS con Impuestos:</label
-              >
-              <input
-                id="finalPrice"
-                value={"$" + (oficial * 1.51).toFixed(2)}
-                disabled
-                class="border border-zinc-300 dark:bg-zinc-800/50 bg-zinc-200/50 rounded-lg w-full p-2 text-right"
-              />
-            </div>
-          </form>
-        </section>
-
-        <!-- NUEVO BANNER ENTRE SECCIONES EN MOBILE -->
-        <ins
-          class="adsbygoogle block lg:hidden w-full my-2"
-          style="display:block"
-          data-ad-client="ca-pub-8853864974633365"
-          data-ad-slot="4837249855"
-          data-ad-format="auto"
-          data-full-width-responsive="true"></ins>
-        <script is:inline>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-
-        <section
-          id="taxes"
-          class="flex w-full flex-col gap-2 p-4 bg-zinc-200/50 dark:bg-zinc-800/50 rounded-lg sm:rounded-r-lg shadow-lg max-w-md"
-        >
-          <h3 class="text-xl">
-            ¿Qué estoy pagando?
-            <a
-              href="https://steamcito.com.ar/impuestos-hoy"
-              class="text-xs dark:text-green-400 dark:hover:text-green-500 hover:text-green-700 text-green-950"
-              >ℹ️ Mas info</a
-            >
-          </h3>
-          <label for="ganancias">Percepción de Ganancias (30%)</label>
-          <input
-            disabled
-            class="border border-zinc-300 dark:bg-zinc-700/50 bg-zinc-100/50 rounded-lg w-full p-2 text-right"
-            id="ganancias"
-            value={"$" + (oficial * 0.3).toFixed(2)}
-          />
-          <label for="iva">Iva Servicios Digitales (21%)</label>
-          <input
-            disabled
-            class="border border-zinc-300 dark:bg-zinc-700/50 bg-zinc-100/50 rounded-lg w-full p-2 text-right"
-            id="iva"
-            value={"$" + (oficial * 0.21).toFixed(2)}
-          />
-          <div
-            class="final flex flex-col gap-2 rounded-lg p-2 bg-zinc-400/50 dark:bg-backgroundDark/50"
-          >
-            <label for="totaltax">Solo Impuestos (51%)</label>
-            <input
-              disabled
-              class="border border-zinc-300 dark:bg-zinc-700/50 bg-zinc-100/50 rounded-lg w-full p-2 text-right"
-              id="totaltax"
-              value={"$" + (oficial * 0.51).toFixed(2)}
-            />
-            <label for="notax">Sin impuestos</label>
-            <input
-              disabled
-              class="border border-zinc-300 dark:bg-zinc-700/50 bg-zinc-100/50 rounded-lg w-full p-2 text-right"
-              id="notax"
-              value={"$" + oficial.toFixed(2)}
-            />
-          </div>
-        </section>
-      </main>
-
-      <!-- BANNERS EXTRA PARA MOBILE -->
-      <div class="lg:hidden w-full flex flex-col items-center gap-2 mt-4">
-        <ins
-          class="adsbygoogle"
-          style="display:block"
-          data-ad-client="ca-pub-8853864974633365"
-          data-ad-slot="8423742279"
-          data-ad-format="auto"
-          data-full-width-responsive="true"></ins>
-        <script is:inline>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-      </div>
-    </div>
-    <div class="hidden lg:block">
-      <ins
-        class="adsbygoogle"
-        style="display:block"
-        data-ad-client="ca-pub-8853864974633365"
-        data-ad-slot="8423742279"
-        data-ad-format="auto"
-        data-full-width-responsive="true"></ins>
-      <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-    </div>
-  </div>
-
-  <!-- Anuncios debajo -->
-  <ins
-    class="adsbygoogle"
-    style="display:block"
-    data-ad-format="autorelaxed"
-    data-ad-client="ca-pub-8853864974633365"
-    data-ad-slot="7216001187"></ins>
-  <script is:inline>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-  </script>
-  <ins
-    class="adsbygoogle"
-    style="display:block"
-    data-ad-client="ca-pub-8853864974633365"
-    data-ad-slot="4837249855"
-    data-ad-format="auto"
-    data-full-width-responsive="true"></ins>
-  <script is:inline>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-  </script>
-
-  <Lore page="calculadora" />
-
-  <ins
-    class="adsbygoogle"
-    style="display:block"
-    data-ad-client="ca-pub-8853864974633365"
-    data-ad-slot="4837249855"
-    data-ad-format="auto"
-    data-full-width-responsive="true"></ins>
-  <script is:inline>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-  </script>
-
-  <script is:inline data-astro-rerun define:vars={{ oficial }}>
-    document.addEventListener("astro:page-load", () => {
-      if (window.location.pathname === "/calculadora") {
-        const originContainer = document.getElementById("originalPrice");
-        const finalContainer = document.getElementById("finalPrice");
-        const ivaContainer = document.getElementById("iva");
-        const gananciasContainer = document.getElementById("ganancias");
-        const noTaxContainer = document.getElementById("notax");
-        const totalTaxContainer = document.getElementById("totaltax");
-        const isDigitalServiceElement =
-          document.getElementById("isDigitalService");
-
-        if (
-          !originContainer ||
-          !finalContainer ||
-          !ivaContainer ||
-          !gananciasContainer ||
-          !noTaxContainer ||
-          !totalTaxContainer ||
-          !isDigitalServiceElement
-        ) {
-          console.error(
-            "🚨 Error: No se encontraron algunos elementos del DOM.",
-          );
-          return;
-        }
-
-        const handleInput = (value = 1) => {
-          value = parseFloat(value) || 0;
-          const isDigitalService = isDigitalServiceElement.checked;
-          const ganancias = value * oficial * 0.3;
-          const iva = value * oficial * (isDigitalService ? 0.21 : 0);
-          return {
-            original: value * oficial,
-            ganancias: ganancias,
-            iva: iva,
-            final: value * oficial + ganancias + iva,
-            tax: ganancias + iva,
-          };
-        };
-
-        const setData = (data) => {
-          const { original, ganancias, iva, final, tax } = data;
-          gananciasContainer.value = `$${ganancias.toFixed(2)}`;
-          ivaContainer.value = `$${iva.toFixed(2)}`;
-          finalContainer.value = `$${final.toFixed(2)}`;
-          noTaxContainer.value = `$${original.toFixed(2)}`;
-          totalTaxContainer.value = `$${tax.toFixed(2)}`;
-        };
-
-        const debounce = (func, wait) => {
-          let timeout;
-          return (...args) => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), wait);
-          };
-        };
-
-        const debouncedSetData = debounce((value) => {
-          setData(handleInput(value));
-        }, 50);
-
-        originContainer.addEventListener("input", (e) =>
-          debouncedSetData(e.target.value),
-        );
-
-        isDigitalServiceElement.addEventListener("change", () => {
-          const ivaLabel = document.querySelector(
-            `label[for="${ivaContainer.id}"]`,
-          );
-          const elements = [ivaContainer, ivaLabel];
-
-          debouncedSetData(originContainer.value);
-
-          const totalTaxLabel = document.querySelector(`label[for="totaltax"]`);
-          if (!isDigitalServiceElement.checked) {
-            elements.forEach((element) => {
-              if (element) element.classList.add("hidden");
-            });
-            if (totalTaxLabel) {
-              totalTaxLabel.textContent = "Solo Impuestos (30%)";
-            }
-          } else {
-            elements.forEach((element) => {
-              if (element) element.classList.remove("hidden");
-            });
-            if (totalTaxLabel) {
-              totalTaxLabel.textContent = "Solo Impuestos (51%)";
-            }
+    <form class="calc" novalidate data-calc>
+      <fieldset class="casos">
+        <legend>¿Qué vas a pagar?</legend>
+        <div class="casos-grilla">
+          {
+            TARJETAS.map(({ id, titulo, texto, marca }, i) => (
+              <label class={`caso ${texto ? "grande" : ""}`}>
+                <input type="radio" name="caso" value={id} id={`c-${id}`} checked={i === 0} />
+                <b>{titulo}</b>
+                {texto && <small>{texto}</small>}
+                {marca && <em>{marca}</em>}
+              </label>
+            ))
           }
-        });
+        </div>
+      </fieldset>
+
+      <section class="panel-calc p-exterior" aria-label="Compra en el exterior">
+        <div class="campos">
+          <div>
+            <label class="rotulo" for="ext-m">Precio de la compra</label>
+            <div class="monto">
+              <select aria-label="Moneda en la que se cobra" name="ext-moneda">
+                <option value="USD">US$</option>
+                <option value="EUR">€</option>
+                <option value="BRL">R$</option>
+              </select>
+              <input id="ext-m" name="ext-m" inputmode="decimal" autocomplete="off" value={iniciales["ext-m"]} />
+            </div>
+          </div>
+          <div class="solo-cruzada">
+            <label class="rotulo" for="ext-x">1 € o R$ en dólares</label>
+            <input class="campo" id="ext-x" name="ext-x" inputmode="decimal" placeholder="Cargá la cotización" />
+          </div>
+          <div>
+            <label class="rotulo" for="ext-tc">Tipo de cambio</label>
+            <input class="campo" id="ext-tc" name="ext-tc" inputmode="decimal" value={tc} data-tc />
+            <p class="note">Por defecto, el oficial venta de hoy. Cambialo para simular otro dólar.</p>
+          </div>
+          <div class="opcion">
+            <label class="check"><input type="checkbox" name="ext-propios" />Pago el resumen con mis dólares</label>
+          </div>
+          <CamposCuotas prefijo="ext" tc={tc} />
+        </div>
+        <div class="ticket" id="t-exterior" data-ticket="exterior" set:html={tickets.exterior.html} />
+      </section>
+
+      <section class="panel-calc p-digital" aria-label="Servicio digital">
+        <div class="campos">
+          <fieldset class="cobro">
+            <legend class="rotulo">¿En qué moneda te lo cobran?</legend>
+            <label class="check"><input type="radio" name="dig-cobro" value="usd" checked />En dólares</label>
+            <label class="check"><input type="radio" name="dig-cobro" value="pesos" />En pesos</label>
+          </fieldset>
+          <div>
+            <label class="rotulo" for="dig-m">Precio por mes o por compra</label>
+            <div class="monto">
+              <span class="solo-usd">US$</span><span class="solo-pesos">$</span>
+              <input id="dig-m" name="dig-m" inputmode="decimal" autocomplete="off" value={iniciales["dig-m"]} />
+            </div>
+          </div>
+          <p class="note">
+            <a class="link" href="/calculadora/servicios">Ver la lista de servicios</a>
+          </p>
+          <div class="fila2 solo-usd">
+            <div>
+              <label class="rotulo" for="dig-provincia">Tu provincia</label>
+              <select class="campo" id="dig-provincia" name="dig-provincia">
+                {PROVINCIAS.map((p) => <option value={p.id} data-iibb={p.iibb ?? ""}>{p.nombre}</option>)}
+              </select>
+            </div>
+            <div>
+              <label class="rotulo" for="dig-iibb">Ingresos Brutos %</label>
+              <input class="campo" id="dig-iibb" name="dig-iibb" inputmode="decimal" value="2" />
+            </div>
+          </div>
+          <p class="note solo-usd">
+            Ingresos Brutos depende de la provincia de tu domicilio fiscal. CABA:
+            2 % (ley tarifaria 2026). Para otras provincias, cargá el valor de tu
+            resumen.
+          </p>
+          <div class="solo-usd">
+            <label class="check"><input type="checkbox" name="dig-iva" />El precio en dólares ya incluye IVA</label>
+            <label class="rotulo" for="dig-tc">Tipo de cambio</label>
+            <input class="campo" id="dig-tc" name="dig-tc" inputmode="decimal" value={tc} data-tc />
+            <div class="opcion">
+              <label class="check"><input type="checkbox" name="dig-propios" />Pago el resumen con mis dólares</label>
+            </div>
+            <CamposCuotas prefijo="dig" tc={tc} />
+          </div>
+          <div class="solo-pesos">
+            <label class="check"><input type="checkbox" name="dig-sumariva" />El prestador no factura en el país: sumar IVA 21 %</label>
+            <label class="rotulo" for="dig-iibbp">Ingresos Brutos %</label>
+            <input class="campo" id="dig-iibbp" name="dig-iibbp" inputmode="decimal" value="0" />
+          </div>
+        </div>
+        <div class="ticket" id="t-digital" data-ticket="digital" set:html={tickets.digital.html} />
+      </section>
+
+      <section class="panel-calc p-viaje" aria-label="Viaje en pesos">
+        <div class="campos">
+          <div>
+            <label class="rotulo" for="via-m">Precio en pesos, sin impuestos</label>
+            <div class="monto">
+              <span>$</span>
+              <input id="via-m" name="via-m" inputmode="decimal" autocomplete="off" value={iniciales["via-m"]} />
+            </div>
+          </div>
+          <p class="note">
+            Pasajes, paquetes y hoteles que pagás en pesos acá. Precio neto de
+            impuestos y tasas. Si pagás en dólares allá, usá “Compra en el
+            exterior”.
+          </p>
+          <CamposCuotas prefijo="via" tc={tc} conTc={false} />
+        </div>
+        <div class="ticket" id="t-viaje" data-ticket="viaje" set:html={tickets.viaje.html} />
+      </section>
+
+      <section class="panel-calc p-envio" aria-label="Envío del exterior">
+        <div class="campos">
+          <div>
+            <label class="rotulo" for="env-m">Valor del envío</label>
+            <div class="monto">
+              <span>US$</span>
+              <input id="env-m" name="env-m" inputmode="decimal" autocomplete="off" value={iniciales["env-m"]} />
+            </div>
+          </div>
+          <div class="fila2">
+            <div>
+              <label class="rotulo" for="env-iva">IVA de importación %</label>
+              <input class="campo" id="env-iva" name="env-iva" inputmode="decimal" value="21" />
+            </div>
+            <div>
+              <label class="rotulo" for="env-tc">Tipo de cambio</label>
+              <input class="campo" id="env-tc" name="env-tc" inputmode="decimal" value={tc} data-tc />
+            </div>
+          </div>
+          <p class="note">
+            Franquicia: hasta US$400 por envío y 5 envíos por año. Máximo US$3.000
+            por envío, para uso personal.
+          </p>
+          <label class="check"><input type="checkbox" name="env-sincupo" />Ya hice 5 envíos este año</label>
+          <div class="solo-fuera">
+            <label class="rotulo" for="env-der">Derechos y tasa %</label>
+            <input class="campo" id="env-der" name="env-der" inputmode="decimal" placeholder="Cargalo vos" />
+            <p class="note">Dejalo vacío si no sabés: el total queda incompleto.</p>
+          </div>
+        </div>
+        <div class="ticket" id="t-envio" data-ticket="envio" set:html={tickets.envio.html} />
+      </section>
+
+      <p class="sr-only" role="status" data-anuncio></p>
+
+      <div class="acciones">
+        <button class="btn" type="button" data-compartir>Compartir resultado</button>
+        <span class="note" role="status" data-compartido></span>
+      </div>
+
+      {
+        CASOS.map((caso) => (
+          <a class={`barra-total tb-${caso}`} href={`#t-${caso}`}>
+            <span>{BARRAS[caso]}<br />Ver el desglose</span>
+            <b data-barra={caso}>{tickets[caso].barra}</b>
+          </a>
+        ))
       }
-    });
-  </script>
+    </form>
+
+    <AdSlot ubicacion="calculadora-1" />
+
+    <section class="seccion texto angosta solo-exterior-pagina" data-comparacion>
+      <h2>Con tarjeta o con tus dólares</h2>
+      <p class="note">
+        <span data-comparacion-usd>US$100</span> de compra en el exterior
+      </p>
+      <table class="comparacion">
+        <thead>
+          <tr><th scope="col">Cómo pagás</th><th scope="col">Costo en pesos</th></tr>
+        </thead>
+        <tbody>
+          {
+            comparacion.map(({ id, rotulo, valor }) => (
+              <tr>
+                <th scope="row">{rotulo}</th>
+                <td data-compara={id}>{valor === null ? "—" : pesos(valor)}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+      <p class="note">
+        Ver el <a class="enlace" href="/dolar-tarjeta">dólar tarjeta</a>, el{" "}
+        <a class="enlace" href="/dolar-mep">dólar MEP</a> y el{" "}
+        <a class="enlace" href="/dolar-cripto">dólar cripto</a> de hoy.
+      </p>
+      <p class="note">
+        No incluye comisiones. Según Banco Provincia, si pagás el resumen en
+        dólares no se aplica la percepción: confirmá con tu banco cómo hacerlo.
+      </p>
+    </section>
+
+    <AdSlot ubicacion="calculadora-2" />
+
+    <section class="seccion texto angosta">
+      <h2>Cómo se calcula cada caso</h2>
+      <p>
+        <strong>Compra en el exterior con tarjeta.</strong> Convertimos el precio
+        en dólares a pesos con el tipo de cambio que elijas (el oficial venta por
+        defecto). Sobre ese monto en pesos se suma la percepción del 30 %. Total =
+        monto en pesos × 1,30. La RG 5617/2024 (art. 1 b y art. 6) alcanza las
+        compras con tarjeta a distancia en moneda extranjera, y la base es el
+        importe total de la operación.
+      </p>
+      <p id="servicios-digitales-explicacion">
+        <strong>Servicio digital de no residentes.</strong> Depende de en qué
+        moneda se cobra. Cobrado en dólares con tarjeta, se aplica la percepción
+        del 30 %, como en una compra en el exterior. Cobrado en pesos, no se
+        aplica el 30 % (según el texto de ARCA sobre operaciones alcanzadas). El
+        IVA es del 21 % sobre el precio neto de la factura (RG 4240/2018, art. 7).
+        Si el precio en dólares ya incluye el IVA, marcalo en la calculadora; cómo
+        se aplica en cada caso no está confirmado, así que el resultado puede
+        variar.
+      </p>
+      <p>
+        <strong>Viaje en pesos</strong> (pasajes, paquetes y hoteles que pagás en
+        pesos acá). La percepción del 30 % se aplica sobre el precio neto de
+        impuestos y tasas. En agencias y transporte se cobra entera con el primer
+        pago, aunque después pagues en cuotas (ARCA).
+      </p>
+      <p>
+        <strong>Envío del exterior.</strong> Es una estimación. Dentro de la
+        franquicia (hasta USD 400 por envío y 5 envíos por año) no se pagan
+        derechos de importación ni tasa de estadística (ARCA, novedad del
+        30/07/2026). El IVA de importación dentro de la franquicia no está
+        confirmado: la calculadora lo deja editable. Fuera de la franquicia, el
+        total solo se completa si cargás el porcentaje de derechos. Si superás los US$400 y te queda cupo, los derechos se pagan solo sobre el excedente (ARCA). Sin cupo, los calculamos sobre todo el valor, según informa la prensa (sin confirmar).
+      </p>
+      <p>
+        <strong>Pagar con dólares propios.</strong> Según Banco Provincia, si el
+        saldo de la tarjeta se paga en dólares, no se aplica la percepción
+        vinculada a esas compras. La calculadora la muestra en $0. Confirmalo con
+        tu banco antes de pagar.
+      </p>
+      <p>
+        <strong>Ingresos Brutos.</strong> Depende de la provincia de tu domicilio
+        fiscal, no de dónde está el comercio, y solo aplica a servicios digitales.
+        CABA: 2 % (ley tarifaria 2026), confirmado. Buenos Aires y Santa Fe: según
+        informan bancos y notas, puede variar; cargá el valor de tu resumen.
+        Córdoba, Mendoza y el resto de las provincias: no lo calculamos; podés
+        cargar el valor de tu resumen.
+      </p>
+
+      <h2>Qué es la percepción del 30 % y cómo se recupera</h2>
+      <p>
+        La percepción del 30 % es un cobro que se hace al pagar la compra con
+        tarjeta (RG 5617/2024). Si sos contribuyente de Ganancias o Bienes
+        Personales, la computás en tu declaración jurada. Si no tenés que pagar
+        esos impuestos (por ejemplo, si sos monotributista), podés pedir la
+        devolución en ARCA.
+      </p>
+      <p>
+        La devolución (RG 5617/2024, art. 9 a 12) se pide una vez terminado el año
+        calendario en que se practicó la percepción; la norma no fija una fecha
+        límite. Hace falta CUIT, CBU y Domicilio Fiscal Electrónico. La solicitud
+        se hace en el micrositio de ARCA, con el resumen o extracto donde figura
+        la percepción. ARCA aprueba o rechaza, y el dinero se acredita en la CBU.
+      </p>
+      <p>
+        Vigencia: la RG 5617/2024 sigue vigente para compras con tarjeta en el
+        exterior, servicios de no residentes y servicios turísticos al exterior
+        (revisado el 27/11/2026). Lo que cambió es el atesoramiento: la RG
+        5672/2025 eliminó la percepción sobre la compra de dólares para ahorro de
+        personas humanas. El <a href="/blog/eliminacion-impuesto-pais">impuesto
+        PAIS dejó de aplicarse en diciembre de 2024</a>.
+      </p>
+
+      <h2>Preguntas frecuentes sobre la calculadora de dólar tarjeta</h2>
+      <div class="faq">
+        {
+          FAQ_CALCULADORA.map(({ pregunta, respuesta }) => (
+            <details>
+              <summary>{pregunta}</summary>
+              <p>{respuesta}</p>
+            </details>
+          ))
+        }
+      </div>
+    </section>
+
+    <script type="application/ld+json" set:html={JSON.stringify(faq)} />
+  </main>
 </Layout>
+
+<script>
+  import "@/lib/calculadora-pagina";
+</script>

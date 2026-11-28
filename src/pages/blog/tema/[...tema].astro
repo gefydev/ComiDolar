@@ -1,9 +1,11 @@
 ---
-import { getCollection } from "astro:content";
+import AdSlot from "@/components/AdSlot.astro";
+import ListaPosts from "@/components/ListaPosts.astro";
+import { getPosts } from "@/lib/blog";
 import Layout from "@/layouts/layout.astro";
-import BlogPostCard from "@/components/BlogPostCard.astro";
+import { nombreOg } from "@/lib/og";
 export async function getStaticPaths() {
-  const posts = await getCollection("blog");
+  const posts = await getPosts();
 
   const uniqueThemes = [
     ...new Set(posts.map((post) => post.data.theme.toLowerCase())),
@@ -14,13 +16,13 @@ export async function getStaticPaths() {
   }));
 }
 
-const posts = await getCollection("blog");
+const posts = await getPosts();
 
 const { tema } = Astro.params;
 const normalizedTheme = tema.toLowerCase();
 
 const filteredPosts = posts.filter(
-  (post) => post.data.theme.toLowerCase() === normalizedTheme
+  (post) => post.data.theme.toLowerCase() === normalizedTheme,
 );
 
 const metadata = {
@@ -30,35 +32,23 @@ const metadata = {
     og: `Posts sobre ${tema} en el blog oficial de Comi Dólar.`,
   },
   canonical: `https://comidolar.com.ar/blog/tema/${tema}`,
-  og: {
-    image: "https://comidolar.com.ar/assets/img/opengraph/blog.webp",
-  },
+  og: { nombre: `tema-${nombreOg(normalizedTheme)}` },
+  migas: [["Blog", "/blog"], [`${tema}`, `/blog/tema/${tema}`]],
   noindex: true,
 };
 ---
 
 <Layout metadata={metadata}>
-  <main>
-    <h1 class="text-4xl font-bold mb-4 text-center">Posts sobre {tema}</h1>
-
-    {
-      filteredPosts.length > 0 ? (
-        <div class="grid gap-6 justify-items-center sm:grid-cols-1 lg:grid-cols-2 ">
-          {filteredPosts.map((post) => (
-            <BlogPostCard
-              title={post.data.title}
-              description={post.data.description}
-              date={post.data.date}
-              author={post.data.author}
-              theme={post.data.theme}
-              tags={post.data.tags}
-              slug={post.id}
-            />
-          ))}
-        </div>
-      ) : (
-        <p class="text-lg text-center">No se encontraron posts sobre {tema}.</p>
-      )
-    }
+  <main class="pagina">
+    <h1 class="h1">Posts sobre {tema}</h1>
+    {filteredPosts.length > 0 ? (
+      <ListaPosts posts={filteredPosts} />
+    ) : (
+      <p class="mt-4">No se encontraron posts para este tema.</p>
+    )}
+    <a class="link" href="/blog">
+      Ver todo el blog
+    </a>
+    <AdSlot ubicacion="blog" />
   </main>
 </Layout>

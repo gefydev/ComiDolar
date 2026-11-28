@@ -10,7 +10,7 @@ Antes de dar por finalizada cualquier tarea o proponer cambios, debés seguir es
 
 1. **Explorar las Skills Locales:**
    - En el directorio [`.agents/skills/`](./.agents/skills) se encuentran herramientas y guías específicas para este proyecto.
-   - Antes de implementar cualquier cambio importante en SEO, accesibilidad (a11y), Tailwind, React, Bun, TypeScript o Supabase, consultá la skill respectiva en esa carpeta para seguir los patrones correctos.
+   - Antes de implementar cualquier cambio importante en SEO, accesibilidad (a11y), Tailwind, React, Bun o TypeScript, consultá la skill respectiva en esa carpeta para seguir los patrones correctos.
 
 2. **Actualizar el Project Blueprint:**
    - La estructura técnica y funcional está documentada en el archivo [`BLUEPRINT.md`](./BLUEPRINT.md).
@@ -22,8 +22,8 @@ Antes de dar por finalizada cualquier tarea o proponer cambios, debés seguir es
      - Linter del repositorio completo: `bun run lint` (no uses `eslint .` o similares para todo el repositorio).
      - Formateo o linter de archivo/s específico/s: Usar `bunx prettier --write <archivo>` o `bunx eslint <archivo>` únicamente cuando se quiera formatear o lintear un archivo o conjunto de archivos en particular (y corregir los errores/warnings que surjan antes de reportar la tarea como completada).
 
-4. **Actualización de Versión:**
-   - Si se te solicita actualizar la versión de ComiDólar, **únicamente** debés modificar el texto plano dentro del componente [`src/components/Release.astro`](./src/components/Release.astro). No modifiques la versión en otros lados; este componente actúa como la fuente única de verdad y se renderiza automáticamente donde corresponda.
+4. **Diseño:**
+   - Los colores, la tipografía y los componentes salen de [`src/styles/global.css`](./src/styles/global.css). El sitio no muestra número de versión.
 
 ---
 
@@ -53,12 +53,7 @@ El proyecto brinda información precisa sobre:
 
 Permite a los usuarios calcular el costo real de sus consumos en dólares con tarjeta (como compras generales o servicios digitales).
 
-- **Esquema Impositivo Actual (Post-Eliminación Impuesto PAIS - 24/12/2024):**
-  - **Impuesto PAIS:** 0% (se eliminó a finales de 2024).
-  - **Percepción de Ganancias:** 30% fijo sobre el dólar oficial para todas las compras en moneda extranjera.
-  - **IVA Servicios Digitales:** 21% (se suma únicamente si el usuario marca el switch indicando que es un _servicio digital_ registrado en AFIP como Netflix, Spotify, Steam, etc.).
-  - **Cálculo Final:** 51% de recargo impositivo total para servicios digitales, o 30% de recargo impositivo para otras compras físicas.
-- En la calculadora, si el usuario desactiva el check "Es un servicio digital", el IVA (21%) se oculta en la UI y el texto del total impositivo pasa dinámicamente de "Solo Impuestos (51%)" a "Solo Impuestos (30%)".
+- Casos y reglas: ver `BLUEPRINT.md` y `src/lib/calculadora.ts`. El Impuesto PAIS no existe desde diciembre de 2024.
 
 #### 2. Donaciones (`/donaciones`)
 
@@ -71,7 +66,7 @@ Los alias y CBUs oficiales del fundador (Genaro Febbo Yapur) para recibir transf
 - **Banco Ciudad:** alias `el.gena.cdad` | CBU `0290020910000602047211`
 - **Banco Santander:** alias `el.gena.std` | CBU `0720032830000001024851`
 - **NaranjaX:** alias `el.gena.nja` | CBU `4530000800016413921560`
-  La página también muestra una tabla reactiva con el listado de donaciones anteriores obtenidas de Supabase.
+  La página también muestra una tabla reactiva con el listado de donaciones anteriores obtenidas de la API de donantes (`donantes.comidolar.com.ar`).
 
 #### 3. Redirección de WhatsApp (`/whatsapp`)
 
@@ -84,14 +79,6 @@ Contiene artículos y guías sobre finanzas personales elaborados por Gena. Algu
 - _Amazon con Tarifa Plana:_ Guía para importar artículos de tecnología y del hogar de EE. UU. pagando solo USD 5 de envío y abonándolos mediante dólar MEP (comprado en billeteras como Brubank o Prex), siendo esta una opción más económica que pagar con dólar tarjeta.
 - _Fin del Impuesto PAIS:_ Explicación técnica de la baja del costo del dólar tarjeta del $1.671,20 a $1.358 (según cotizaciones de finales de 2024).
 - _Encuestas y Censo CENBA (2024/2025):_ Sondeos interactivos de intención de voto para las elecciones del Centro de Estudiantes del Colegio Nacional de Buenos Aires (CENBA).
-
-#### 5. Proyectos Destacados del Ecosistema
-
-En la página principal se promocionan otros desarrollos creados por Gena:
-
-- **BlackMaps** (`https://blackmaps.vercel.app`): Cartografía interactiva y mapas temáticos basados en datos de redes sociales.
-- **YourProfiles** (`https://yourprofiles.vercel.app`): Plataforma para crear y compartir perfiles/tarjetas personales virtuales.
-- **Comi Buenas Noches** (`https://comibuenasnoches.vercel.app`): Sitio web humorístico para postularse como pretendiente de los administradores.
 
 ---
 

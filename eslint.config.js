@@ -11,8 +11,11 @@ export default tseslint.config(
       "dist/",
       "node_modules/",
       ".astro/",
+      ".vercel/",
       ".github/",
       "public/",
+      // Snippet oficial de PostHog, minificado: no se edita a mano
+      "src/components/posthog.astro",
       "skills-lock.json",
     ],
   },
@@ -22,6 +25,27 @@ export default tseslint.config(
 
   // TypeScript recommended configuration
   ...tseslint.configs.recommended,
+
+  // El panel corre en Bun, no en el navegador
+  {
+    files: ["panel/**/*.js"],
+    languageOptions: {
+      globals: Object.fromEntries(
+        [
+          "Bun",
+          "Buffer",
+          "process",
+          "console",
+          "Response",
+          "Request",
+          "URL",
+          "URLSearchParams",
+          "btoa",
+          "fetch",
+        ].map((nombre) => [nombre, "readonly"]),
+      ),
+    },
+  },
 
   // Astro configuration
   ...eslintPluginAstro.configs["flat/recommended"],

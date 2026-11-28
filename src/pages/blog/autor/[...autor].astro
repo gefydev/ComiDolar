@@ -1,10 +1,12 @@
 ---
-import { getCollection } from "astro:content";
+import AdSlot from "@/components/AdSlot.astro";
+import ListaPosts from "@/components/ListaPosts.astro";
+import { getPosts } from "@/lib/blog";
 import Layout from "@/layouts/layout.astro";
-import BlogPostCard from "@/components/BlogPostCard.astro";
+import { nombreOg } from "@/lib/og";
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog");
+  const posts = await getPosts();
 
   const uniqueAuthors = [
     ...new Set(posts.map((post) => post.data.author.toLowerCase())),
@@ -15,14 +17,14 @@ export async function getStaticPaths() {
   }));
 }
 
-const posts = await getCollection("blog");
+const posts = await getPosts();
 
 const { autor } = Astro.params;
 const normalizedAuthor = autor.toLowerCase();
 const capitalizedAuthor =
   normalizedAuthor.charAt(0).toUpperCase() + normalizedAuthor.slice(1);
 const filteredPosts = posts.filter(
-  (post) => post.data.author.toLowerCase() === normalizedAuthor
+  (post) => post.data.author.toLowerCase() === normalizedAuthor,
 );
 
 const metadata = {
@@ -32,37 +34,23 @@ const metadata = {
     og: `Posts escritos por ${capitalizedAuthor} en el blog oficial de Comi Dólar.`,
   },
   canonical: `https://comidolar.com.ar/blog/autor/${autor}`,
-  og: {
-    image: "https://comidolar.com.ar/assets/img/opengraph/blog.webp",
-  },
+  og: { nombre: `autor-${nombreOg(normalizedAuthor)}` },
+  migas: [["Blog", "/blog"], [`Posts de ${capitalizedAuthor}`, `/blog/autor/${autor}`]],
   noindex: true,
 };
 ---
 
 <Layout metadata={metadata}>
-  <main>
-    <h1 class="text-4xl font-bold mb-4 text-center">
-      Posts de {capitalizedAuthor}
-    </h1>
-
-    {
-      filteredPosts.length > 0 ? (
-        <div class="grid gap-6 justify-items-center sm:grid-cols-1 lg:grid-cols-2 ">
-          {filteredPosts.map((post) => (
-            <BlogPostCard
-              title={post.data.title}
-              description={post.data.description}
-              date={post.data.date}
-              author={post.data.author}
-              theme={post.data.theme}
-              tags={post.data.tags}
-              slug={post.id}
-            />
-          ))}
-        </div>
-      ) : (
-        <p class="text-lg text-center">No se encontraron posts para {autor}.</p>
-      )
-    }
+  <main class="pagina">
+    <h1 class="h1">Posts de {capitalizedAuthor}</h1>
+    {filteredPosts.length > 0 ? (
+      <ListaPosts posts={filteredPosts} />
+    ) : (
+      <p class="mt-4">No se encontraron posts para {autor}.</p>
+    )}
+    <a class="link" href="/blog">
+      Ver todo el blog
+    </a>
+    <AdSlot ubicacion="blog" />
   </main>
 </Layout>

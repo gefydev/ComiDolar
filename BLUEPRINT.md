@@ -17,17 +17,17 @@ Para expandir el alcance de la comunidad, se desarrolló la plataforma web **com
 
 El proyecto está construido sobre una arquitectura moderna orientada a la performance, SEO y soporte para islas interactivas.
 
-- **Framework Principal:** [Astro v7.0.2](https://astro.build/) configurado en modo estático/híbrido utilizando la API Content Layer. Para optimizar el build, se implementó un mecanismo de caché en memoria de 1 minuto para llamadas externas a DolarAPI (`src/lib/dolarApi.ts`) y Better Stack (`src/lib/getMonitorStatus.ts`), lo que reduce drásticamente el tiempo de compilación.
-- **Framework de UI (Islas):** [React v19.2.4](https://react.dev/) para componentes interactivos y carruseles.
-- **Estilos:** [Tailwind CSS v4.2.1](https://tailwindcss.com/) integrado vía `@tailwindcss/vite` (configuración moderna y performante).
-- **Base de Datos / Backend-as-a-Service:** [Supabase](https://supabase.com/) (`@supabase/supabase-js` v2.98.0) para almacenamiento y consulta de datos en tiempo real (ej. tabla de donaciones).
+- **Framework Principal:** [Astro v7.4](https://astro.build/) con salida estática y adaptador `@astrojs/vercel`. Solo `/` y `/calculadora` (`prerender = false`) se renderizan en el servidor con ISR de 60 s.
+- **Cotizaciones:** módulo único `src/lib/cotizaciones.ts` (DolarApi, respaldo CriptoYa; lectura por `casa`, validación y timeout). El navegador las refresca cada minuto y al volver a la pestaña (`cotizaciones-cliente.ts`), y guarda la última en `localStorage`. Si fallan las dos fuentes en el servidor, la página responde 503 para que ISR conserve la última versión buena.
+- **Framework de UI (Islas):** [React v19.3](https://react.dev/) para la herramienta "Tu Futuro" (el resto del sitio es HTML con scripts chicos).
+- **Estilos:** [Tailwind CSS v4.3](https://tailwindcss.com/) integrado vía `@tailwindcss/vite` (configuración moderna y performante).
+- **Donantes:** API de solo lectura (PostgREST sobre Postgres en Coolify) en `donantes.comidolar.com.ar`, consultada desde el navegador (`src/lib/donantes.ts`). Sin credenciales en el sitio.
 - **Manejador de Paquetes:** [Bun](https://bun.sh/) (debe usarse siempre para scripts, instalaciones y ejecuciones).
 - **Hosting:** Optimizado para Vercel (`vercel.json` configurado).
+- **CI:** `.github/workflows/ci.yml` corre `bun run lint`, `bun run test` y `bun run build` en cada PR.
 - **Librerías de UI Clave:**
-  - `embla-carousel-react` (v8.6.0) para sliders adaptables y touch-friendly.
-  - `astro-loading-indicator` (v0.7.1) para feedback visual en transiciones de página.
   - `markdown-it` y `sanitize-html` para el procesamiento seguro de posts del blog.
-  - `@astrojs/mdx` (v7.0.8, compatible con Astro 7.0.x) para poder usar componentes Astro dentro de los posts `.mdx`.
+  - `@astrojs/mdx` (v7.0.8) para poder usar componentes Astro dentro de los posts `.mdx`.
 
 ---
 
@@ -43,7 +43,6 @@ La estructura de directorios sigue los estándares de Astro con aliases definido
 │   └── assets/img/             # Assets visuales del sitio y favicons
 ├── src/
 │   ├── components/             # Componentes de interfaz (Astro y React)
-│   │   └── Release.astro       # Componente de versión única del sitio (fuente de verdad)
 │   ├── content/                # Colecciones de contenido Markdown (Blog)
 │   │   └── blog/               # Entradas del blog del sitio
 │   ├── content.config.ts       # Esquema y definición de tipos para colecciones
@@ -52,14 +51,13 @@ La estructura de directorios sigue los estándares de Astro con aliases definido
 │   │   └── carrerasUba.ts      # Base de datos de materias del CBC y equivalencias de carreras
 │   ├── layouts/                # Plantillas HTML base para las páginas
 │   │   └── layout.astro        # Layout global del sitio con soporte SEO y transiciones
-│   ├── lib/                    # Utilidades de código y configuraciones de clientes (Supabase)
+│   ├── lib/                    # Utilidades de código y configuraciones de clientes (cotizaciones, donantes)
 │   ├── pages/                  # Enrutamiento basado en archivos
 │   ├── styles/                 # Hojas de estilo globales
 │   │   └── global.css          # CSS global con configuración de temas y variables
 │   └── types/                  # Definición de tipos TypeScript globales
 ├── astro.config.mjs            # Configuración de Astro e integraciones
 ├── package.json                # Dependencias y scripts de construcción
-├── tailwind.config.mjs         # Configuración específica para el compilador de Tailwind
 ├── tsconfig.json               # Configuración de TypeScript y aliases como "@/components"
 └── vercel.json                 # Reglas de redirección, headers y configuración para Vercel
 ```
@@ -71,21 +69,15 @@ La estructura de directorios sigue los estándares de Astro con aliases definido
 El enrutamiento es estático y dinámico, estructurado de la siguiente forma:
 
 1. **Página de Inicio (`/` - `src/pages/index.astro`):**
-   - Consume en tiempo de compilación o render la API externa de `https://dolarapi.com/v1/dolares`.
-   - Renderiza las tarjetas (`DolarCard.astro`) de Dólar Oficial, Dólar Blue, etc.
-   - Calcula y renderiza de forma dinámica la **Brecha Cambiaria** en una tarjeta dedicada.
-   - Muestra el carrusel de proyectos destacados de Gena (`CarouselElement.tsx`) y una introducción histórica (`Lore.astro`).
-   - Promociona el último post del blog mediante `ArticlePromote.astro`.
+   - Render en servidor con ISR y refresco en el navegador (ver **Cotizaciones**).
+   - Bloque de la calculadora con dos ejemplos y las ocho fichas (`FichaCotizacion.astro`, datos en `src/lib/fichas.ts`), un espacio de anuncio y la presentación del proyecto.
 
 2. **Calculadora de Dólar Tarjeta (`/calculadora` - `src/pages/calculadora/index.astro`):**
-   - Permite estimar en tiempo real compras en moneda extranjera y su equivalente en ARS con recargos.
-   - **Lógica de Impuestos:**
-     - **Percepción de Ganancias:** 30% fijo sobre el valor oficial del dólar.
-     - **IVA Servicios Digitales:** 21% (aplicado solo si el switch "Es un servicio digital" está activado).
-     - **Impuesto PAIS:** 0% (eliminado el 24 de diciembre de 2024; previamente era del 30%).
-     - **Total Recargos:** 51% para servicios digitales (como Netflix, Spotify, Steam) o 30% para bienes físicos/otros consumos.
-   - Integra scripts reactivos optimizados para los View Transitions (`astro:page-load`) con lógica de debounce en inputs.
-   - Subruta: `/calculadora/servicios` (`src/pages/calculadora/servicios.astro`) que detalla qué servicios están gravados por el IVA digital.
+   - Cuatro casos: compra en el exterior (30 %), servicio digital (en dólares: 30 % + IVA 21 % + IIBB; en pesos: sin 30 %), viaje en pesos (30 %) y envío del exterior (franquicia US$400, 5 por año, máximo US$3.000; derechos solo sobre el excedente si queda cupo, sobre todo el valor sin cupo).
+   - Fórmulas en `src/lib/calculadora.ts`, desglose en `src/lib/ticket.ts` (mismo código en servidor y navegador), formulario en `src/lib/calculadora-pagina.ts`. Con tests.
+   - Alícuotas de Ingresos Brutos en `PROVINCIAS`: solo CABA confirmada; lo no confirmado es editable y avisa.
+   - Preguntas frecuentes en `src/db/faqCalculadora.ts` (página y JSON-LD `FAQPage`). Dos espacios de anuncio (`calculadora-1` y `calculadora-2`).
+   - Subruta `/calculadora/servicios`: lista de servicios digitales alcanzados.
 
 3. **Página de Donaciones (`/donaciones` - `src/pages/donaciones.astro`):**
    - Explica el carácter sin fines de lucro de la comisión e invita a realizar aportes voluntarios.
@@ -96,13 +88,14 @@ El enrutamiento es estático y dinámico, estructurado de la siguiente forma:
      - _Banco Ciudad:_ alias `el.gena.cdad` | CBU `0290020910000602047211`
      - _Banco Santander:_ alias `el.gena.std` | CBU `0720032830000001024851`
      - _NaranjaX:_ alias `el.gena.nja` | CBU `4530000800016413921560` (billetera virtual)
-   - Incorpora `DonationTable.tsx` para listar las contribuciones recibidas en tiempo real consultando la base de datos Supabase.
+   - Incorpora `Donantes.astro` para listar las contribuciones recibidas en tiempo real consultando la API de donantes; si falla muestra la última copia con su fecha o un botón para reintentar.
 
 4. **Grupo de WhatsApp (`/whatsapp` - `src/pages/whatsapp.astro`):**
    - Página puente con diseño limpio para redirigir al link de invitación oficial del grupo: `https://chat.whatsapp.com/CA29UgWsmr32O0kH6NysG2`.
 
 5. **Blog (`/blog` - `src/pages/blog.astro` y `src/pages/blog/[...slug].astro`):**
    - Renderiza las entradas de blog a partir del contenido de `src/content/blog/` mediante la API Content Layer de Astro (usando el loader `glob` en `src/content.config.ts`), donde las entradas se identifican a través de su `id` en lugar del antiguo `slug`.
+   - Los posts con `draft: true` no se publican: todas las páginas, el RSS y el sitemap leen con `getPosts()` (`src/lib/blog.ts`).
    - Soporte para búsquedas por etiquetas (`tag/`), temas (`tema/`) y autores (`autor/`).
    - Los posts actuales son:
      - `comprar-exterior-barato.md`: Guía de compras en Amazon usando la tarifa plana de $5 e importando con dólar MEP (opción recomendada por ser más económica que el dólar tarjeta).
@@ -113,11 +106,17 @@ El enrutamiento es estático y dinámico, estructurado de la siguiente forma:
      - `sugerencias-comidolar-2026.md`: Formulario interactivo para sugerencias e ideas de cara al 2026.
      - `lanzamiento-herramienta-futuro.md`: Anuncio y guía interactiva sobre la nueva herramienta de equivalencias del CBC y comparación con 6to año.
 
+- **Detalle de cada dólar (`/dolar-oficial`, `-tarjeta`, `-blue`, `-mep`, `-ccl`, `-cripto`, `-mayorista`):** valor en vivo (ISR 60 s y refresco en el navegador), gráfico SVG de los últimos 10 días (ArgentinaDatos, en el servidor, `src/lib/historial.ts`), textos y preguntas (`src/db/textosCotizacion.ts`) con `FAQPage`. Los tipos están en `src/lib/tipos.ts`; las fichas de la home enlazan a cada uno.
+
+- **Carrusel de la home (`Destacados.astro`, `src/lib/carrusel.ts`):** calculadora (con el `h1`) y la última noticia del blog (`getPosts`, imagen `opengraph/blog/<slug>.webp`). Scroll-snap nativo, flechas y puntos, sin avance automático.
+
 6. **Páginas Institucionales y SEO:**
    - `privacidad.astro` (Políticas de privacidad y tratamiento de datos).
    - `terminos.astro` (Términos y condiciones de uso del portal).
    - `404.astro` (Página de error personalizada).
-   - Generación automática de feeds y mapas de sitio en `rss.xml.ts` y `sitemap.xml.ts`.
+   - Generación automática de feeds y mapas de sitio en `rss.xml.ts` y `sitemap.xml.ts` (solo indexables, sin barra final).
+   - JSON-LD: `WebSite` y `Organization` en todas las páginas, `BreadcrumbList` en las internas (`src/lib/seo.ts`; cada página pasa `metadata.migas`).
+   - Imágenes para compartir 1200×630 generadas en el build (`src/lib/og.ts`, `src/pages/og/[nombre].png.ts`, plantillas en `src/assets/og/`). Cada página pasa `metadata.og.nombre`.
 
 7. **Página de Articulación del CBC ("Tu Futuro" - `/futuro` - `src/pages/futuro.astro`):**
    - Compara las materias necesarias para cualquier carrera de la UBA con las aprobadas de forma automática al egresar de 5to año (resolución `RESCS-2026-890-E-UBA-REC`).
@@ -131,22 +130,16 @@ El enrutamiento es estático y dinámico, estructurado de la siguiente forma:
 - **`layout.astro` (Layout principal):**
   - Administra todas las etiquetas meta cruciales para SEO (título, meta descripción, canonical) y OpenGraph/Twitter Cards.
   - Habilita `ClientRouter` (View Transitions) para navegación instantánea sin recarga de página.
-  - Implementa la inyección de PostHog para analíticas y scripts de AdSense condicionales para monetización.
+  - Implementa la inyección de PostHog para analíticas y AdSense diferido.
 - **`Header.astro` y `Footer.astro`:**
-  - El Header controla el menú de navegación adaptativo, el switch de tema (modo oscuro / claro) e inyecta la opción "Tu Futuro" apuntando a `/futuro`.
-- **`LinkIcon.astro`:**
-  - Componente que asocia de forma dinámica los iconos en SVG a cada enlace de navegación en base al título (por ejemplo, incorporando un gorro de graduado en SVG para "Tu Futuro").
+  - Marca, píldoras de navegación (con `aria-current`) y botón "Instalar", que solo aparece si tocarlo sirve: con el aviso del navegador, o con los pasos para iPhone, iPad y Safari de Mac (`src/lib/instalacion.ts` decide, `src/lib/instalar.ts` actúa y mide en PostHog). No hay menú lateral.
+- **App instalable y sin conexión:** `public/manifest.json` (íconos `maskable` y `monochrome`, atajos) y `public/sw.js`, que no guarda páginas: sin red, o con el servidor caído (5xx o 15 s sin respuesta), muestra `public/offline.html` con la última cotización guardada en el dispositivo y su fecha. Si cambia `sw.js` o `offline.html`, subir la versión de `CACHE`.
+- **`AdSlot.astro`:** espacio de publicidad responsive con alto reservado (250 px; 90 px desde 900 px) en cada página pública (menos la 404). La unidad de cada ubicación está en `src/config/anuncios.ts` y el script se carga una vez, diferido (`src/lib/anuncios.ts`). Sin anuncios automáticos.
 - **`Lore.astro`:**
   - Componente que obtiene textos del archivo estático `src/db/lores.ts` y los renderiza según la sección actual para otorgar profundidad histórica al portal.
-- **`CarouselElement.tsx` (React):**
-  - Carrusel horizontal interactivo que promociona proyectos hermanos del ecosistema de Gena:
-    - **BlackMaps** (`https://blackmaps.vercel.app`): Sitio de mapas temáticos.
-    - **YourProfiles** (`https://yourprofiles.vercel.app`): Creador de perfiles compartibles.
-    - **Comi Buenas Noches** (`https://comibuenasnoches.vercel.app`): Plataforma lúdica para candidatos románticos de los administradores.
-- **`DonationTable.tsx` (React):**
-  - Se suscribe o consulta Supabase para mostrar el listado histórico y en tiempo real de donantes.
+- **`Donantes.astro`:** lista de donantes por año, con búsqueda y orden, leída de la API de solo lectura.
 - **`PaymentMethod.astro`:**
-  - Renderiza cada opción de transferencia bancaria, aplicando degradados de color específicos adaptados a la marca visual de cada banco (Mercado Pago, Provincia, Nación, Ciudad, Santander, NaranjaX).
+  - Cada medio de pago con el color del banco en el borde, CBU/alias completos y botón de copiar.
 - **`FutureCalculator.tsx` (React):**
   - Componente interactivo que permite seleccionar el colegio de egreso (CNBA o Pelle), la facultad y la carrera deseada.
   - Calcula automáticamente porcentajes de avance del CBC, materias restantes, estimación del tiempo de egreso y compara de forma pedagógica el camino de egresar en 5to vs hacer 6to año.
@@ -156,18 +149,12 @@ El enrutamiento es estático y dinámico, estructurado de la siguiente forma:
   - `src/lib/decks.ts` prepara el HTML en build: quita las notas del orador (`<aside>`), convierte `<x-icon>` en SVG inline, agrega `loading="lazy"` desde la segunda diapositiva y extrae el título de cada una para la barra de progreso.
   - Renderiza dentro de un Shadow DOM declarativo para que los estilos `.markdown` del blog no rompan las diapositivas (`src/components/slide-deck/deck.css`), escalando el lienzo con `ResizeObserver`.
   - `src/components/slide-deck/deck-element.ts` define el custom element `<cd-slide-deck>`: flechas, Inicio/Fin, barra espaciadora, swipe en celulares, clic en la diapositiva (izquierda vuelve, derecha avanza), barra de progreso clickeable, pantalla completa con la tecla F (con rotación automática a horizontal en celulares en vertical) y enlace directo a cada diapositiva con `#<deck>-<número>`. Funciona también tras la navegación del `ClientRouter`.
-- **`Release.astro`:**
-  - Componente minimalista que almacena únicamente el número de versión actual de ComiDólar en texto plano. Funciona como la fuente única de verdad para el control de versiones y es consumido por otros componentes como el pie de página para renderizar la versión.
 
 ---
 
 ## 6. Configuración de Estilo y Sistema de Diseño
 
-El diseño visual está alineado con las directrices de premium frontend:
-
-- Utiliza gradientes suaves, efectos de desenfoque de fondo (`backdrop-blur`) y mallas de fondo dinámicas (`bg-light-mesh`, `bg-dark-mesh`) configuradas en [global.css](./src/styles/global.css).
-- Respeta de forma estricta los modos claro/oscuro mediante clases `dark:` y variables personalizadas en CSS.
-- El color corporativo y de acento principal es el **verde dólar** (`#14b54f` / `#0e9f6e`).
+Dirección "Ticket": tokens claro/oscuro (`prefers-color-scheme`), tipografía Archivo auto-alojada, sin sombras ni degradados, un color + ícono + etiqueta por tipo de dólar y controles de al menos 44 px. Todo en [global.css](./src/styles/global.css). PostHog se carga después de la página, solo visitas y eventos.
 
 ---
 

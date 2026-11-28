@@ -574,9 +574,13 @@
     border-radius: 8px;
     background: var(--soft);
   }
-  /* Google no tiene anuncio para ese espacio: sin recuadro en blanco
-     (forma que recomienda AdSense: mirar data-ad-status) */
+  /* Google no tiene anuncio para ese espacio: sin recuadro en blanco. Se
+     vuelve invisible sin mover nada; si todavía no se vio, además se quita
+     (src/lib/anuncios.ts) */
   .ad:has(ins.adsbygoogle[data-ad-status="unfilled"]) {
+    visibility: hidden;
+  }
+  .ad.ad-vacio {
     display: none;
   }
   .ad-slot ins {

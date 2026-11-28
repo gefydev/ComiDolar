@@ -47,6 +47,18 @@ const cargarScript = () => {
     cerca.observe(espacio);
 };
 
+// Un espacio sin anuncio se quita solo si está más abajo de lo que se ve: si
+// no, la página saltaría con la persona mirando (o leyendo más abajo).
+const quitarVacios = new MutationObserver((cambios) => {
+  for (const { target } of cambios) {
+    const ins = target as HTMLElement;
+    if (ins.dataset.adStatus !== "unfilled") continue;
+    const espacio = ins.closest<HTMLElement>(".ad");
+    if (espacio && espacio.getBoundingClientRect().top >= innerHeight)
+      espacio.classList.add("ad-vacio");
+  }
+});
+
 // Pedidos de la página que se va: sin el script todavía, se descartan
 document.addEventListener("astro:before-swap", () => {
   if (Array.isArray(window.adsbygoogle)) window.adsbygoogle.length = 0;
@@ -60,6 +72,7 @@ document.addEventListener("astro:page-load", () => {
     ".ad ins.adsbygoogle:not([data-pedido])",
   )) {
     unidad.dataset.pedido = "";
+    quitarVacios.observe(unidad, { attributeFilter: ["data-ad-status"] });
     (window.adsbygoogle ||= []).push({});
   }
   cargarScript();

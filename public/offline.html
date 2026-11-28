@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <meta
+      name="theme-color"
+      content="#ffffff"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#151515"
+      media="(prefers-color-scheme: dark)"
+    />
+    <title>Sin conexión · comi.dolar</title>
+    <style>
+      @font-face {
+        font-family: Archivo;
+        src: url("/fonts/archivo-var.woff2") format("woff2");
+        font-weight: 400 900;
+        font-stretch: 62% 125%;
+        font-display: swap;
+      }
+      :root {
+        color-scheme: light dark;
+        --bg: #fff;
+        --ink: #141414;
+        --muted: #55555a;
+        --hair: #d9d9d5;
+        --line: #141414;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #151515;
+          --ink: #f3f3f1;
+          --muted: #b6b6b2;
+          --hair: #3a3a3a;
+          --line: #8d8d89;
+        }
+      }
+      body {
+        margin: 0 auto;
+        max-width: 480px;
+        padding: 16px;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          16px/1.45 Archivo,
+          system-ui,
+          sans-serif;
+        font-variant-numeric: tabular-nums;
+      }
+      .marca {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 900;
+        font-size: 21px;
+      }
+      .marca img {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 0 1px var(--hair);
+      }
+      h1 {
+        margin: 24px 0 8px;
+        font-size: 32px;
+        font-weight: 900;
+        line-height: 1.1;
+      }
+      table {
+        width: 100%;
+        margin-top: 16px;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 12px 4px;
+        border-bottom: 1px solid var(--hair);
+        text-align: right;
+      }
+      th:first-child {
+        text-align: left;
+      }
+      thead th {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .nota {
+        font-size: 14px;
+        color: var(--muted);
+      }
+      button {
+        min-height: 44px;
+        margin-top: 16px;
+        padding: 0 20px;
+        border: 2px solid var(--line);
+        border-radius: 99px;
+        background: none;
+        color: var(--ink);
+        font:
+          700 14px Archivo,
+          system-ui,
+          sans-serif;
+        cursor: pointer;
+      }
+      [hidden] {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="marca">
+      <img src="/assets/img/appicon_192.png" alt="" width="40" height="40" />
+      comi.dolar
+    </header>
+    <main>
+      <h1>Sin conexión</h1>
+      <p id="estado">
+        No hay cotizaciones guardadas en este dispositivo. Conectate y volvé a
+        intentar.
+      </p>
+      <table id="tabla" hidden>
+        <thead>
+          <tr>
+            <th scope="col">Dólar</th>
+            <th scope="col">Compra</th>
+            <th scope="col">Venta</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <button type="button" onclick="location.reload()">Reintentar</button>
+    </main>
+    <script>
+      // Misma copia que guarda el sitio (src/lib/cotizaciones-cliente.ts)
+      (function () {
+        var nombres = {
+          oficial: "Oficial",
+          tarjeta: "Tarjeta",
+          blue: "Blue",
+          bolsa: "MEP",
+          contadoconliqui: "CCL",
+          cripto: "Cripto",
+          mayorista: "Mayorista",
+        };
+        var copia;
+        try {
+          copia = JSON.parse(localStorage.getItem("comidolar:cotizaciones"));
+        } catch (e) {}
+        if (!copia || !copia.casas || !(copia.consultado > 0)) return;
+        var cuerpo = document.querySelector("tbody");
+        var numero = function (n) {
+          return typeof n === "number" && n > 0
+            ? "$" +
+                n.toLocaleString("es-AR", {
+                  minimumFractionDigits: Math.round(n * 100) % 100 ? 2 : 0,
+                  maximumFractionDigits: 2,
+                })
+            : "—";
+        };
+        Object.keys(nombres).forEach(function (casa) {
+          var c = copia.casas[casa];
+          if (!c || numero(c.venta) === "—") return;
+          var fila = cuerpo.insertRow();
+          var th = document.createElement("th");
+          th.scope = "row";
+          th.textContent = nombres[casa];
+          fila.appendChild(th);
+          fila.insertCell().textContent = numero(c.compra);
+          fila.insertCell().textContent = numero(c.venta);
+        });
+        if (!cuerpo.rows.length) return;
+        var cuando = new Date(copia.consultado).toLocaleString("es-AR", {
+          timeZone: "America/Argentina/Buenos_Aires",
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        });
+        document.getElementById("estado").textContent =
+          "Estos son los últimos precios guardados en este dispositivo, del " +
+          cuando +
+          ". Pueden haber cambiado.";
+        document.getElementById("tabla").hidden = false;
+      })();
+      window.addEventListener("online", function () {
+        location.reload();
+      });
+    </script>
+  </body>
+</html>

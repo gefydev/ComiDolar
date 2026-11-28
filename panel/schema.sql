@@ -24,6 +24,13 @@ from (
 group by name, year
 order by min(id);
 
+-- Una vista con GROUP BY no es actualizable y Postgres fallaría con error 55000 (500 en la API)
+-- antes de mirar permisos. Con estos disparadores responde "permiso denegado".
+create function public.solo_lectura() returns trigger language plpgsql as
+$$ begin raise insufficient_privilege using message = 'La lista es de solo lectura'; end $$;
+create trigger solo_lectura instead of insert or update or delete on api.donantes
+for each row execute function public.solo_lectura();
+
 create role web_anon nologin;
 create role authenticator login noinherit;
 grant web_anon to authenticator;

@@ -3,15 +3,14 @@ import { obtenerHistorial } from "@/lib/historial";
 import { tipoPorSlug } from "@/lib/tipos";
 
 /**
- * Todo lo que necesita /dolar-<slug>. Sin historial la página sale igual, pero
- * no cuenta como fresca: así ISR no pisa una versión que sí tenía gráfico.
+ * Todo lo que necesita /dolar-<slug>. Sin historial la página sale igual, sin
+ * gráfico: frenar la regeneración dejaría los precios viejos.
  */
 export async function datosDetalle(slug: string) {
   const tipo = tipoPorSlug(slug);
-  const [{ cotizaciones, fresco: conPrecios }, historial] = await Promise.all([
+  const [{ cotizaciones, fresco }, historial] = await Promise.all([
     cotizacionesParaRender(),
     obtenerHistorial(tipo.casa),
   ]);
-  const fresco = conPrecios && historial.length > 1;
   return { tipo, cotizaciones, fresco, historial };
 }

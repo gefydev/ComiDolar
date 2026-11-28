@@ -1,6 +1,6 @@
 ---
-// PostHog: solo visitas y eventos. Sin grabaciones ni encuestas, y recién
-// cuando la página terminó de cargar.
+// PostHog: solo visitas y eventos. Sin grabaciones ni encuestas, y la librería
+// se pide recién cuando la persona usa la página (o pasado un rato).
 ---
 
 <script is:inline>
@@ -23,7 +23,10 @@
     cola.init("phc_ekxNoB33yQfNQenOF0mgUN19Cz80AbjG36yQnMzd2aT", {
       api_host: "https://hog.comidolar.com.ar",
       ui_host: "https://us.posthog.com",
-      capture_pageview: "history_change",
+      // las visitas las registramos abajo: la librería puede llegar después
+      // de que la persona ya navegó
+      capture_pageview: false,
+      capture_pageleave: true,
       // solo visitas y eventos propios: sin registrar clics
       autocapture: false,
       disable_session_recording: true,
@@ -35,6 +38,13 @@
       capture_performance: false,
       capture_exceptions: false,
     });
+    // una vista por página, con su dirección, aunque quede en la cola
+    d.addEventListener("astro:page-load", function () {
+      w.posthog.capture("$pageview", {
+        $current_url: location.href,
+        $pathname: location.pathname,
+      });
+    });
     var cargar = function () {
       var s = d.createElement("script");
       s.async = true;
@@ -42,10 +52,23 @@
       s.src = "https://hog.comidolar.com.ar/static/array.js";
       d.head.appendChild(s);
     };
+    // con la primera interacción, o a los 10 s de cargada: mientras tanto los
+    // eventos quedan en la cola
+    var eventos = ["pointerdown", "keydown", "scroll", "touchstart", "wheel"];
+    var pedido = false;
+    var pedir = function () {
+      if (pedido) return;
+      pedido = true;
+      eventos.forEach(function (e) {
+        w.removeEventListener(e, pedir, true);
+      });
+      cargar();
+    };
+    eventos.forEach(function (e) {
+      w.addEventListener(e, pedir, { capture: true, passive: true });
+    });
     var despues = function () {
-      if (w.requestIdleCallback)
-        w.requestIdleCallback(cargar, { timeout: 5000 });
-      else setTimeout(cargar, 2000);
+      setTimeout(pedir, 10000);
     };
     if (d.readyState === "complete") despues();
     else w.addEventListener("load", despues, { once: true });

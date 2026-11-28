@@ -17,6 +17,7 @@ export default defineConfig({
     cacheDir: "./.astro/vite_cache",
   },
   output: "static",
+  image: { endpoint: { entrypoint: "./src/lib/sin-imagenes.ts" } },
   // Solo las páginas con `prerender = false` (/ y /calculadora) pasan por ISR
   adapter: vercel({ isr: { expiration: 60 } }),
 });

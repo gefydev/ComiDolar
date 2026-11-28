@@ -22,7 +22,7 @@ export const TEXTOS_COTIZACION: Record<string, TextoCotizacion> = {
       "Compra y venta del dólar oficial, con la fuente y la hora de cada cotización.",
     queEs: [
       "El dólar oficial es el tipo de cambio que se usa en el sistema bancario para comprar y vender dólares. Es la base sobre la que se calculan otras cotizaciones, como la del dólar tarjeta.",
-      "Se compra en bancos, con las condiciones que cada entidad fije en cada momento. Desde el 14/04/2025 las personas pueden comprar dólar para atesoramiento sin autorización previa del BCRA, con débito en cuenta. Si pagan en efectivo, el tope es USD 100 por mes.",
+      "Se compra en bancos, con las condiciones que cada entidad fije en cada momento. Las condiciones para operar pueden cambiar según la normativa vigente del BCRA; consultá en tu banco o entidad.",
       "Lo usan personas que compran dólares en el banco o que necesitan un valor de referencia para cuentas y precios en dólares. Comprarlo en el banco no tiene percepción del 30 %; esa percepción se aplica a compras con tarjeta en el exterior.",
     ],
     diferencias: [
@@ -136,7 +136,7 @@ export const TEXTOS_COTIZACION: Record<string, TextoCotizacion> = {
       {
         pregunta: "¿Es legal el dólar MEP?",
         respuesta:
-          "Se opera dentro del mercado de valores regulado por la CNV. El BCRA fija una restricción de 90 días entre la compra de dólar oficial y la compra de títulos en dólares, para algunas personas (Comunicación A 8336). Consultá si te alcanza.",
+          "Se opera dentro del mercado de valores regulado por la CNV. Las condiciones para operar pueden cambiar según la normativa vigente del BCRA; consultá en tu banco o entidad.",
       },
       {
         pregunta: "¿Cómo se compra el dólar MEP?",
@@ -191,7 +191,7 @@ export const TEXTOS_COTIZACION: Record<string, TextoCotizacion> = {
       {
         pregunta: "¿Es legal el dólar CCL?",
         respuesta:
-          "Se opera dentro del mercado de valores regulado por la CNV, como el MEP. La restricción de 90 días del BCRA también puede alcanzarte.",
+          "Se opera dentro del mercado de valores regulado por la CNV, como el MEP. Las condiciones para operar pueden cambiar según la normativa vigente del BCRA; consultá en tu banco o entidad.",
       },
       {
         pregunta: "¿Cuál es la diferencia con el MEP?",

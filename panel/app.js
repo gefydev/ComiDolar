@@ -1,6 +1,11 @@
 // Panel de donaciones: HTML en el servidor, sin dependencias.
 // El login lo hace oauth2-proxy; acá se vuelve a comprobar quién llega y desde dónde.
-import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
+import {
+  createHash,
+  createHmac,
+  randomUUID,
+  timingSafeEqual,
+} from "node:crypto";
 
 const igual = (a, b) => {
   const x = Buffer.from(a);
@@ -63,7 +68,7 @@ body{font-family:system-ui,sans-serif;max-width:760px;margin:0 auto;padding:16px
 form.f{display:grid;gap:8px;max-width:360px;margin:12px 0}input,button,select{font:inherit;padding:8px;min-height:44px;box-sizing:border-box}
 table{width:100%;border-collapse:collapse}td,th{padding:6px;border-bottom:1px solid #8886;text-align:left}td.n,th.n{text-align:right}
 .msg{padding:8px;border:1px solid;border-radius:6px}a{display:inline-block;padding:6px 2px}
-</style><script src="/panel.js" defer></script></head><body>${cuerpo}</body></html>`;
+</style><script src="${SCRIPT_URL}" defer></script></head><body>${cuerpo}</body></html>`;
 
 const campos = (d = {}) => `
 <label>Nombre <input name="name" required maxlength="100" list="nombres" autocomplete="off" value="${e(d.name ?? "")}"></label>
@@ -85,6 +90,8 @@ addEventListener("pageshow", () => {
   }
 });
 `;
+// El nombre cambia con el contenido: Cloudflare no puede servir una versión vieja
+const SCRIPT_URL = `/panel.${createHash("sha256").update(SCRIPT).digest("hex").slice(0, 12)}.js`;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 const AVISOS = { repetida: "Ese formulario ya se había enviado: no se cargó de nuevo.", alta: "Donación registrada.", editada: "Cambios guardados.", borrada: "Fila borrada." };
@@ -143,9 +150,13 @@ ${filas.map((f) => `<tr><td>${e(f.name)}</td><td class="n">${pesos(f.total)}</td
     const fila = /^\d{1,15}$/.test(id) ? await db.buscar(id) : null;
 
     if (req.method === "GET") {
-      if (url.pathname === "/panel.js")
+      if (url.pathname === SCRIPT_URL)
         return new Response(SCRIPT, {
-          headers: { "content-type": "text/javascript; charset=utf-8", "x-content-type-options": "nosniff" },
+          headers: {
+            "content-type": "text/javascript; charset=utf-8",
+            "cache-control": "no-store",
+            "x-content-type-options": "nosniff",
+          },
         });
       if (url.pathname === "/") return inicio(url, csrf);
       if (url.pathname === "/editar" && fila)

@@ -17,13 +17,14 @@ Para expandir el alcance de la comunidad, se desarrolló la plataforma web **com
 
 El proyecto está construido sobre una arquitectura moderna orientada a la performance, SEO y soporte para islas interactivas.
 
-- **Framework Principal:** [Astro v7.4](https://astro.build/) configurado en modo estático/híbrido utilizando la API Content Layer. Para optimizar el build, se implementó un mecanismo de caché en memoria de 1 minuto para llamadas externas a DolarAPI (`src/lib/dolarApi.ts`) y Better Stack (`src/lib/getMonitorStatus.ts`), lo que reduce drásticamente el tiempo de compilación.
+- **Framework Principal:** [Astro v7.4](https://astro.build/) con salida estática y adaptador `@astrojs/vercel`. Solo `/` y `/calculadora` (`prerender = false`) se renderizan en el servidor con ISR de 60 s.
+- **Cotizaciones:** módulo único `src/lib/cotizaciones.ts` (DolarApi, respaldo CriptoYa; lectura por `casa`, validación y timeout). El navegador las refresca cada minuto y al volver a la pestaña (`cotizaciones-cliente.ts`), y guarda la última en `localStorage`. Si fallan las dos fuentes en el servidor, la página responde 503 para que ISR conserve la última versión buena.
 - **Framework de UI (Islas):** [React v19.3](https://react.dev/) para componentes interactivos y carruseles.
 - **Estilos:** [Tailwind CSS v4.3](https://tailwindcss.com/) integrado vía `@tailwindcss/vite` (configuración moderna y performante).
-- **Base de Datos / Backend-as-a-Service:** [Supabase](https://supabase.com/) (`@supabase/supabase-js` v2.119) para almacenamiento y consulta de datos en tiempo real (ej. tabla de donaciones).
+- **Donantes:** API de solo lectura (PostgREST sobre Postgres en Coolify) en `donantes.comidolar.com.ar`, consultada desde el navegador (`src/lib/donantes.ts`). Sin credenciales en el sitio.
 - **Manejador de Paquetes:** [Bun](https://bun.sh/) (debe usarse siempre para scripts, instalaciones y ejecuciones).
 - **Hosting:** Optimizado para Vercel (`vercel.json` configurado).
-- **CI:** `.github/workflows/ci.yml` corre `bun run lint` y `bun run build` en cada PR.
+- **CI:** `.github/workflows/ci.yml` corre `bun run lint`, `bun run test` y `bun run build` en cada PR.
 - **Librerías de UI Clave:**
   - `embla-carousel-react` (v8.6.0) para sliders adaptables y touch-friendly.
   - `astro-loading-indicator` (v0.9) para feedback visual en transiciones de página.
@@ -54,7 +55,7 @@ La estructura de directorios sigue los estándares de Astro con aliases definido
 │   │   └── carrerasUba.ts      # Base de datos de materias del CBC y equivalencias de carreras
 │   ├── layouts/                # Plantillas HTML base para las páginas
 │   │   └── layout.astro        # Layout global del sitio con soporte SEO y transiciones
-│   ├── lib/                    # Utilidades de código y configuraciones de clientes (Supabase)
+│   ├── lib/                    # Utilidades de código y configuraciones de clientes (cotizaciones, donantes)
 │   ├── pages/                  # Enrutamiento basado en archivos
 │   ├── styles/                 # Hojas de estilo globales
 │   │   └── global.css          # CSS global con configuración de temas y variables
@@ -72,7 +73,7 @@ La estructura de directorios sigue los estándares de Astro con aliases definido
 El enrutamiento es estático y dinámico, estructurado de la siguiente forma:
 
 1. **Página de Inicio (`/` - `src/pages/index.astro`):**
-   - Consume en tiempo de compilación o render la API externa de `https://dolarapi.com/v1/dolares`.
+   - Render en servidor con ISR y refresco en el navegador (ver **Cotizaciones**).
    - Renderiza las tarjetas (`DolarCard.astro`) de Dólar Oficial, Dólar Blue, etc.
    - Calcula y renderiza de forma dinámica la **Brecha Cambiaria** en una tarjeta dedicada.
    - Muestra el carrusel de proyectos destacados de Gena (`CarouselElement.tsx`) y una introducción histórica (`Lore.astro`).
@@ -97,7 +98,7 @@ El enrutamiento es estático y dinámico, estructurado de la siguiente forma:
      - _Banco Ciudad:_ alias `el.gena.cdad` | CBU `0290020910000602047211`
      - _Banco Santander:_ alias `el.gena.std` | CBU `0720032830000001024851`
      - _NaranjaX:_ alias `el.gena.nja` | CBU `4530000800016413921560` (billetera virtual)
-   - Incorpora `DonationTable.tsx` para listar las contribuciones recibidas en tiempo real consultando la base de datos Supabase.
+   - Incorpora `DonationTable.tsx` para listar las contribuciones recibidas en tiempo real consultando la API de donantes; si falla muestra la última copia con su fecha o un botón para reintentar.
 
 4. **Grupo de WhatsApp (`/whatsapp` - `src/pages/whatsapp.astro`):**
    - Página puente con diseño limpio para redirigir al link de invitación oficial del grupo: `https://chat.whatsapp.com/CA29UgWsmr32O0kH6NysG2`.
@@ -146,7 +147,7 @@ El enrutamiento es estático y dinámico, estructurado de la siguiente forma:
     - **YourProfiles** (`https://yourprofiles.vercel.app`): Creador de perfiles compartibles.
     - **Comi Buenas Noches** (`https://comibuenasnoches.vercel.app`): Plataforma lúdica para candidatos románticos de los administradores.
 - **`DonationTable.tsx` (React):**
-  - Se suscribe o consulta Supabase para mostrar el listado histórico y en tiempo real de donantes.
+  - Consulta la API de solo lectura de donantes y muestra el listado histórico por año.
 - **`PaymentMethod.astro`:**
   - Renderiza cada opción de transferencia bancaria, aplicando degradados de color específicos adaptados a la marca visual de cada banco (Mercado Pago, Provincia, Nación, Ciudad, Santander, NaranjaX).
 - **`FutureCalculator.tsx` (React):**

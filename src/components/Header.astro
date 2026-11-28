@@ -2,17 +2,6 @@
 import AsideLink from "./AsideLink.astro";
 import InstallApp from "./InstallApp.tsx";
 import Release from "./Release.astro"
-import { fetchMonitors } from "@/lib/getMonitorStatus";
-const statuses = await fetchMonitors();
-
-const { api, backend, database, final, lore, ts } = statuses;
-
-const isApiOnline = api === "up";
-const isBackendOnline = backend === "up";
-const isDatabaseOnline = database === "up";
-const isEverythingUp = final === "up";
-const isSomeDown = final === "mid";
-const isEverythingDown = final === "down";
 ---
 
 <nav
@@ -90,87 +79,6 @@ const isEverythingDown = final === "down";
               </path>
             </svg>
           </a>
-          <div class="relative group inline-block focus-within:block">
-            <div
-              title={lore}
-              tabindex="0"
-              class="flex items-center justify-center border border-zinc-900 hover:border-zinc-300 focus:border-zinc-300 dark:border-zinc-300 dark:hover:border-white dark:focus:border-white w-8 h-8 text-sm text-zinc-500 bg-zinc-300 rounded-full transition-transform duration-300 hover:scale-110 hover:bg-zinc-500 hover:text-zinc-300 focus:ring-4 focus:bg-zinc-700 focus:text-zinc-200 focus:ring-zinc-300 dark:bg-darkless dark:hover:bg-zinc-800 dark:text-zinc-300 dark:hover:text-zinc-100 dark:focus:ring-zinc-600"
-            >
-              <span
-                class={`w-3 h-3 text-transparent border border-zinc-900 hover:border-zinc-300 focus:border-zinc-300 dark:border-zinc-300 dark:hover:border-white dark:focus:border-white bg-gradient-to-tl ${
-                  isEverythingUp
-                    ? "from-green-600 via-green-400 to-green-200"
-                    : isSomeDown
-                      ? "from-yellow-600 via-yellow-400 to-yellow-200"
-                      : isEverythingDown
-                        ? "from-red-600 via-red-400 to-red-200"
-                        : "from-neutral-600 via-neutral-400 to-neutral-200"
-                } rounded-full`}></span>
-            </div>
-            <div
-              class="opacity-0 scale-95 invisible group-hover:opacity-100 group-hover:scale-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:scale-100 group-focus-within:visible transition-all duration-300 absolute top-10 -left-24 w-56 transform -translate-x-1/2 mt-2 bg-neutral-100 border-green-500 border dark:bg-darkless dark:text-white rounded-lg shadow-lg p-4 z-10"
-            >
-              <div class="relative flex flex-col gap-3">
-                <img
-                  src="/assets/img/wide-c.webp"
-                  alt="Logo de ComiDólar"
-                  class="w-full h-32 object-cover rounded-lg"
-                />
-                <p class="text-xs opacity-50 font-mono">
-                  Actualizado {ts} ARG 🇦🇷
-                </p>
-                <p>{lore}</p>
-                {
-                  lore !== "Error fetching monitor status" && (
-                    <>
-                      <p>
-                        <strong>API Dólares:</strong>
-                        <span
-                          class={`${isApiOnline ? "text-green-500" : "text-red-500"}`}
-                        >
-                          {isApiOnline ? "Online" : "Offline"}
-                        </span>
-                      </p>
-                      <p>
-                        <strong>Backend:</strong>
-                        <span
-                          class={`${isBackendOnline ? "text-green-500" : "text-red-500"}`}
-                        >
-                          {isBackendOnline ? "Online" : "Offline"}
-                        </span>
-                      </p>
-                      <p>
-                        <strong>Base de datos:</strong>
-                        <span
-                          class={`${isDatabaseOnline ? "text-green-500" : "text-red-500"}`}
-                        >
-                          {isDatabaseOnline ? "Online" : "Offline"}
-                        </span>
-                      </p>
-                    </>
-                  )
-                }
-                <a
-                  title="Estado de los servicios de ComiDolar"
-                  class="bg-green-500 flex items-center justify-between p-3 rounded-lg hover:bg-green-600 transition-colors duration-300 text-white"
-                  href="https://status.comidolar.com.ar"
-                >
-                  Ver detalles
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M14.25 1.5H1.75A1.25 1.25 0 0 0 .5 2.75v7.5a1.25 1.25 0 0 0 1.25 1.25H6.1v1.75H4v1.25h8v-1.25H9.91V11.5h4.34a1.25 1.25 0 0 0 1.25-1.25v-7.5a1.25 1.25 0 0 0-1.25-1.25M8.66 13.25H7.35V11.5h1.31zm5.59-3H1.75v-7.5h12.5z"
-                    ></path>
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

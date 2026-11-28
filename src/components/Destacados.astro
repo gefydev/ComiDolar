@@ -71,7 +71,8 @@ const flecha =
           </p>
         </div>
         <img
-          src={`/assets/img/opengraph/blog/${noticia.id}.webp`}
+          src={`/assets/img/opengraph/blog/lowres/${noticia.id}.webp`}
+          onerror={`this.onerror=null;this.src='/assets/img/opengraph/blog/${noticia.id}.webp'`}
           alt=""
           width="1200"
           height="630"

@@ -1,6 +1,9 @@
-// El script de AdSense se carga una sola vez y recién con la página ya cargada.
-// No se activan anuncios automáticos: solo las unidades que están en el HTML.
+// El script de AdSense se carga una sola vez y recién cuando hace falta: un
+// espacio está por verse, la persona interactúa o pasan 12 s (Google necesita
+// encontrarlo al revisar el sitio). No se activan anuncios automáticos: solo
+// las unidades que están en el HTML.
 import { EDITOR } from "@/config/anuncios";
+import { alUsar } from "@/lib/al-usar";
 
 declare global {
   interface Window {
@@ -10,24 +13,51 @@ declare global {
 
 let pedido = false;
 
-const cargarScript = () => {
+const insertar = () => {
   if (pedido) return;
   pedido = true;
-  const insertar = () => {
-    const script = document.createElement("script");
-    script.async = true;
-    script.crossOrigin = "anonymous";
-    script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${EDITOR}`;
-    document.head.appendChild(script);
-  };
-  const despues = () => {
-    if ("requestIdleCallback" in window)
-      requestIdleCallback(insertar, { timeout: 5000 });
-    else setTimeout(insertar, 2000);
-  };
-  if (document.readyState === "complete") despues();
-  else window.addEventListener("load", despues, { once: true });
+  const script = document.createElement("script");
+  script.async = true;
+  script.crossOrigin = "anonymous";
+  script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${EDITOR}`;
+  document.head.appendChild(script);
 };
+
+let cerca: IntersectionObserver | undefined;
+let preparado = false;
+
+const cargarScript = () => {
+  if (pedido) return;
+  if (!preparado) {
+    preparado = true;
+    alUsar(insertar, 12_000);
+  }
+  cerca?.disconnect();
+  cerca = new IntersectionObserver(
+    (entradas) => {
+      if (!entradas.some((e) => e.isIntersecting)) return;
+      cerca?.disconnect();
+      if ("requestIdleCallback" in window)
+        requestIdleCallback(insertar, { timeout: 2000 });
+      else setTimeout(insertar, 200);
+    },
+    { rootMargin: "200px" },
+  );
+  for (const espacio of document.querySelectorAll(".ad"))
+    cerca.observe(espacio);
+};
+
+// Un espacio sin anuncio se quita solo si está más abajo de lo que se ve: si
+// no, la página saltaría con la persona mirando (o leyendo más abajo).
+const quitarVacios = new MutationObserver((cambios) => {
+  for (const { target } of cambios) {
+    const ins = target as HTMLElement;
+    if (ins.dataset.adStatus !== "unfilled") continue;
+    const espacio = ins.closest<HTMLElement>(".ad");
+    if (espacio && espacio.getBoundingClientRect().top >= innerHeight)
+      espacio.classList.add("ad-vacio");
+  }
+});
 
 // Pedidos de la página que se va: sin el script todavía, se descartan
 document.addEventListener("astro:before-swap", () => {
@@ -42,6 +72,7 @@ document.addEventListener("astro:page-load", () => {
     ".ad ins.adsbygoogle:not([data-pedido])",
   )) {
     unidad.dataset.pedido = "";
+    quitarVacios.observe(unidad, { attributeFilter: ["data-ad-status"] });
     (window.adsbygoogle ||= []).push({});
   }
   cargarScript();

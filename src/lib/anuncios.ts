@@ -29,6 +29,11 @@ const cargarScript = () => {
   else window.addEventListener("load", despues, { once: true });
 };
 
+// Pedidos de la página que se va: sin el script todavía, se descartan
+document.addEventListener("astro:before-swap", () => {
+  if (Array.isArray(window.adsbygoogle)) window.adsbygoogle.length = 0;
+});
+
 document.addEventListener("astro:page-load", () => {
   const unidades = document.querySelectorAll("ins.adsbygoogle");
   if (!unidades.length) return;

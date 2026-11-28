@@ -5,11 +5,11 @@
 
 <script is:inline>
   !(function (w, d) {
-    if (w.posthog && w.posthog.__iniciado) return;
+    // al navegar no se vuelve a iniciar: ya está la cola o la librería
+    if (w.posthog) return;
     // cola hasta que llegue la librería
     var cola = (w.posthog = []);
     cola.__SV = 1;
-    cola.__iniciado = true;
     cola._i = [];
     cola.people = [];
     ["capture", "identify", "register", "reset"].forEach(function (metodo) {

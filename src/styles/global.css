@@ -73,6 +73,10 @@
 }
 
 @layer base {
+  /* el fondo del tema desde el primer cuadro, también durante la transición */
+  html {
+    background: var(--bg);
+  }
   body {
     background: var(--bg);
     color: var(--ink);
@@ -545,5 +549,50 @@
   .pagina .go {
     background: var(--brand);
     color: var(--on-brand);
+  }
+}
+
+/* Paso de página: el encabezado queda quieto y el contenido sale y entra corto
+   (240 ms). Primero se va lo viejo y después aparece lo nuevo, sin mezclarse. */
+#contenido {
+  view-transition-name: contenido;
+}
+::view-transition-group(contenido) {
+  animation: none;
+}
+::view-transition-old(contenido) {
+  animation: salir 80ms ease-out both;
+  mix-blend-mode: normal;
+}
+::view-transition-new(contenido) {
+  animation: entrar 180ms ease-out 60ms both;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+::view-transition-old(root) {
+  display: none;
+}
+@keyframes salir {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+  ::view-transition-old(contenido) {
+    display: none;
   }
 }

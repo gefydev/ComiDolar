@@ -7,7 +7,7 @@ import PostHog from "@/components/posthog.astro";
 import "@/styles/global.css";
 ---
 
-<html lang="es">
+<html lang="es" transition:animate="none">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -119,7 +119,7 @@ import "@/styles/global.css";
     <ClientRouter />
     <PostHog />
   </head>
-  <body transition:animate="none">
+  <body>
     <a class="saltar" href="#contenido">
       Saltar al contenido
     </a>
@@ -133,7 +133,6 @@ import "@/styles/global.css";
     <script
       is:inline
       src="/analytics/beacon.min.js"
-      data-astro-rerun
       data-cf-beacon='{"token": "4536a67fe2714c37845c5aaadcd0f4d2"}'
       defer
     ></script>

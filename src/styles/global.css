@@ -645,7 +645,7 @@
     background: var(--c);
     color: var(--on-type);
   }
-  .grande {
+  .precio-hoy {
     margin-top: 16px;
     font-size: 64px;
     font-weight: 900;

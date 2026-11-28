@@ -56,8 +56,9 @@
     // eventos quedan en la cola
     var eventos = ["pointerdown", "keydown", "scroll", "touchstart", "wheel"];
     var pedido = false;
-    var pedir = function () {
-      if (pedido) return;
+    var pedir = function (ev) {
+      // el menú y el carrusel se desplazan solos: cuenta el scroll de la página
+      if (pedido || (ev && ev.type === "scroll" && ev.target !== d)) return;
       pedido = true;
       eventos.forEach(function (e) {
         w.removeEventListener(e, pedir, true);
@@ -68,7 +69,9 @@
       w.addEventListener(e, pedir, { capture: true, passive: true });
     });
     var despues = function () {
-      setTimeout(pedir, 10000);
+      setTimeout(function () {
+        pedir();
+      }, 10000);
     };
     if (d.readyState === "complete") despues();
     else w.addEventListener("load", despues, { once: true });

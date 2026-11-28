@@ -214,56 +214,6 @@
   display: block;
 }
 
-.ticket {
-  align-self: start;
-  padding: 4px 16px 16px;
-  border: 2px solid var(--line);
-  border-radius: 14px;
-  background: var(--surface);
-  scroll-margin: 16px;
-}
-.linea {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 11px 0;
-  border-bottom: 2px dashed var(--hair);
-}
-.linea b {
-  white-space: nowrap;
-}
-.linea small {
-  display: block;
-  font-size: 12px;
-  color: var(--muted);
-}
-.suma {
-  padding-top: 12px;
-}
-.suma > span {
-  font-weight: 700;
-  font-size: 14px;
-}
-.suma strong {
-  display: block;
-  text-align: right;
-  font-size: clamp(36px, 12vw, 52px);
-  font-weight: 900;
-  font-stretch: 82%;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  overflow-wrap: anywhere;
-}
-.suma small {
-  display: block;
-  text-align: right;
-  font-size: 13px;
-  color: var(--muted);
-}
-.ticket .warn,
-.ticket .note {
-  margin-top: 8px;
-}
 .acciones {
   display: flex;
   flex-wrap: wrap;
@@ -322,32 +272,6 @@ main:not(:has(#c-exterior:checked)) [data-comparacion] {
 .comparacion thead th {
   font-size: 12px;
   color: var(--muted);
-}
-
-.faq details {
-  border-bottom: 1px solid var(--hair);
-}
-.faq summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  min-height: 48px;
-  padding: 6px 0;
-  font-weight: 700;
-  cursor: pointer;
-  list-style: none;
-}
-.faq summary::after {
-  content: "+";
-  font-size: 22px;
-}
-.faq details[open] summary::after {
-  content: "–";
-}
-.faq details p {
-  padding-bottom: 12px;
-  font-size: 14px;
 }
 
 @media (min-width: 900px) {

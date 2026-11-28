@@ -543,9 +543,202 @@
   }
 }
 
+@layer components {
+  /* desglose tipo ticket y preguntas: calculadora y detalle de cotización */
+  .ticket {
+    align-self: start;
+    padding: 4px 16px 16px;
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    background: var(--surface);
+    scroll-margin: 16px;
+  }
+  .linea {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 11px 0;
+    border-bottom: 2px dashed var(--hair);
+  }
+  .linea b {
+    white-space: nowrap;
+  }
+  .linea small {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .suma {
+    padding-top: 12px;
+  }
+  .suma > span {
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .suma strong {
+    display: block;
+    text-align: right;
+    font-size: clamp(36px, 12vw, 52px);
+    font-weight: 900;
+    font-stretch: 82%;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    overflow-wrap: anywhere;
+  }
+  .suma small {
+    display: block;
+    text-align: right;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .ticket .warn,
+  .ticket .note {
+    margin-top: 8px;
+  }
+  .faq details {
+    border-bottom: 1px solid var(--hair);
+  }
+  .faq summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 48px;
+    padding: 6px 0;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+  }
+  .faq summary::after {
+    content: "+";
+    font-size: 22px;
+  }
+  .faq details[open] summary::after {
+    content: "–";
+  }
+  .faq details p {
+    padding-bottom: 12px;
+    font-size: 14px;
+  }
+
+  /* detalle de un tipo de dólar */
+  .detalle .cols > * {
+    min-width: 0;
+    padding: 8px 16px 0;
+  }
+  .detalle .cols > * + * {
+    margin-top: 16px;
+  }
+  .detalle-titulo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .insignia {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: var(--c);
+    color: var(--on-type);
+  }
+  .grande {
+    margin-top: 16px;
+    font-size: 64px;
+    font-weight: 900;
+    font-stretch: 82%;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  .desglose {
+    margin-top: 16px;
+  }
+  .bajada {
+    margin-top: 8px;
+  }
+  .lista {
+    margin-top: 8px;
+    max-width: 68ch;
+    padding-left: 20px;
+    list-style: disc;
+  }
+  .detalle .go {
+    margin-top: 12px;
+  }
+  .enlace {
+    text-decoration: underline;
+  }
+  .grafico {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: 12px;
+    color: var(--c);
+  }
+  .dias {
+    width: 100%;
+    margin-top: 12px;
+    border-collapse: collapse;
+  }
+  .dias th,
+  .dias td {
+    padding: 12px 4px;
+    border-bottom: 1px solid var(--hair);
+    text-align: right;
+  }
+  .dias th:first-child {
+    text-align: left;
+  }
+  .dias thead th {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .otras {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .otras a,
+  .otras span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 0 12px;
+    border: 2px solid var(--c);
+    border-radius: 99px;
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .otras svg {
+    color: var(--c);
+  }
+  @media (min-width: 900px) {
+    .detalle .cols {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 24px;
+      padding: 0 16px;
+    }
+    .detalle .cols > * {
+      padding-inline: 0;
+    }
+    .detalle .cols > * + * {
+      margin-top: 0;
+    }
+  }
+}
+
 /* en oscuro, el botón casi negro se pierde sobre el fondo de la página */
 @media (prefers-color-scheme: dark) {
-  .pagina .go {
+  .pagina .go,
+  .detalle .go {
     background: var(--brand);
     color: var(--on-brand);
   }

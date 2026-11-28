@@ -1,0 +1,201 @@
+---
+import AdSlot from "@/components/AdSlot.astro";
+import EstadoCotizaciones from "@/components/EstadoCotizaciones.astro";
+import { TEXTOS_COTIZACION } from "@/db/textosCotizacion";
+import Layout from "@/layouts/layout.astro";
+import type { Cotizaciones } from "@/lib/cotizaciones";
+import { vistaDetalle } from "@/lib/detalle";
+import { conEnlaces, sinEnlaces } from "@/lib/enlaces";
+import { FICHAS, textosFicha } from "@/lib/fichas";
+import { pesos } from "@/lib/formato";
+import { diaMes, puntos, type Dia } from "@/lib/historial";
+import { absoluta, jsonSeguro } from "@/lib/seo";
+import { rutaTipo, type Tipo } from "@/lib/tipos";
+
+interface Props {
+  tipo: Tipo;
+  cotizaciones: Cotizaciones | null;
+  historial: Dia[];
+}
+const { tipo, cotizaciones, historial } = Astro.props;
+const casas = cotizaciones?.casas ?? {};
+const vista = vistaDetalle(tipo, casas);
+const ficha = FICHAS.find((f) => f.clase === tipo.slug)!;
+const texto = TEXTOS_COTIZACION[tipo.slug];
+const ruta = rutaTipo(tipo.slug);
+const metadata = {
+  title: texto.titulo,
+  description: { meta: texto.descripcion, og: texto.descripcion },
+  canonical: absoluta(ruta),
+  og: { nombre: `tipo-${tipo.slug}` },
+  migas: [[`Dólar ${tipo.nombre}`, ruta]],
+};
+
+const linea = historial.length > 1 ? puntos(historial) : null;
+const ultimo = historial.at(-1);
+const resumen =
+  linea && ultimo
+    ? `${texto.grafico} Pasó de ${pesos(historial[0].venta)} a ${pesos(ultimo.venta)}.`
+    : "";
+const otras = FICHAS.filter((f) => f.id !== ficha.id);
+
+const faq = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: texto.faq.map(({ pregunta, respuesta }) => ({
+    "@type": "Question",
+    name: pregunta,
+    acceptedAnswer: { "@type": "Answer", text: sinEnlaces(respuesta) },
+  })),
+};
+---
+
+<Layout metadata={metadata}>
+  <main
+    class={`detalle ${ficha.clase}`}
+    data-pagina-cotizaciones="detalle"
+    data-tipo={tipo.slug}
+  >
+    <div class="cols">
+      <section aria-labelledby="titulo">
+        <div class="detalle-titulo">
+          <span class="insignia">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              set:html={ficha.icono}
+            />
+          </span>
+          <h1 class="h1" id="titulo">{texto.h1}</h1>
+        </div>
+        <p class="bajada">{texto.bajada}</p>
+        <p class="grande" data-venta>{vista.venta}</p>
+        <p class="note" data-nota>{vista.nota}</p>
+        <EstadoCotizaciones cotizaciones={cotizaciones} />
+        <div class="ticket desglose" data-desglose set:html={vista.html} />
+        <a class="go" href="/calculadora">Calculá tu compra</a>
+        {tipo.slug === "tarjeta" && (
+          <p class="note mt-2">
+            Para servicios digitales hay que sumar IVA:{" "}
+            <a class="enlace" href="/calculadora#servicios-digitales">
+              ver el cálculo
+            </a>.
+          </p>
+        )}
+      </section>
+
+      <section aria-labelledby="evolucion">
+        <h2 class="h2" id="evolucion">
+          {linea ? `Últimos ${historial.length} días` : "Evolución"}
+        </h2>
+        {linea ? (
+          <>
+            <p class="note">Venta · fuente: ArgentinaDatos</p>
+            <svg class="grafico" viewBox="0 0 640 190" role="img" aria-label={resumen}>
+              <path d="M8 170H632" stroke="currentColor" opacity=".3" />
+              <polyline
+                fill="none"
+                stroke="currentColor"
+                stroke-width="4"
+                stroke-linejoin="round"
+                points={linea.map((p) => p.join(",")).join(" ")}
+              />
+              <circle cx={linea.at(-1)![0]} cy={linea.at(-1)![1]} r="6" fill="currentColor" />
+            </svg>
+            <table class="dias">
+              <thead>
+                <tr><th scope="col">Fecha</th><th scope="col">Venta</th></tr>
+              </thead>
+              <tbody>
+                {[...historial].reverse().map(({ fecha, venta }) => (
+                  <tr>
+                    <th scope="row">{diaMes(fecha)}</th>
+                    <td>{pesos(venta)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        ) : (
+          <p class="note">No pudimos cargar los días anteriores. Probá de nuevo en unos minutos.</p>
+        )}
+      </section>
+    </div>
+
+    <AdSlot ubicacion="interna" />
+
+    <section class="seccion texto angosta">
+      <h2>Qué es el dólar {tipo.nombre}</h2>
+      {texto.queEs.map((p) => <p set:html={conEnlaces(p)} />)}
+      <h2>Diferencia con otros dólares</h2>
+      <ul class="lista">
+        {texto.diferencias.map((d) => <li set:html={conEnlaces(d)} />)}
+      </ul>
+      <h2>Preguntas frecuentes</h2>
+      <div class="faq">
+        {texto.faq.map(({ pregunta, respuesta }) => (
+          <details>
+            <summary>{pregunta}</summary>
+            <p set:html={conEnlaces(respuesta)} />
+          </details>
+        ))}
+      </div>
+      <script type="application/ld+json" set:html={jsonSeguro(faq)} />
+    </section>
+
+    <section class="seccion" aria-labelledby="otras">
+      <h2 class="h2" id="otras">Otras cotizaciones</h2>
+      <ul class="otras">
+        {otras.map((f) => {
+          const Etiqueta = f.id === "brecha" ? "span" : "a";
+          return (
+            <li class={f.clase}>
+              <Etiqueta href={f.id === "brecha" ? undefined : rutaTipo(f.clase)}>
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                  set:html={f.icono}
+                />
+                {f.nombre} <b data-otra={f.id}>{textosFicha(f.id, casas).valor}</b>
+              </Etiqueta>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  </main>
+</Layout>
+
+<script>
+  import { enPagina } from "@/lib/cotizaciones-dom";
+  import { vistaDetalle } from "@/lib/detalle";
+  import { FICHAS, textosFicha } from "@/lib/fichas";
+  import { tipoPorSlug } from "@/lib/tipos";
+
+  enPagina("detalle", ({ casas }) => {
+    const pagina = document.querySelector<HTMLElement>("[data-tipo]");
+    if (!pagina) return;
+    const vista = vistaDetalle(tipoPorSlug(pagina.dataset.tipo!), casas);
+    pagina.querySelector("[data-venta]")!.textContent = vista.venta;
+    pagina.querySelector("[data-nota]")!.textContent = vista.nota;
+    pagina.querySelector("[data-desglose]")!.innerHTML = vista.html;
+    for (const { id } of FICHAS) {
+      const otra = pagina.querySelector(`[data-otra="${id}"]`);
+      if (otra) otra.textContent = textosFicha(id, casas).valor;
+    }
+  });
+</script>

@@ -1,0 +1,26 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>OG blog (plantilla)</title>
+<!-- El <style> es solo para verla en el navegador: al renderizar se descarta -->
+<style>
+@font-face{font-family:Archivo;font-weight:500;src:url(../fonts/Archivo-Medium.ttf)}
+@font-face{font-family:Archivo;font-weight:700;src:url(../fonts/Archivo-Bold.ttf)}
+@font-face{font-family:ArchivoWide;src:url(../fonts/ArchivoWide-Black.ttf)}
+@font-face{font-family:ArchivoCond;src:url(../fonts/ArchivoCond-Black.ttf)}
+body{margin:0}div{box-sizing:border-box}
+</style>
+<div style="box-sizing:border-box;display:flex;position:relative;width:1200px;height:630px;overflow:hidden;background:#7ee58f;font-family:Archivo">
+<div style="box-sizing:border-box;display:flex;flex-direction:column;position:absolute;left:48px;top:44px;width:1104px;height:542px;border-radius:28px;background:#ffffff"></div>
+<div style="box-sizing:border-box;display:flex;justify-content:space-between;align-items:center;position:absolute;left:96px;top:80px;width:1008px;height:56px">
+ <div style="box-sizing:border-box;display:flex;background:#10200f;color:#ffffff;border-radius:99px;padding:8px 26px;font-weight:700;font-size:28px">{{tema}}</div>
+ <div style="box-sizing:border-box;display:flex;font-weight:500;font-size:28px;color:#55555a">{{fecha}}</div>
+</div>
+<div style="box-sizing:border-box;display:flex;align-items:center;position:absolute;left:96px;top:152px;width:1008px;height:272px">
+ <div style="box-sizing:border-box;display:block;width:1008px;font-family:ArchivoWide;font-size:{{tamano}}px;line-height:1.08;letter-spacing:-1.5px;color:#141414;line-clamp:3">{{titulo}}</div>
+</div>
+<div style="box-sizing:border-box;display:flex;position:absolute;left:84px;top:440px;width:1032px;height:0;border-top:4px dashed #c9c9c4"></div>
+<div style="box-sizing:border-box;display:flex;position:absolute;left:22px;top:416px;width:52px;height:52px;border-radius:26px;background:#7ee58f"></div><div style="box-sizing:border-box;display:flex;position:absolute;left:1126px;top:416px;width:52px;height:52px;border-radius:26px;background:#7ee58f"></div>
+<div style="box-sizing:border-box;display:flex;justify-content:space-between;align-items:center;position:absolute;left:96px;top:470px;width:1008px;height:80px">
+ <div style="box-sizing:border-box;display:flex;align-items:center"><div style="box-sizing:border-box;display:flex;width:72px;height:72px;background:#ffffff;border:2px solid #d9d9d5;border-radius:18px"><img src="{{logo}}" width="72" height="72"></div><div style="box-sizing:border-box;display:flex;margin-left:18px;font-family:ArchivoWide;font-size:40px;letter-spacing:-0.5px;color:#141414">comi.dolar</div></div>
+ <div style="box-sizing:border-box;display:flex;font-weight:700;font-size:30px;color:#141414">Blog · por {{autor}}</div>
+</div></div>

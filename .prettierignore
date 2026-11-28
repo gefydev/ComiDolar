@@ -31,3 +31,4 @@ bun.lockb
 # Ignore minified and compiled third-party scripts
 *.min.js
 public/analytics/
+src/assets/og/plantillas/

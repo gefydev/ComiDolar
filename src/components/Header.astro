@@ -8,7 +8,9 @@ const secciones = [
   { href: "/whatsapp", nombre: "Grupo" },
 ];
 const actual = (href: string) =>
-  href === "/" ? ruta === "/" : ruta === href || ruta.startsWith(href + "/");
+  href === "/"
+    ? ruta === "/" || ruta.startsWith("/dolar-")
+    : ruta === href || ruta.startsWith(href + "/");
 ---
 
 <header class="top">
@@ -26,7 +28,7 @@ const actual = (href: string) =>
   </a>
   <nav class="pills" aria-label="Principal">
     {secciones.map(({ href, nombre }) => (
-      <a href={href} aria-current={actual(href) ? "page" : undefined}>
+      <a href={href} aria-current={actual(href) ? (href === "/" && ruta !== "/" ? "true" : "page") : undefined}>
         {nombre}
       </a>
     ))}

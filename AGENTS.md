@@ -10,7 +10,7 @@ Antes de dar por finalizada cualquier tarea o proponer cambios, debés seguir es
 
 1. **Explorar las Skills Locales:**
    - En el directorio [`.agents/skills/`](./.agents/skills) se encuentran herramientas y guías específicas para este proyecto.
-   - Antes de implementar cualquier cambio importante en SEO, accesibilidad (a11y), Tailwind, React, Bun, TypeScript o Supabase, consultá la skill respectiva en esa carpeta para seguir los patrones correctos.
+   - Antes de implementar cualquier cambio importante en SEO, accesibilidad (a11y), Tailwind, React, Bun o TypeScript, consultá la skill respectiva en esa carpeta para seguir los patrones correctos.
 
 2. **Actualizar el Project Blueprint:**
    - La estructura técnica y funcional está documentada en el archivo [`BLUEPRINT.md`](./BLUEPRINT.md).

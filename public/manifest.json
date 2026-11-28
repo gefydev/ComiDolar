@@ -95,11 +95,7 @@
       ]
     }
   ],
-  "categories": [
-    "finance",
-    "business",
-    "education"
-  ],
+  "categories": ["finance", "business", "education"],
   "launch_handler": {
     "client_mode": "navigate-existing"
   },
@@ -107,31 +103,45 @@
   "screenshots": [
     {
       "src": "/assets/img/screenshot1.webp",
-      "sizes": "780x1688",
+      "sizes": "444x896",
       "type": "image/webp",
       "form_factor": "narrow",
-      "label": "Cotizaciones del dólar"
-    },
-    {
-      "src": "/assets/img/screenshot1-wide.webp",
-      "sizes": "1280x720",
-      "type": "image/webp",
-      "form_factor": "wide",
-      "label": "Cotizaciones del dólar"
+      "label": "Captura de pantalla de la página de inicio de Comi Dólar"
     },
     {
       "src": "/assets/img/screenshot2.webp",
-      "sizes": "780x1688",
+      "sizes": "444x896",
       "type": "image/webp",
       "form_factor": "narrow",
-      "label": "Calculadora de dólar tarjeta"
+      "label": "Captura de pantalla de la calculadora del dólar tarjeta"
+    },
+    {
+      "src": "/assets/img/screenshot3.webp",
+      "sizes": "444x896",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "Captura de pantalla de la página de donaciones"
+    },
+    {
+      "src": "/assets/img/screenshot1-wide.webp",
+      "sizes": "1400x804",
+      "type": "image/webp",
+      "form_factor": "wide",
+      "label": "Captura de pantalla de la página de inicio de Comi Dólar"
     },
     {
       "src": "/assets/img/screenshot2-wide.webp",
-      "sizes": "1280x720",
+      "sizes": "1400x804",
       "type": "image/webp",
       "form_factor": "wide",
-      "label": "Calculadora de dólar tarjeta"
+      "label": "Captura de pantalla de la calculadora del dólar tarjeta"
+    },
+    {
+      "src": "/assets/img/screenshot3-wide.webp",
+      "sizes": "1400x804",
+      "type": "image/webp",
+      "form_factor": "wide",
+      "label": "Captura de pantalla de la página de donaciones"
     }
   ]
 }

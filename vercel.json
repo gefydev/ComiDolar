@@ -18,5 +18,12 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/assets/img/opengraph/:nombre(blog|calculadora|donaciones|futuro|home|servicios|whatsapp).webp",
+      "destination": "/og/:nombre.png",
+      "statusCode": 301
+    }
   ]
 }
